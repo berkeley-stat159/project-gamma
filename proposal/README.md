@@ -7,7 +7,7 @@ the built PDF to the .gitignore file, so you won't be able to commit
 the built PDF.  Instead, just commit the changes to `proposal.tex`
 and push your commits to GitHub by the deadline.
 
-The proposal that you will submit on Thursday (10/1/15) by 21:00 must contain
+The proposal that you will submit on Monday (10/5/15) by 21:00 must contain
 at least two paragraphs. The first will reference which paper & data set(s) you
 are planning on using for the project. You should do some preliminary work to
 guarantee that you can access and load the data, and report on it in the 
