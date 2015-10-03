@@ -1,2 +1,2 @@
-# project-template
-Fall 2015 group project
+# fMRI Project
+Statistics 159 Project Group Gamma, Fall 2015
