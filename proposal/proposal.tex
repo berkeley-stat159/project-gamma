@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \bibliographystyle{siam}
 
-\title{Analysis of fMRI data in Schizophrenia}
+\title{Analysis of fcMRI data in Schizophrenia}
 \author{
   Hejazi, Nima\\
   \texttt{nhejazi}
@@ -19,17 +19,48 @@
 \begin{document}
 \maketitle
 
-Identify a published fMRI paper and the accompanying data
-\cite{lindquist2008statistical}.  You should explain the basic idea of the
-paper in a paragraph.  You should also perform basic sanity check on the data
-(e.g., can you downloaded, can you load the files, confirm that you have the
-correct number of subjects).
+For this project, we seek to understand and analyze the data from the fMRI studies
+conducted by Repovs \textit{et al.} on the manner in which brain network connectivity is
+related to schizophrenia \cite{repovs2011,repovs2012}. As reported, Repovs \textit{et al.}
+used a number of brain regions, selected \textit{a priori}, to examine the manner in which 
+connectivity, as measured by correlation in voxel activity across regions, differed across
+and between controls and individuals with schizophrenia. The cited papers examine the 
+alterations in functional connectivity within brain networks in order to provide evidence 
+that schizophrenia partially reflects a disconnection syndrome. Specifically, resting state 
+fMRI data was collected on 40 individuals with schizophrenia as well as 31 siblings of 
+individuals with schizophrenia, as well as 15 healthy controls and 18 siblings of controls
+\cite{repovs2011}. With data from the experiment, the paper concludes that individuals 
+with schizophrenia showed reduced distal and enhanced local connectivity between the 
+cognitive control networks. Moreover, greater connectivity between the frontal-parietal 
+and cerebellar regions was highly correlated with better cognitive performance across 
+groups. In performing a few basic sanity checks, we found that we were successful in 
+downloading the data and properly loading it into R and Python to perform basic data 
+manipulations, including verification that we did have the right number of subjects and 
+that labeling was correct within the data set as provided.
 
-Briefly explain what approach you intend to take for exploring
-the data and paper.  If you intend to ``reproduce'' some aspect of the paper,
-explain in exactly what sense you mean to do this.  If you are thinking about
-validating the data describe the assumpution used in the analysis and indicate
-how you might check them.
+As a first step in our analysis, we wish to reproduce the basic patterns and assumptions 
+noted in the paper (e.g., we want to identify brain regions that correspond to the Default 
+Mode Network (DMN) and the differences between healthy and schizophrenic individuals 
+at resting state. At this early step, we will leverage only summary statistics (mean, variance)
+averaged across regions of the brain at arbitrary time steps. We should be able to detect 
+differences in fMRI data between the two groups of individuals using this naive approach. 
+We will likely need to perform Talairach coordinate system transformation and potentially
+motion correction in order to perform valid inference. Using domain-specific knowledge 
+from the literature to guide us, we hope to devise techniques for detecting known patterns 
+in the fMRI data. Since this is an analytic study in statistics, we will perform preprocessing
+steps on the data only with proper justification as to their effects on the analysis results. As
+and example, to compensate for slice-dependent time shifts, we will simply remove the first
+five images from each run during which BOLD signal was allowed to reach steady state. In
+addition, we may need to perform Talairach coordinate transformation and motion correction
+if necessary when we are further in the analytic process. To reproduce the results noted in
+\cite{repovs2011}, we will compute the average connectivity, through correlations and the
+Fisher r-to-z transformation; we will then apply separate repeated measures ANOVAs to 
+compare the groups on within and between network connectivity using these measures. In
+order to ensure that the analyses provide valid inference, the False Discovery Rate  will be
+applied to control for multiple comparisons. As a final step in our analysis, we hope to use
+simple machine learning methods to predict whether a subject is schizophrenic by training 
+a classifier using cross-validation to achieve enhanced predictive value.
+
 
 \bibliography{proposal}
 
