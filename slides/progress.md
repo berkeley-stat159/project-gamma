@@ -1,5 +1,5 @@
 % Project Gamma Progress Report
-% Nima Hejazi, Liam Feng Lin, Lynn Zhao, Xinyue Zhou
+% Nima Hejazi, Feng Lin, Luyun Zhao, Xinyue Zhou
 % November 12, 2015
 
 # Background
