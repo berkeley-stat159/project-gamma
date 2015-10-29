@@ -1,5 +1,5 @@
-% Project Aleph Progress Report
-% Ross Barnowski, Matthew Brett, Jarrod Millman
+% Project Gamma Progress Report
+% Nima Hejazi, Liam Feng Lin, Lynn Zhao, Xinyue Zhou
 % November 12, 2015
 
 # Background
