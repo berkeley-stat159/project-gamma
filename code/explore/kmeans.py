@@ -1,9 +1,11 @@
+from __future__ import division
 import sklearn.cluster
 import numpy as np
 from itertools import product
-from __future__ import division
+import matplotlib.pyplot as plt
 
-def perform_kMeans_clustering_analysis(img_data, n_cluster):
+
+def perform_kMeans_clustering_analysis(img_data, n_clusters):
 
   """ 
   Cluster voxel time courses into n_clusters based on euclean distances 
@@ -33,7 +35,7 @@ def imshow_clusters(labels_3d, z):
   It shows clustered labels as a 2D image at a depth of z of the volume of 
   the brain.
   """
-  plt.imshow(indices_3d[...,z])
+  plt.imshow(labels_3d[...,z])
   plt.show()
 
 
@@ -46,6 +48,7 @@ def merge_n_clusters(labels_list, k, shape):
   ----------
   labels_list : 4D np array: [cluster_index, labels_3d_index_x, labels_3d_index_y, labels_3d_index_z]
   k : no. of clusters
+  shape : shape of elems in labels_list
 
   Returns
   -------
@@ -69,10 +72,10 @@ def merge_clusters(labels_a_weights, n, labels_b, k):
   Parameters
   ----------
   labels_a_weights : 3D np array: [labels_3d_index_x, labels_3d_index_y, labels_3d_index_z]. This
-  is the weights of the primary volumn. This is the outcome of merging n volumns of labels together
-  n : no. of volumns already merged into labels_a
+  is the weights of the primary volume. This is the outcome of merging n volumes of labels together
+  n : no. of volumes already merged into labels_a
   labels_b : 3D np array: [labels_3d_index_x, labels_3d_index_y, labels_3d_index_z]. We merge
-  this volumn of labels into labels_a
+  this volume of labels into labels_a
   k : no. of clusters
 
   Returns
@@ -82,21 +85,20 @@ def merge_clusters(labels_a_weights, n, labels_b, k):
 
   """
 
+  assert labels_a_weights.shape[1:] == labels_b.shape
 
-  assert labels_a_weights.shape == labels_b.shape
-
-  shape = labels_a_weights.shape
+  shape = labels_b.shape
 
   # separate all points to their respective clusters
   cluster_to_point_map_b = [set() for i in range(k)]
-  for i in product(range(shape[0]), range(shape[1]), range(shape[2])):
+  for i in vol_index_iter(shape):
     cluster_to_point_map_b[labels_b[i]].add(i)
 
   # compute a k * k matrix A with A[i, j] indicating similarity between cluster i in a and cluster j in b
   inter_cluster_similarity = np.zeros((k, k)) - 1
   for a_i, b_i in product(range(k), range(k)):
     if a_i != b_i:
-      inter_cluster_similarity[(a_i, b_i)] = weighted_similarity(cluster_a_weights[a_i], cluster_to_point_map_b[b_i])
+      inter_cluster_similarity[(a_i, b_i)] = weighted_similarity(labels_a_weights[a_i], cluster_to_point_map_b[b_i])
   
   # based on the inter-cluster-similarity matrix, decide cluster mapping, matching the most similar a-b pair of clusters first.
   cluster_map = {}
@@ -106,17 +108,21 @@ def merge_clusters(labels_a_weights, n, labels_b, k):
     inter_cluster_similarity[a_index,:] = -1
     inter_cluster_similarity[:, b_index] = -1
 
+  # update weights on the primary volume
   for i, j in cluster_map.items():
-    for index in product(range(shape[0]), range(shape[1]), range(shape[2])):
-      if cluster_a_weights[i][index] == 0: continue
+    for index in vol_index_iter(shape):
+      if labels_a_weights[i][index] == 0: continue
       labels_a_weights[i][index] += n / (n + 1) 
       new_cluster_index = i if index in cluster_to_point_map_b[j] else find_cluster(cluster_to_point_map_b, index)
       labels_a_weights[new_cluster_index][index] += 1 / (n + 1)
 
+def vol_index_iter(shape):
+  return product(range(shape[0]), range(shape[1]), range(shape[2]))
+
 def form_initial_weights(labels, n_clusters):
   shape = labels.shape
   result_labels_weights = np.zeros((n_clusters,) + shape)
-  for i, j, k in product(range(shape[0]), range(shape[1]), range(shape[2])):
+  for i, j, k in vol_index_iter(shape):
     result_labels_weights[labels[i, j, k], i, j, k] = 1
   return result_labels_weights
 
@@ -127,15 +133,14 @@ def find_cluster(cluster_to_point_map, target):
 
 def assign_points(labels_weights, shape):
   labels = np.zeros((shape))
-  for x,y,z in product(range(shape[0]), range(shape[1]), range(shape[2])):
+  for x,y,z in vol_index_iter(shape):
     labels[x,y,z] = np.argmax(labels_weights[:,x,y,z])
   return labels
 
 def weighted_similarity(cluster_a_weights, cluster_b):
-  assert cluster_a.shape == cluster_b.shape
-  shape = cluster_a.shape
+  shape = cluster_a_weights.shape
   accu_weight = 0
-  for i in product(range(shape[0]), range(shape[1]), range(shape[2])):
+  for i in vol_index_iter(shape):
     if i in cluster_b: 
       accu_weight += cluster_a_weights[i]
-  return accu_weight / sum(cluster_a_weights)
+  return accu_weight / np.sum(cluster_a_weights)
