@@ -3,6 +3,8 @@ import sklearn.cluster
 import numpy as np
 from itertools import product
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import axes3d, Axes3D
+from general_helpers import vol_index_iter
 
 
 def perform_kMeans_clustering_analysis(img_data, n_clusters):
@@ -38,6 +40,17 @@ def imshow_clusters(labels_3d, z):
   plt.imshow(labels_3d[...,z])
   plt.show()
 
+def plot_cluster_3d(labels_3d, cluster_index):
+  Xs, Ys, Zs = [], [], []
+  for i, j, k in vol_index_iter(labels_3d.shape):
+    if labels_3d[i, j, k] == cluster_index:
+      Xs.append(i)
+      Ys.append(j)
+      Zs.append(k)
+  fig = plt.figure()
+  ax = Axes3D(fig)
+  ax.scatter(Xs, Ys, Zs)
+  ax.show()
 
 def merge_n_clusters(labels_list, k, shape):
 
@@ -115,9 +128,6 @@ def merge_clusters(labels_a_weights, n, labels_b, k):
       labels_a_weights[i][index] += n / (n + 1) 
       new_cluster_index = i if index in cluster_to_point_map_b[j] else find_cluster(cluster_to_point_map_b, index)
       labels_a_weights[new_cluster_index][index] += 1 / (n + 1)
-
-def vol_index_iter(shape):
-  return product(range(shape[0]), range(shape[1]), range(shape[2]))
 
 def form_initial_weights(labels, n_clusters):
   shape = labels.shape
