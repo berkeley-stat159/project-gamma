@@ -1,6 +1,9 @@
 import numpy as np
 import math
 
+#The assumptions: For the fractional activated TRs, we assumes the entire TR interval is activated.
+# i.e. if [11,11.3] TR is activatd, in here, we say [11,12] is somehow activated.
+
 def find_time_course (task_fname, tr, n_trs):
     """ Return predicted neural time course from event file `task_fname`
 
