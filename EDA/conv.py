@@ -33,7 +33,7 @@ plt.ylabel('HRF sampled every 2.5 seconds')
 # 	return tr_times,hrf_at_trs
 
 
-n_vols = 169
+n_vols = 132
 neural_prediction = events2neural('cond_nb_tar.txt',
                                   0.1, n_vols)
 all_tr_times = np.arange(169*TR/time_unit)*.1
