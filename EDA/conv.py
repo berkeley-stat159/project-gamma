@@ -9,7 +9,7 @@ TR = 2.5
 time_length = 30
 time_unit = 0.1
 ##define a hrf for convolution
-def hrf(times,time_unit):
+def hrf(times):
     # Gamma pdf for the peak
     peak_values = gamma.pdf(times, 6)
     # Gamma pdf for the undershoot
@@ -17,20 +17,22 @@ def hrf(times,time_unit):
     # Combine them
     values = peak_values - 0.35 * undershoot_values
     # Scale max to 0.6
-    return values / np.max(values) * 0.6 *time_unit
-
-tr_times = np.arange(0, time_length, time_unit)
-hrf_at_trs = hrf(tr_times,time_unit)
-len(hrf_at_trs)
-plt.plot(tr_times, hrf_at_trs)
-plt.xlabel('time')
-plt.ylabel('HRF sampled every 2.5 seconds')
+    return values / np.max(values) * 0.06
 
 
-# def hrf_prep(time_unit,time_length):
-# 	tr_times = np.arange(0, time_length, time_unit)
-# 	hrf_at_trs = hrf(tr_times)
-# 	return tr_times,hrf_at_trs
+
+# tr_times = np.arange(0, time_length, time_unit)
+# hrf_at_trs = hrf(tr_times,time_unit)
+# len(hrf_at_trs)
+# plt.plot(tr_times, hrf_at_trs)
+# plt.xlabel('time')
+# plt.ylabel('HRF sampled every 2.5 seconds')
+
+
+def hrf_prep(time_unit,time_length):
+	tr_times = np.arange(0, time_length, time_unit)
+	hrf_at_trs = hrf(tr_times, time_unit)
+	return tr_times,hrf_at_trs
 
 
 n_vols = 132
