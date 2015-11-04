@@ -1,6 +1,6 @@
-Nov. 1st. 2015 
+Nov. 1st. 2015 Meeting 
 
-1. What we have done:
+1. What we have accomplished so far:
 
 # We pair up to two groups to analyze the subject001 (patients) and subject011 (healthy control)
 
@@ -15,7 +15,7 @@ Nov. 1st. 2015
 (2) get the residuals distribution and compare it to the normal distribution so as to see whether the linear model is appropriate. 
 (3) prepare for the presentation
 
-3. Problem we are facing:
+3. Problems we are facing currently:
 (1) time unit? 0.1 or 1 for TR?
 (2) transfer the data into Talariach space to discover the ROIs.
 (3) Resting state data in the dataset
