@@ -30,5 +30,5 @@ def find_time_course (task_fname, tr, n_trs):
     # Neural time course from onset, duration, amplitude for each event
     time_course = np.zeros(n_trs)
     for onset, duration, amplitude in task:
-        time_course[onset:math.ceil(onset + duration)] = amplitude
+        time_course[int(onset):int(math.ceil(onset + duration))] = amplitude
     return time_course
