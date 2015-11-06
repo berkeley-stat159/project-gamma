@@ -23,7 +23,7 @@ cond_filename = "../../../ds115_sub010-014/sub013/model/model001/onsets/task001_
 
 img = nib.load(bold_data_filename)
 data = img.get_data()
-data = data[..., 4:]
+data = data[..., 5:]
 
 TR = project_config.TR
 

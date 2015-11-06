@@ -13,15 +13,15 @@ BOLD_file_3 = 'bold_3.nii.gz'
 
 img_1 = nib.load(BOLD_file_1)
 data_1 = img_1.get_data()
-data_1 = data_1[..., 4:]
+data_1 = data_1[..., 5:]
 
 img_2 = nib.load(BOLD_file_2)
 data_2 = img_2.get_data()
-data_2 = data_2[..., 4:]
+data_2 = data_2[..., 5:]
 
 img_3 = nib.load(BOLD_file_3)
 data_3 = img_3.get_data()
-data_3 = data_3[..., 4:]
+data_3 = data_3[..., 5:]
 
 n_clusters = 5
 
