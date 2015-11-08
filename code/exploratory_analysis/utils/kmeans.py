@@ -1,10 +1,11 @@
+import project_config
 from __future__ import division
 import sklearn.cluster
 import numpy as np
 from itertools import product
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
-from general_helpers import vol_index_iter
+from general_utils import vol_index_iter
 
 
 def perform_kMeans_clustering_analysis(img_data, n_clusters):

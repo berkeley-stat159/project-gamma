@@ -1,4 +1,4 @@
-
+import project_config
 import os
 import numpy as np
 import scipy as sp
@@ -8,16 +8,24 @@ import matplotlib.pyplot as plt
 
 from diagnostics import *
 
-os.chdir('../ds115_sub001-005/sub001/BOLD/task001_run001/')
-img = nib.load('bold.nii.gz')
-data = img.get_data()
+"""
+Replace these variables before running the script
+"""
+analysis_dir = '../ds115_sub001-005/sub001/BOLD/task001_run001/'
+BOLD_file_1 = 'bold.nii.gz'
+
+
+
+os.chdir(analysis_dir)
+img = nib.load(BOLD_file_1)
+data = img.get_data(BOLD_file_1)
 data = data[...,5:] #drop first 5 volumes
 
 sd = vol_std(data) #voxel standard deviations along all TRs
-np.savetxt('voxel_sd_raw.txt', sd)
+np.savetxt('results/voxel_sd_raw.txt', sd)
 
 outliers = iqr_outliers(sd)[0] #finding outlier indices on sd
-np.savetxt('voxel_sd_outliers.txt', outliers)
+np.savetxt('results/voxel_sd_outliers.txt', outliers)
 
 #plot the std outliers
 sd_outlier=[]
@@ -34,7 +42,7 @@ plt.legend(handles=[sd_a, sd_b, low_thresh_line, high_thresh_line], loc=4)
 plt.ylabel('Standard Deviations')
 plt.xlabel('Voxels / Volumes')
 plt.title('Outlier Detection Plot')
-plt.savefig('vox_sd.png')
+plt.savefig('results/vox_sd.png')
 plt.show()
 
 #RMS diffrence
@@ -55,7 +63,7 @@ plt.legend(handles=[rms_a, rms_b, rms_low_thresh_line, rms_high_thresh_line], lo
 plt.ylabel('Differences in RMS')
 plt.xlabel('Voxel Indices')
 plt.title('Outliers in RMS Magnitudes')
-plt.savefig('vol_rms_outliers.png')
+plt.savefig('results/vol_rms_outliers.png')
 plt.show()
 
 #extended RMS outliers
@@ -76,7 +84,7 @@ plt.legend(handles=[rms_ext_b, rms_ext_b, rms_ext_low_line, rms_ext_high_line],l
 plt.ylabel('Differences in RMS')
 plt.xlabel('Voxels/Volumes')
 plt.title('RMS Outliers Extended')
-plt.savefig('extended_vol_rms_outliers.png')
+plt.savefig('results/extended_vol_rms_outliers.png')
 plt.show()
 
 #drop outliers

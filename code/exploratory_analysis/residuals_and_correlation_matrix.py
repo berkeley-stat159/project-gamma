@@ -1,34 +1,42 @@
 """sub011, task001_run_001"""
-# library
+
+import project_config
 import nibabel as nib
 import numpy as np 
-import diagnostics as diag
+import outliers_utils
 import matplotlib.pyplot as plt
 import numpy.linalg as npl
 from scipy import stats
-import math
-import diagnostics as diag
-from on_off import find_time_course
+from stimuli_revised import events2neural_rounded
+
+"""
+Replace these variables before running the script
+"""
+BOLD_file_1 = '../../../ds115_sub010-014/sub013/BOLD/task001_run001/bold.nii.gz'
+cond_filename = "../../../ds115_sub010-014/sub013/model/model001/onsets/task001_run001/cond002.txt"
+conv_data_filename = 'results/conv_data.txt'
 
 
 #loading data
-img = nib.load('bold.nii.gz')
+img = nib.load(BOLD_file_1)
 data = img.get_data() 
-ds1=data.shape
+ds1 = data.shape
 #drop the first five
 data = data[..., 5:]
-ds2=data.shape
+ds2 = data.shape
 print("1.The original data shape is %r. After dropping the first five, now the data has the shape %r") %(str(ds1),str(ds2))
+
 #standard deviations of all voxels along the TRs.
-std = diag.vol_std(data)
-fobj = open('vol_std_values.txt', 'wt')
+std = outliers_utils.vol_std(data)
+fobj = open('results/vol_std_values.txt', 'wt')
 for i in std:
 	fobj.write(str(i) + '\n')
 fobj.close()
 print("2. The standard deviations of all voxels along the TRs are saved in to 'vol_std_values.txt'")
+
 #find the std outliers
-outlier = diag.iqr_outliers(std)[0]
-fobj = open('vol_std_outliers.txt', 'wt')
+outlier = outliers_utils.iqr_outliers(std)[0]
+fobj = open('results/vol_std_outliers.txt', 'wt')
 for i in outlier:
 	fobj.write(str(i) + '\n')
 fobj.close()
@@ -36,8 +44,8 @@ print("3.There are %d std outliers, with indices %r. They are saved into 'vol_st
 
 #plot the std outliers
 std_outlier=[]
-low = diag.iqr_outliers(std)[1][0]
-high = diag.iqr_outliers(std)[1][1]
+low = outliers_utils.iqr_outliers(std)[1][0]
+high = outliers_utils.iqr_outliers(std)[1][1]
 for i in outlier:
 	std_outlier.append(std[i])
 x=np.arange(data.shape[-1])
@@ -49,17 +57,18 @@ plt.legend(handles=[std1, std2, lowbound,highbound],loc=4)
 plt.ylabel('standard deviation')
 plt.xlabel('volumns')
 plt.title('Outliers Detection')
-plt.savefig('vol_std.png')
+plt.savefig('results/vol_std.png')
 plt.show()
 print("The std outliers is plotted and saved as 'vol_std.png'")
+
 #RMS diffrence
-rms = diag.vol_rms_diff(data)
-rms_outlier = diag.iqr_outliers(rms)[0]
+rms = outliers_utils.vol_rms_diff(data)
+rms_outlier = outliers_utils.iqr_outliers(rms)[0]
 rms_outlier_value = []
 for i in rms_outlier:
 	rms_outlier_value.append(rms[i])
-low_rms = diag.iqr_outliers(rms)[1][0]
-high_rms = diag.iqr_outliers(rms)[1][1]
+low_rms = outliers_utils.iqr_outliers(rms)[1][0]
+high_rms = outliers_utils.iqr_outliers(rms)[1][1]
 xx = np.arange(len(rms))
 plt.axis([0,140,0,25])
 rms1, = plt.plot(xx,rms,'b',label="rms values")
@@ -70,18 +79,19 @@ plt.legend(handles=[rms1, rms2, lowbound_rms,highbound_rms],loc=1)
 plt.ylabel('RMS difference')
 plt.xlabel('indices')
 plt.title('RMS difference outliers')
-plt.savefig('vol_rms_outliers.png')
+plt.savefig('results/vol_rms_outliers.png')
 plt.show()
 print("4.There are %d RMS outliers with indices %r.") %(len(rms_outlier),rms_outlier)
 print("5.The RMS difference outliers is plotted and saved as 'vol_rms_outliers.png'")
+
 #extended RMS outliers
-ext_outlier = diag.extend_diff_outliers(rms_outlier)
+ext_outlier = outliers_utils.extend_diff_outliers(rms_outlier)
 rms.append(0)
 ext_outlier_value = []
 for i in ext_outlier:
 	ext_outlier_value.append(rms[i])
-low_ext = diag.iqr_outliers(rms)[1][0]
-high_ext = diag.iqr_outliers(rms)[1][1]
+low_ext = outliers_utils.iqr_outliers(rms)[1][0]
+high_ext = outliers_utils.iqr_outliers(rms)[1][1]
 xxx = np.arange(len(rms))
 plt.axis([0,140,0,25])
 ext1, = plt.plot(xxx,rms,'b',label="rms values")
@@ -92,9 +102,9 @@ plt.legend(handles=[ext1, ext2, lowbound_ext,highbound_ext],loc=1)
 plt.ylabel('RMS difference')
 plt.xlabel('volumns')
 plt.title('Extended RMS difference outliers')
-plt.savefig('extended_vol_rms_outliers.png')
+plt.savefig('results/extended_vol_rms_outliers.png')
 plt.show()
-fobj = open('extended_vol_rms_outliers.txt', 'wt')
+fobj = open('results/extended_vol_rms_outliers.txt', 'wt')
 for i in ext_outlier:
 	fobj.write(str(i) + '\n')
 fobj.close()
@@ -102,9 +112,9 @@ print("6.There are %d RMS exteded outliers with indices %r.They are saved into '
 print("The RMS difference outliers is plotted and saved as'extended_vol_rms_outliers.png'")
 
 #drop the outliers
-rms = diag.vol_rms_diff(data)
-rms_outlier = diag.iqr_outliers(rms)[0]
-ext_outlier = diag.extend_diff_outliers(rms_outlier)
+rms = outliers_utils.vol_rms_diff(data)
+rms_outlier = outliers_utils.iqr_outliers(rms)[0]
+ext_outlier = outliers_utils.extend_diff_outliers(rms_outlier)
 mask = np.ones(data.shape[-1])
 mask[ext_outlier] = 0
 mask = np.array(mask, dtype=bool)
@@ -119,10 +129,10 @@ np.mean(data_rem) #137.08845107920848
 #get the correlation matrix w/ outliers
 TR=2.5
 n_trs = img.shape[-1]
-time_course = find_time_course('cond002.txt', 2.5, n_trs) 
+time_course = events2neural_rounded(cond_filename, 2.5, n_trs) 
 plt.plot(time_course)
 plt.title("time_course")
-plt.savefig("time_course.png")
+plt.savefig("results/time_course.png")
 plt.show()
 print("8.The time_course is plotted and saved as 'time_course.png'")
 time_course=time_course[5:]
@@ -134,7 +144,7 @@ for i in range(data.shape[0]):
             correlations[i, j, k] = np.corrcoef(time_course, vox_values)[1, 0]
 plt.imshow(correlations[:, :, 18], cmap='gray')
 plt.colorbar()
-plt.savefig("correlation_middle.png")
+plt.savefig("results/correlation_middle.png")
 plt.title("Middle slice of correlations")
 plt.show()
 print("9.The middle slice of the third axis from the correlations array w/ outliers is plotted and saved as 'correlation_middle.png'")
@@ -153,14 +163,14 @@ for i in range(data_rem.shape[0]):
             correlations_rem[i, j, k] = np.corrcoef(time_course_rem, vox_values_rem)[1, 0]
 plt.imshow(correlations_rem[:, :, 18], cmap='gray')
 plt.colorbar()
-plt.savefig("correlation_middle_no_outliers.png")
+plt.savefig("results/correlation_middle_no_outliers.png")
 plt.title("Middle slice of correlations without outliers")
 plt.show()
 print("10.The middle slice of the third axis from the correlations array without outliers is plotted and saved as 'correlation_middle_no_outliers.png'")
 
 #residual analysis w/ outliers
 
-convolved = np.loadtxt('conv_data.txt')
+convolved = np.loadtxt(conv_data_filename)
 design = np.ones((len(convolved), 2))
 design[:, 0] = convolved
 data_2d = np.reshape(data, (-1, data.shape[-1]))
@@ -171,7 +181,7 @@ n_voxels = np.prod(vol_shape)
 voxel_by_time = np.reshape(data, (n_voxels, data.shape[-1]))
 y=np.transpose(voxel_by_time)
 residuals= y-y_hat
-fobj = open('residuals.txt', 'wt')
+fobj = open('results/residuals.txt', 'wt')
 for i in residuals:
 	fobj.write(str(i) + '\n')
 fobj.close()
@@ -197,7 +207,7 @@ betas_rem = npl.pinv(design_rem).dot(data_rem_2d.T)
 y_hat_rem = design_rem.dot(betas_rem)
 residuals_rem = y_rem-y_hat_rem
 
-fobj = open('residuals_no_outliers.txt', 'wt')
+fobj = open('results/residuals_no_outliers.txt', 'wt')
 for i in residuals_rem:
     fobj.write(str(i) + '\n')
 fobj.close()

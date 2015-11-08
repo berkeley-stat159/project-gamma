@@ -1,4 +1,3 @@
-
 import numpy as np
 
 def vol_std(data):
@@ -46,8 +45,6 @@ def iqr_outliers(arr_1d, iqr_scale=1.5):
         Tuple containing 2 values (low threshold, high thresold) as described
         above.
     """
-    # Hint : np.lookfor('centile')
-    # Hint : np.lookfor('nonzero')
 
     IQR = np.percentile(arr_1d,75) - np.percentile(arr_1d,25)
     low = np.percentile(arr_1d,25)-iqr_scale*IQR
