@@ -1,5 +1,5 @@
-import project_config
 from __future__ import division
+import project_config
 import sklearn.cluster
 import numpy as np
 from itertools import product
@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 from general_utils import vol_index_iter
 
-
-def perform_kMeans_clustering_analysis(img_data, n_clusters):
+def perform_kMeans_clustering_analysis(feature_data, n_clusters):
 
   """ 
   Cluster voxel time courses into n_clusters based on euclean distances 
@@ -17,7 +16,7 @@ def perform_kMeans_clustering_analysis(img_data, n_clusters):
 
   Parameters
   ----------
-  img_data : 4D nii array
+  feature_data : dimension 1:3 is 3d volumn. The last dimension is a list of feature values.
   n_clusters : no. of clusters to segregate the time courses into.
 
   Returns
@@ -28,9 +27,9 @@ def perform_kMeans_clustering_analysis(img_data, n_clusters):
   """
 
   kMeans = sklearn.cluster.KMeans(n_clusters)
-  img_data_2d = img_data.reshape((-2,img_data.shape[-1]))
-  labels = kMeans.fit_predict(img_data_2d)
-  return labels.reshape(img_data.shape[:-1])
+  feature_data_2d = feature_data.reshape((-1,feature_data.shape[-1]))
+  labels = kMeans.fit_predict(feature_data_2d)
+  return labels.reshape(feature_data.shape[:-1])
   
 
 def imshow_clusters(labels_3d, z):
@@ -113,14 +112,14 @@ def merge_clusters(labels_a_weights, n, labels_b, k):
   for a_i, b_i in product(range(k), range(k)):
     if a_i != b_i:
       inter_cluster_similarity[(a_i, b_i)] = weighted_similarity(labels_a_weights[a_i], cluster_to_point_map_b[b_i])
-  
+
   # based on the inter-cluster-similarity matrix, decide cluster mapping, matching the most similar a-b pair of clusters first.
   cluster_map = {}
   while len(cluster_map) < k:
     a_index, b_index = np.unravel_index(np.argmax(inter_cluster_similarity), (k, k))
     cluster_map[a_index] = b_index
-    inter_cluster_similarity[a_index,:] = -1
-    inter_cluster_similarity[:, b_index] = -1
+    inter_cluster_similarity[a_index,:] = -float('inf')
+    inter_cluster_similarity[:, b_index] = -float('inf')
 
   # update weights on the primary volume
   for i, j in cluster_map.items():
