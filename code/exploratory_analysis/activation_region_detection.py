@@ -14,6 +14,7 @@ from kmeans_analysis import prepare_data, plot_all, plot_single_subject
 import general_utils
 import matplotlib.pyplot as plt
 from conv import conv_main
+from stimuli_revised import events2neural_rounded
 
 """
 Replace these variables before running the script
@@ -39,12 +40,13 @@ def prepare_cond_filenames(subject_num):
   return cond_file_1, cond_file_2, cond_file_3
 
 def correlation_map_without_convoluation(data, cond_filename):
-  n_trs = img.shape[-1]
+  n_trs = data.shape[-1]
   time_course = events2neural_rounded(cond_filename, TR, n_trs) 
   time_course=time_course[5:]
   correlations = np.zeros(data.shape[:-1])
   for i in general_utils.vol_index_iter(data.shape[:-1]):
     vox_values = data[i]
+    print [time_course.shape, vox_values.shape]
     correlations[i] = np.corrcoef(time_course, vox_values)[1, 0]
 
 s1_data_1, s1_data_2, s1_data_3 = prepare_data(subject_num_1)

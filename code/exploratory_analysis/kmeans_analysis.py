@@ -122,42 +122,42 @@ def plot_single_subject(result_labels_1, result_labels_2, result_labels_3, subje
 
   plt.show()
 
+if __name__ == "__main__": 
+  s1_data_1, s1_data_2, s1_data_3 = prepare_data(subject_num_1)
+  s2_data_1, s2_data_2, s2_data_3 = prepare_data(subject_num_2)
 
-s1_data_1, s1_data_2, s1_data_3 = prepare_data(subject_num_1)
-s2_data_1, s2_data_2, s2_data_3 = prepare_data(subject_num_2)
+  shape = s1_data_1.shape
 
-shape = s1_data_1.shape
+  s1_mean1, s1_mean2, s1_mean3 = np.mean(s1_data_1, axis=3), np.mean(s1_data_2, axis=3), np.mean(s1_data_3, axis=3)
+  s1_mean1, s1_mean2, s1_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s1_mean1, s1_mean2, s1_mean3)]
+  s2_mean1, s2_mean2, s2_mean3 = np.mean(s2_data_1, axis=3), np.mean(s2_data_2, axis=3), np.mean(s2_data_3, axis=3)
+  s2_mean1, s2_mean2, s2_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s2_mean1, s2_mean2, s2_mean3)]
 
-s1_mean1, s1_mean2, s1_mean3 = np.mean(s1_data_1, axis=3), np.mean(s1_data_2, axis=3), np.mean(s1_data_3, axis=3)
-s1_mean1, s1_mean2, s1_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s1_mean1, s1_mean2, s1_mean3)]
-s2_mean1, s2_mean2, s2_mean3 = np.mean(s2_data_1, axis=3), np.mean(s2_data_2, axis=3), np.mean(s2_data_3, axis=3)
-s2_mean1, s2_mean2, s2_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s2_mean1, s2_mean2, s2_mean3)]
+  """
+  Single subject, different tasks, means
+  """
+  s1_mean_1_result, s1_mean_2_result, s1_mean_3_result = generate_clusters_multiple(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
+  plot_single_subject(s1_mean_1_result, s1_mean_2_result, s1_mean_3_result, subject_num_1, "kmeans", "single_subject_mean")
 
-"""
-Single subject, different tasks, means
-"""
-s1_mean_1_result, s1_mean_2_result, s1_mean_3_result = generate_clusters_multiple(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
-plot_single_subject(s1_mean_1_result, s1_mean_2_result, s1_mean_3_result, subject_num_1, "kmeans", "single_subject_mean")
+  """
+  Across subjects, average of all tasks, means
+  """
+  result_labels_s1_mean = generate_clusters(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
+  result_labels_s2_mean = generate_clusters(subject_num_2, s2_mean1, s2_mean2, s2_mean3)
+  plot_all(result_labels_s1_mean, result_labels_s2_mean, subject_num_1, subject_num_2, "kmeans", "mean")
 
-"""
-Across subjects, average of all tasks, means
-"""
-result_labels_s1_mean = generate_clusters(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
-result_labels_s2_mean = generate_clusters(subject_num_2, s2_mean1, s2_mean2, s2_mean3)
-plot_all(result_labels_s1_mean, result_labels_s2_mean, subject_num_1, subject_num_2, "kmeans", "mean")
+  """
+  Single subject, different tasks, normalized full time courses
+  """
+  s1_scaled_1, s1_scaled_2, s1_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s1_data_1, s1_data_2, s1_data_3)]
+  s2_scaled_1, s2_scaled_2, s2_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s2_data_1, s2_data_2, s2_data_3)]
 
-"""
-Single subject, different tasks, normalized full time courses
-"""
-s1_scaled_1, s1_scaled_2, s1_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s1_data_1, s1_data_2, s1_data_3)]
-s2_scaled_1, s2_scaled_2, s2_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s2_data_1, s2_data_2, s2_data_3)]
+  s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result = generate_clusters_multiple(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
+  plot_single_subject(s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result, subject_num_1, "kmeans", "single_subject")
 
-s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result = generate_clusters_multiple(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
-plot_single_subject(s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result, subject_num_1, "kmeans", "single_subject")
-
-"""
-Across subjects, average of all tasks, normalized full time courses
-"""
-s1_result_labels_data = generate_clusters(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
-s2_result_labels_data = generate_clusters(subject_num_2, s2_scaled_1, s2_scaled_2, s2_scaled_3)
-plot_all(s1_result_labels_data, s2_result_labels_data, subject_num_1, subject_num_2, "kmeans", "normalized")
+  """
+  Across subjects, average of all tasks, normalized full time courses
+  """
+  s1_result_labels_data = generate_clusters(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
+  s2_result_labels_data = generate_clusters(subject_num_2, s2_scaled_1, s2_scaled_2, s2_scaled_3)
+  plot_all(s1_result_labels_data, s2_result_labels_data, subject_num_1, subject_num_2, "kmeans", "normalized")
