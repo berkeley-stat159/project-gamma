@@ -3,33 +3,37 @@
 % November 12, 2015
 
 
-# Background (~30sec)
+# Background
 
 ## The Paper (Nima)
 
 - "Working memory in healthy and schizophrenic individuals"
-- Accession number: ds000115 (from OpenFMRI.org)
-- The data is mainly functional connectivity imaging (fcMRI)
+- Accession number: ds000115 (from the OpenFMRI.org website)
+- The paper(s) used ANOVA to explore within/between network connectivity wrt working memory measures.
+- The goal was to identify regions contributing to impaired cognitive function in schizophrenics.
 
 ## The Data (Nima)
 
-- 102 subjects, consisting of healthy individuals and those with Schizophrenia, as well as their siblings
-- 2 conditions per subject???
+- The method was fcMRI, collecting activation and connectivity (resting) fMRI data.
+- 102 subjects: individuals with schizophrenia, their healthy siblings, and controls.
+- A task in which subjects identified repeating letters in an interval was administered.
+- The data includes anatomical (MRI) and functional (BOLD fMRI) with condition files.
 
 ## The Method (Nima)
 
-- The paper used linear regression (ANOVA) after transformation to Talairach space
-- The goal was to examine connectivity within four brain network regions (e.g., the default mode network)...
-
+- After appropriate preprocessing (e.g., Talairach transform), the paper(s) used ANOVA to compare groups.
+- The main comparisons examined resting connectivity between and within network regions of interest.
+- In order to assess reported analyses, we performed voxel-wise linear models (as seen in lecture).
+- Going further, we attempt to define network regions based on activity patterns with machine learning.
 
 # Initial work (~30 sec)
 
-## Exploratory Data Analysis (Slide 1) (Lynn)
+## Exploratory Data Analysis I (Lynn)
 
 - We downloaded and worked with a subset of the subjects (8 chosen from among the first 15 subjects in the dataset)
 - simple plots, summary statistics
 
-## Exploratory Data Analysis (Slide 2) (Lynn)
+## Exploratory Data Analysis II (Lynn)
 
 - fit a basic linear model using OLS on a per-voxel basis within subjects
 - used the residuals from the linear model to examine normality of the errors
@@ -71,12 +75,12 @@
 
 - problem 1: fMRI data and having an open assignment (figuring out how to use resources to develop a coherent analytic plan) Xinyue
 - problem 2: how to figure appropriate analyses and understand validity of results Liam
-- problem 3: dealing with functional connectivity in the data
+- problem 3: dealing with functional connectivity in the data (Nima)
 
 ## Success in overcoming obstacles (...)
 
 - Found out that the condition files were not ideal for our analyses (mismatch between the theoretical techniques and the messiness of provided data -- spoke to Matthew about TR issues with time alignment, and had to decide between mean/median/first unit in the timecourses)
-- What parts of the class have been the most useful? (1) assignment too open/vagueness and learning to deal with ambiguity in research, (2) collaboration with git
+- What parts of the class have been the most useful? (1) assignment too open/vagueness and learning to deal with ambiguity in research, (2) collaboration with git (Nima)
 
 ## Issues with reproducibility? (...)
 
