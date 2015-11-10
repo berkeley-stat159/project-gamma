@@ -7,19 +7,25 @@
 
 ## The Paper (Nima)
 
-- "Working memory in healthy and schizophrenic individuals"
-- Accession number: ds000115 (from OpenFMRI.org)
-- The data is mainly functional connectivity imaging (fcMRI)
+- "Working memory in healthy and schizophrenic individuals" (ds000115 from OpenFMRI.org).
+- The data is from working memory experiments using functional connectivity imaging (fcMRI).
+- Experiments investigated differences in functional connectivity between schizophrenics and healthy subjects, controll\
+ing for biological (genetic) variation by comparing to siblings.
+- (maybe another point here...)
 
 ## The Data (Nima)
 
 - 102 subjects, consisting of healthy individuals and those with Schizophrenia, as well as their siblings
-- 2 conditions per subject???
+- (...)
+- (...)
+- (...)
 
 ## The Method (Nima)
 
-- The paper used linear regression (ANOVA) after transformation to Talairach space
+- The paper used linear regression (ANOVA) after transformation of the data to Talairach space...
 - The goal was to examine connectivity within four brain network regions (e.g., the default mode network)...
+- (...)
+- (...)
 
 
 # Initial work (~30 sec)
