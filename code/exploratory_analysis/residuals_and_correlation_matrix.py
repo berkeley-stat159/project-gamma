@@ -12,8 +12,8 @@ from stimuli_revised import events2neural_rounded
 """
 Replace these variables before running the script
 """
-BOLD_file_1 = '../../../ds115_sub010-014/sub013/BOLD/task001_run001/bold.nii.gz'
-cond_filename = "../../../ds115_sub010-014/sub013/model/model001/onsets/task001_run001/cond002.txt"
+BOLD_file_1 = '/Users/Lynn/Desktop/STAT259/project/ds115_sub010-014/sub010/BOLD/task001_run001/bold.nii.gz'
+cond_filename = "/Users/Lynn/Desktop/STAT259/project/ds115_sub010-014/sub010/model/model001/onsets/task001_run001/cond002.txt"
 conv_data_filename = 'results/conv_data.txt'
 
 
@@ -193,7 +193,7 @@ len(p_nor)
 #for p<0.05, the voxel is not normal distributed
 p_nor_005 = [i for i in p_nor if i < 0.05]
 len(p_nor_005)
-print("12.Before removing the outliers, there are 87693 voxels out of 147456 are not normally distributed")
+print("12.Before removing the outliers, there are %d voxels out of %d are not normally distributed." % (len(p_nor_005),len(p_nor)))
 
 #residual analysis w/o outliers
 design_rem = np.delete(design,ext_outlier,axis=0)
@@ -219,7 +219,71 @@ len(p_nor_rem)
 #for p<0.05, the voxel is not normal distributed
 p_nor_rem005 = [i for i in p_nor_rem if i < 0.05]
 len(p_nor_rem005)
-print("14.After removing the outliers, there are 84803 voxels out of 147456 are not normally distributed")
+print("14.After removing the outliers, there are %d voxels out of %d are not normally distributed." %(len(p_nor_rem005),len(p_nor_rem)))
+
+
+#Since we are dealing with multiple comparison problems, here, we apply Bonferroni and Hochberg procedures to 
+#adjust our false discovery rate (at level alpha).
+
+
+"""
+Bonferroni procedure:
+reject the null if p < alpha/n where n is the sample size
+"""
+#with outliers 
+p_bonf = [i for i in p_nor if i < 0.05/data.shape[-1]]
+print("15.With Bonferroni correction, there are %d voxels out of %d are not normally distributed." % (len(p_bonf),len(p_nor)))
+
+#without outliers
+p_bonf_rem = [i for i in p_nor_rem if i < 0.05/data.shape[-1]]
+print("16.With Bonferroni correction and outliers removed, there are %d voxels out of %d are not normally distributed." % (len(p_bonf_rem),len(p_nor_rem)))
+
+
+"""
+Hochberg's set up:
+1. Order the p-values P(1),P(2),...,P(n) and their associated hypothesis H(1),...,H(n)
+2. Reject all hypotheses H(k) having P(k) <= alpha/(n+1-k) where k=1,...,n
+
+"""
+# with outliers
+p_nors = np.sort(p_nor)
+alpha = 0.05
+n=len(p_nors)
+tf=[]
+for i in range(0,len(p_nors)):
+    thres = alpha/(n+1-(i+1))
+    tf.append(p_nors[i]<=thres)
+print("17.With Hochberg's procedure, there are %d voxels out of %d are not normally distributed." %(sum(tf),len(p_nors)))
+
+# without outliers
+p_nors_rem = np.sort(p_nor_rem)
+alpha = 0.05
+n=len(p_nors_rem)
+tf=[]
+for i in range(0,len(p_nors_rem)):
+    thres = alpha/(n+1-(i+1))
+    tf.append(p_nors_rem[i]<=thres)
+print("17.With Hochberg's procedure and outliers removed, there are %d voxels out of %d are not normally distributed." %(sum(tf),len(p_nors_rem)))
+
+""""
+Benjamini-Hochberg procedure:
+1. Order the p-values P(1),P(2),...,P(n) and their associated hypothesis H(1),...,H(n)
+2. Reject all hypotheses H(k) having P(k) <= (k/n)*alpha where k=1,...,n
+
+"""
+#with outliers
+tf=[]
+for i in range(0,len(p_nors)):
+    thres = (i/n)*alpha
+    tf.append(p_nors[i]<=thres)
+print("18.With Benjamini-Hochberg's procedure, there are %d voxels out of %d are not normally distributed." %(sum(tf),len(p_nors)))
+
+#without outliers
+tf=[]
+for i in range(0,len(p_nors_rem)):
+    thres = (i/n)*alpha
+    tf.append(p_nors_rem[i]<=thres)
+print("19.With Benjamini-Hochberg's procedure and outliers removed, there are %d voxels out of %d are not normally distributed." %(sum(tf),len(p_nors_rem)))
 
 
 
