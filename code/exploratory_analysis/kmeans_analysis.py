@@ -3,7 +3,9 @@ import kmeans
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import scale
+from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 """
 Replace these variables before running the script
@@ -122,6 +124,94 @@ def plot_single_subject(result_labels_1, result_labels_2, result_labels_3, subje
 
   plt.show()
 
+def plot_first_pcs_removed(data):
+  
+  data_2d = data.reshape((-1,data.shape[-1]))  
+  pca = PCA(n_components=3)
+  result = pca.fit(data_2d).transform(data_2d)
+  result_comp_0 = result[...,0].reshape(data.shape[0:-1])
+  result_comp_1 = result[...,1].reshape(data.shape[0:-1])
+  result_comp_2 = result[...,2].reshape(data.shape[0:-1])
+  
+  fig = plt.figure()
+
+  ax1 = fig.add_subplot(331)
+  ax1.set_title("z=15, PCs_removed=1")
+  ax1.imshow(result_comp_0[...,15])
+  ax2 = fig.add_subplot(332)
+  ax2.set_title("z=15, PCs_removed=2")
+  ax2.imshow(result_comp_1[...,15])
+  ax3 = fig.add_subplot(333)
+  ax3.set_title("z=15, PCs_removed=3")
+  ax3.imshow(result_comp_2[...,15])
+
+  ax4 = fig.add_subplot(334)
+  ax4.set_title("z=20, PCs_removed=1")
+  ax4.imshow(result_comp_0[...,20])
+  ax5 = fig.add_subplot(335)
+  ax5.set_title("z=20, PCs_removed=2")
+  ax5.imshow(result_comp_1[...,20])
+  ax6 = fig.add_subplot(336)
+  ax6.set_title("z=20, PCs_removed=3")
+  ax6.imshow(result_comp_2[...,20])
+
+  ax7 = fig.add_subplot(337)
+  ax7.set_title("z=25, PCs_removed=1")
+  ax7.imshow(result_comp_0[...,25])
+  ax8 = fig.add_subplot(338)
+  ax8.set_title("z=25, PCs_removed=2")
+  ax8.imshow(result_comp_1[...,25])
+  ax9 = fig.add_subplot(339)
+  ax9.set_title("z=25, PCs_removed=3")
+  ax9.imshow(result_comp_2[...,25])
+
+  plt.tight_layout()
+
+  plt.savefig(output_filename + "first_pcs_removed.pdf", format='pdf', dpi=1000)
+
+  plt.show()
+
+
+def plot_single_subject_across_methods(result_labels_1, result_labels_2, result_labels_3):
+  fig = plt.figure()
+
+  ax1 = fig.add_subplot(331)
+  ax1.set_title("z = 15, mean")
+  ax1.imshow(result_labels_1[...,15])
+  ax2 = fig.add_subplot(332)
+  ax2.set_title("z = 15, scaled")
+  ax2.imshow(result_labels_2[...,15])
+  ax3 = fig.add_subplot(333)
+  ax3.set_title("z = 15, raw")
+  ax3.imshow(result_labels_3[...,15])
+
+  ax4 = fig.add_subplot(334)
+  ax4.set_title("z = 20, mean")
+  ax4.imshow(result_labels_1[...,20])
+  ax5 = fig.add_subplot(335)
+  ax5.set_title("z = 20, scaled")
+  ax5.imshow(result_labels_2[...,20])
+  ax6 = fig.add_subplot(336)
+  ax6.set_title("z = 20, raw")
+  ax6.imshow(result_labels_3[...,20])
+
+  ax7 = fig.add_subplot(337)
+  ax7.set_title("z = 25, mean")
+  ax7.imshow(result_labels_1[...,25])
+  ax8 = fig.add_subplot(338)
+  ax8.set_title("z = 25, scaled")
+  ax8.imshow(result_labels_2[...,25])
+  ax9 = fig.add_subplot(339)
+  ax9.set_title("z = 25, raw")
+  ax9.imshow(result_labels_3[...,25])
+
+  plt.tight_layout()
+
+  plt.savefig(output_filename + "subject_across_methods.pdf", format='pdf', dpi=1000)
+
+  plt.show()
+
+
 if __name__ == "__main__": 
   s1_data_1, s1_data_2, s1_data_3 = prepare_data(subject_num_1)
   s2_data_1, s2_data_2, s2_data_3 = prepare_data(subject_num_2)
@@ -147,17 +237,20 @@ if __name__ == "__main__":
   plot_all(result_labels_s1_mean, result_labels_s2_mean, subject_num_1, subject_num_2, "kmeans", "mean")
 
   """
-  Single subject, different tasks, normalized full time courses
+  Single subject, different tasks, scaled full time courses
   """
-  s1_scaled_1, s1_scaled_2, s1_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s1_data_1, s1_data_2, s1_data_3)]
-  s2_scaled_1, s2_scaled_2, s2_scaled_3 = [normalize(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s2_data_1, s2_data_2, s2_data_3)]
+  s1_scaled_1, s1_scaled_2, s1_scaled_3 = [scale(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s1_data_1, s1_data_2, s1_data_3)]
+  s2_scaled_1, s2_scaled_2, s2_scaled_3 = [scale(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s2_data_1, s2_data_2, s2_data_3)]
 
   s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result = generate_clusters_multiple(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
   plot_single_subject(s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result, subject_num_1, "kmeans", "single_subject")
 
   """
-  Across subjects, average of all tasks, normalized full time courses
+  Across subjects, average of all tasks, scaled full time courses
   """
   s1_result_labels_data = generate_clusters(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
   s2_result_labels_data = generate_clusters(subject_num_2, s2_scaled_1, s2_scaled_2, s2_scaled_3)
-  plot_all(s1_result_labels_data, s2_result_labels_data, subject_num_1, subject_num_2, "kmeans", "normalized")
+  plot_all(s1_result_labels_data, s2_result_labels_data, subject_num_1, subject_num_2, "kmeans", "scaled")
+
+  # Single subject, comparisons across different feature sets
+  plot_single_subject_across_methods(result_labels_s1_mean, s1_scaled_1_result, s1_result_labels_data)
