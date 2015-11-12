@@ -72,7 +72,7 @@
 
 ## Future
 
-- Extend and fine-tune K-Means to focus on functional aspect of the data
+- Extend and fine-tune K-Means to focus on functional aspects of the data
     (1) Improve features by inspecting and removing first principle components
     (2) Improve features by 
         i. fitting them to a linear models (e.g. with a drift term in the design matrix) 
