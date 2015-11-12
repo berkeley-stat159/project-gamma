@@ -55,7 +55,6 @@
 - Simple linear regression on a per-voxel basis within subjects
 - Check the validation of linear model
 - K-Means
-- Anova
 
 
 ## Unsupervised Learning with K-Means (Liam)
