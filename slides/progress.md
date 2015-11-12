@@ -45,18 +45,18 @@
 
 ## Pre-processing and Validation (Xinyue)
 
-- dropped the first 5 volumes
-- for some methods we normalized the data
-- on/off times, sometimes we dropped the off times
+- dropped the first 5 volumes (compensate for slice dependent time shift)
+- for some methods we normalized the data (when and where? kmeans: to reduce noise when we apply kmeans method)
 - Since convolved neural prediction has a unit of 0.1 second while TR has a unit of 2.5 seconds, our strategy picks the median of the span of neural prediction values that correspond to a TR.
 - Read on-off neural prediction from condition file in FILENAME, convolve the neural prediction with a predefined HRF function.
 
 ## Statistical Analysis (Xinyue)
+- Identify activation regions 
+- Simple linear regression on a per-voxel basis within subjects
+- Check the validation of linear model
+- K-Means
+- Anova
 
-- fit a basic linear model using OLS on a per-voxel basis within subjects
-- used the residuals from the linear model to examine normality of the errors
-- tried to find activation regions using the time-coruse (without convolution)
-- used convolved neural prediction values as a baseline function, we attempted to visualize the activation regions based on the correlation coefficients...
 
 ## Unsupervised Learning with K-Means (Liam)
 
