@@ -68,7 +68,7 @@
     (3) normalized BOLD over timecourse
 
 ## K-Means Results and Diagnosis
-![Comparison across feature sets for the same subject](./subject_across_methods.pdf)
+![Comparison across feature sets for the same subject](https://s3-us-west-2.amazonaws.com/stat159datascience/subject_across_methods.pdf)
 
 ## Future
 
@@ -77,10 +77,11 @@
     (2) Improve features by 
         i. fitting them to a linear models (e.g. with a drift term in the design matrix) 
         ii. taking the residuals
+- Explore 
 
 
 ## Future
-![An example: residuals after removing the first two PCs](./first_pcs_removed.pdf)
+![An example: residuals after removing the first two PCs](https://s3-us-west-2.amazonaws.com/stat159datascience/first_pcs_removed.pdf)
 
 # Process (~1 min)
 
