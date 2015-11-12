@@ -28,18 +28,17 @@
 
 # Initial work
 
-## Scope of the analysis (Lynn)
+## Scope of the analysis
 
+- Work on single subject
 - Work on 8 subjects:
 	(1) Subject 01 & 02 : SCZ, SCZ-SIB
 	(2) Subject 04 & 05 : SCZ, SCZ-SIB
 	(3) Subject 10 & 11 : CON-SIB, CON
 	(4) Subject 12 & 13:  CON, CON-SIB
-	(correlation plots)
 
 ## Pre-processing
 
-- Use the entire data sets of 102 subjects
 - Preprocessing steps: 
     (1) Drop first five
     (2) Remove RMS outliers
@@ -51,6 +50,9 @@
     (1) visualzing correlations between the voxel time course and neural prediction per voxel
     (2) obtaining clusters from K-Means
 - Validate linear model assumption by normality testing of residuals
+
+## Correlations between the voxel time course and neural prediction per voxel
+![Subject 4, 5, 10 & 11](./correlation.jpg)
 
 ## Unsupervised Learning with K-Means
 
@@ -83,5 +85,5 @@
 ## What has been the hardest part?
 
 - Dealing with 
-    (1) Ambiguity of research: be resourceful and develop a coherent analytic plan
-    (2) Imperfect data: found out that the durations in condition files do not align with TRs in BOLD data
+    (1) Imperfect data: found out that the durations in condition files do not align with TRs in BOLD data
+    (2) Ambiguity of research: be resourceful and develop a coherent analytic plan
