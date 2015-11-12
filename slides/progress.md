@@ -30,25 +30,26 @@
 
 ## Exploratory Data Analysis I (Lynn)
 
-- We downloaded and worked with a subset of the subjects (8 chosen from among the first 15 subjects in the dataset)
-- simple plots, summary statistics
+- On one subject (Sub011-- Control)
+- Load the data --> remove the first five --> remove the RMS outliers
+- Correlations between the voxel time course and neural prediction for all voxels
+- Residuals analysis to evaluate the basic linear model 
 
 ## Exploratory Data Analysis II (Lynn)
 
-- fit a basic linear model using OLS on a per-voxel basis within subjects
-- used the residuals from the linear model to examine normality of the errors
-- tried to find activation regions using the time-coruse (without convolution)
-- multiple testing...
-
+- Work on 8 subjects:
+	(1) Subject 01 & 02 : SCZ, SCZ-SIB
+	(2) Subject 04 & 05 : SCZ, SCZ-SIB
+	(3) Subject 10 & 11 : CON-SIB, CON
+	(4) Subject 12 & 13:  CON, CON-SIB
+	(correlation plots)
 
 # Next steps (~3 min)
 
-## Pre-processing and Validation (Xinyue)
+## Pre-processing and Validation (Lynn & Xinyue)
 
-- dropped the first 5 volumes (compensate for slice dependent time shift)
-- for some methods we normalized the data (when and where? kmeans: to reduce noise when we apply kmeans method)
-- Since convolved neural prediction has a unit of 0.1 second while TR has a unit of 2.5 seconds, our strategy picks the median of the span of neural prediction values that correspond to a TR.
-- Read on-off neural prediction from condition file in FILENAME, convolve the neural prediction with a predefined HRF function.
+- Use the entire data sets of 102 subjects
+- Preprocessing: drop first five, remove outliers and normalized the data. 
 
 ## Statistical Analysis (Xinyue)
 - Identify activation regions 
@@ -76,8 +77,7 @@
     (2) Improve features by 
         i. fitting them to a linear models (e.g. with a drift term in the design matrix) 
         ii. taking the residuals
-- Explore 
-
+- Research other machine learning techniques to further explore activation regions
 
 ## Future
 ![An example: residuals after removing the first two PCs](https://s3-us-west-2.amazonaws.com/stat159datascience/first_pcs_removed.pdf)
