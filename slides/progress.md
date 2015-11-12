@@ -51,11 +51,12 @@
 - Read on-off neural prediction from condition file in FILENAME, convolve the neural prediction with a predefined HRF function.
 
 ## Statistical Analysis (Xinyue)
+- Identify activation regions 
+- Simple linear regression on a per-voxel basis within subjects
+- Check the validation of linear model
+- K-Means
+- Anova
 
-- fit a basic linear model using OLS on a per-voxel basis within subjects (no)
-- used the residuals from the linear model to examine normality of the errors(Shapiro-Wilk is used for checking normality)
-- tried to find activation regions using the time-coruse (without convolution)
-- used convolved neural prediction values as a baseline function, we attempted to visualize the activation regions based on the correlation coefficients...
 
 ## Unsupervised Learning with K-Means (Liam)
 
