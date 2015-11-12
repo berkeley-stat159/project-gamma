@@ -60,14 +60,28 @@
 
 ## Unsupervised Learning with K-Means (Liam)
 
-- used K-means by clustering voxels (in groups of 5) with different features
-- features used: (1) mean BOLD over timecouse per voxel, (2) BOLD over timecourse per voxel, (3) normalized BOLD over timecourse per voxel
-- pictures...
+- Use K-means to cluster voxels into 5 groups with different feature set.
+- Combine multiple clustering results via a voting algorithm.
+- Features used per voxel: 
+    (1) mean BOLD measurements over timecouse
+    (2) BOLD over timecourse
+    (3) normalized BOLD over timecourse
 
-## Future (Liam)
+## K-Means Results and Diagnosis
+![Comparison across feature sets for the same subject](https://s3-us-west-2.amazonaws.com/stat159datascience/subject_across_methods.pdf)
 
-- stuff we want to do
+## Future
 
+- Extend and fine-tune K-Means to focus on functional aspect of the data
+    (1) Improve features by inspecting and removing first principle components
+    (2) Improve features by 
+        i. fitting them to a linear models (e.g. with a drift term in the design matrix) 
+        ii. taking the residuals
+- Explore 
+
+
+## Future
+![An example: residuals after removing the first two PCs](https://s3-us-west-2.amazonaws.com/stat159datascience/first_pcs_removed.pdf)
 
 # Process (~1 min)
 
