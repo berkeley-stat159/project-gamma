@@ -78,8 +78,7 @@
     (2) Improve features by 
         i. fitting them to a linear models (e.g. with a drift term in the design matrix) 
         ii. taking the residuals
-- Explore 
-
+- Research other machine learning techniques to further explore activation regions
 
 ## Future
 ![An example: residuals after removing the first two PCs](https://s3-us-west-2.amazonaws.com/stat159datascience/first_pcs_removed.pdf)
