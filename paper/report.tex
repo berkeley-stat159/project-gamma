@@ -115,6 +115,7 @@ waveforms: (1) square wave using on-off neural prediction from condition file
 (SW method), and (2) a convolved function on neural predictions and a gamma
 haemodynamic response function (HRF) (CF method). 
 
+\centering
 \includegraphics[width=16cm, height=8cm]{r_values_histogram.jpg}
 
 Here, we want to compare the two types of analysis and decide on the better way
@@ -131,7 +132,8 @@ activeness while the CR method gives more reasonable and detailed
 results.Therefore, we will use the convolved reference waveform for detecting
 the task-dependent voxels in our future analysis.
 
-\includegraphics[width=16cm, height=8cm]{correlations.jpg}
+\centering
+\includegraphics[width=12cm, height=12cm]{compare_correlations.png}
 
 
 \subsection{Clustering with k-means}
@@ -156,7 +158,8 @@ used a naive set of non-functional clusters (i.e. the other two or future
 methods should deviate from this to reveal functional clusters). A comparison of
 results across the three input feature sets is shown.
 
-\includegraphics[width=16cm, height=16cm]{subject_across_methods.jpg}
+\centering
+\includegraphics[width=12cm, height=12cm]{subject_across_methods.jpg}
 
 Overall, basic and anatomical rather than functional clusters are revealed. For
 example, the cerebral cortex is clustered together as well as the distinct
@@ -233,7 +236,8 @@ this case, the aim is not to have a model to fit the data as best as possible
 but to make use of the residuals in subsequent classification algorithms.
 
 %\begin{figure}
-\includegraphics[width=16cm, height=16cm]{first_pcs_removed.jpg}
+\centering
+\includegraphics[width=12cm, height=12cm]{first_pcs_removed.jpg}
 %\caption{An example of removing first principal components to reduce noise in the data}
 %\end{figure}
 
