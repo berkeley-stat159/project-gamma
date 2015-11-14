@@ -26,24 +26,6 @@
 - In order to assess reported analyses, we performed voxel-wise linear models (as seen in lecture).
 - Going further, we attempt to define network regions based on activity patterns with machine learning.
 
-# Initial work
-
-## Scope of the analysis
-
-- Work on single subject
-- Work on 8 subjects:
-	(1) Subject 01 & 02 : SCZ, SCZ-SIB
-	(2) Subject 04 & 05 : SCZ, SCZ-SIB
-	(3) Subject 10 & 11 : CON-SIB, CON
-	(4) Subject 12 & 13:  CON, CON-SIB
-
-## Pre-processing
-
-- Preprocessing steps: 
-    (1) Drop first five
-    (2) Remove RMS outliers
-    (3) Normalize the data 
-
 ## Statistical Analysis and Validation
 
 - Identify activation regions by
@@ -83,7 +65,3 @@
 # Process
 
 ## What has been the hardest part?
-
-- Dealing with 
-    (1) Imperfect data: found out that the durations in condition files do not align with TRs in BOLD data
-    (2) Ambiguity of research: be resourceful and develop a coherent analytic plan
