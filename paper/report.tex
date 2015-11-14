@@ -14,7 +14,7 @@
   \texttt{LiamFengLin}
   \and
   Zhao, Luyun\\
-  \texttt{lynnzhao}
+  \texttt{lynnzhao92}
   \and
   Zhou, Xinyue\\
   \texttt{z357412526}
@@ -37,8 +37,8 @@ to gain further insights into the fMRI data examined.}
 The human central nervous system is a complex dynamic network, consisting of
 numerous functional regions that coordinate everything from simple behaviors to
 complicated thoughts. In an effort to better understand the manner in which
-functional changes contribute to the symptoms of schizophrenia, Repovs et
-al. conducted neuroimaging studies, including both functional connectivity
+functional changes contribute to the symptoms of schizophrenia, Repovs \textit{et
+al.} conducted neuroimaging studies, including both functional connectivity
 magnetic resonance imaging (fcMRI) and diffusion tensor imaging (DTI), on many
 subjects, with their goal being to characterize the activity of several brain
 regions chosen a priori, and to develop an understanding of how the functional 
@@ -59,7 +59,7 @@ are listed with accession number ds000115. The data is available for groups of
 subjects, with each subject-specific data directory containing anatomical MR
 imaging data, functional MR imaging (using the BOLD contrast) data, and
 diffusion tensor imaging (DTI) data. In this preliminary report, the analyses
-are restricted to the BOLD functional MR imaging data, for eight subjects among
+are restricted to the BOLD functional MR imaging data, for 8 subjects among
 the pool of 102 subjects for which data are available, with most analyses
 (ranging from linear modeling to machine learning with K-Means) taking the form
 of exploratory examinations into the structure of this imaging data.
@@ -69,7 +69,7 @@ of exploratory examinations into the structure of this imaging data.
 Literature notes that different regions of the brain exhibit different levels
 and patterns of activities during performance of cognitive tasks
 \cite{fox2005}. Some regions are associated with marked increase in
-activities and some with decrease in activities. They are often given a priori
+activities and some with decrease in activities. They are often given \textit{a priori}
 in papers. One of the goals of our analysis is to identify activation regions
 during the performance of n-back tasks using unsupervised learning methods
 (e.g., K-Means), comparing the regions isolated in this manner with those
@@ -81,21 +81,21 @@ validity of the results.
 
 \section{Results}
 
-\subsection{Data fetching and pre-processing}
+\subsection{Data Fetching and Preprocessing}
 
-For all BOLD datasets, we removed the first five images to allow measurements to
+For all BOLD datasets, we removed the first five images to allow signals to
 achieve steady state. In addition, we prepared scripts to detect the root mean
-square (RMS) difference outliers using the inter-quartile range (IQR) to define
+square (RMS) difference outliers using the Inter-Quartile Range (IQR) to define
 outliers. This is because they could imply a sudden widespread shift in signals
 caused by hardware issues. We have run all the analysis with the outliers
 removed so far, but will run a portion of the analysis with the outliers in the
 future and discuss the impact of excluding outliers. 
 
 Some preprocessing tasks are analysis-specific. As will be discussed in a later
-section, we scaled BOLD measurements per time step to use them as one of the
+section, we scaled BOLD signals per time step to use them as one of the
 feature sets for k-means clustering. 
 
-\subsection{Correlations with baseline functions}
+\subsection{Correlations with Baseline Functions}
 
 This set of methods aim to produce an image identifying the regions which show
 significant signal change in response to the task by calculating correlation
@@ -107,7 +107,7 @@ activated by the task.
 For a bold signal X, and a reference waveform Y, the correlation coefficient is
 calculated as 
 \begin{equation}
-r = \frac{\Sigma  ( X-\bar{X}) ( Y-\bar{Y})}{\sqrt{ \Sigma ( X-\bar{X} ) ^2 \Sigma ( Y-\bar{Y})  ^2 }}
+r = \frac{\Sigma_{i=1}^{n}  ( X-\bar{X}) ( Y-\bar{Y})}{\sqrt{ \Sigma_{i=1}^{n} ( X-\bar{X} ) ^2 \Sigma_{i=1}^{n} ( Y-\bar{Y})  ^2 }}
 \end{equation}
 
 The two methods we are testing here are differentiated by two types of reference
@@ -115,28 +115,29 @@ waveforms: (1) square wave using on-off neural prediction from condition file
 (SW method), and (2) a convolved function on neural predictions and a gamma
 haemodynamic response function (HRF) (CF method). 
 
-\centering
+\begin{center}
 \includegraphics[width=16cm, height=8cm]{r_values_histogram.jpg}
+\end{center}
 
 Here, we want to compare the two types of analysis and decide on the better way
 to find the activation regions. After calculating the correlations using both
-square wave time course (SW method) and the convolved reference time course (CR
-method) , we plot the histogram of r-values and get an idea about the range and
-the distribution of the correlation. Gathering that information, we decided on
+square wave time course (SW method) and the convolved reference time course (CF
+method) , we plot the histogram of r-values to understand the range and
+the distribution of the correlation. With that information, we decided on
 the threshold 0.20 to say whether a voxel is active or not active. We plot the
-voxels which correlates to the reference waveform with r > 0.20 in red, so that
-we can visually examine the activeness of the voxels in the brain. By comparing
-the active regions under square wave time course (left) and convolved time
+voxels which correlate to the reference waveform with $r > 0.20$ in red, so that
+we can visually examine the activation level of the voxels in the brain. By comparing
+the activated regions under square wave time course (left) and convolved time
 course (right), we can clearly see that it is hard for SW method to detect the
-activeness while the CR method gives more reasonable and detailed
+activation while the CR method gives more reasonable and detailed
 results.Therefore, we will use the convolved reference waveform for detecting
 the task-dependent voxels in our future analysis.
 
-\centering
+\begin{center}
 \includegraphics[width=12cm, height=12cm]{compare_correlations.png}
+\end{center}
 
-
-\subsection{Clustering with k-means}
+\subsection{Clustering with K-Means}
 
 K-means clustering is an unsupervised technique which aims to partition n
 observations into k clusters based on a feature set of n features. Each
@@ -158,8 +159,9 @@ used a naive set of non-functional clusters (i.e. the other two or future
 methods should deviate from this to reveal functional clusters). A comparison of
 results across the three input feature sets is shown.
 
-\centering
+\begin{center}
 \includegraphics[width=12cm, height=12cm]{subject_across_methods.jpg}
+\end{center}
 
 Overall, basic and anatomical rather than functional clusters are revealed. For
 example, the cerebral cortex is clustered together as well as the distinct
@@ -193,36 +195,34 @@ the data tested are not from a normally distributed population.
 
 Notice that we cannot naively compare all of these p-values individually with
 $\alpha$, our type I error. Otherwise, our integrated type I error of test is
-$alpha^N$, vanishing as $N \rightarrow \infty$, which is too strict to check
-multiple normality. Take the 11th subject as the example, if just compare
+$\alpha^N$, vanishing as $N \rightarrow \infty$, which is too strict to check
+multiple normality. Take the 11th subject as the example, if we just compare
 p-values per voxel and $\alpha$ = 0.05, more than half of the test
 ($\frac{94397}{147456} =0.64$) will be rejected.
 
 We have adopted several methods to handle this multiple comparison problem. 1)
 Bonferroni procedure, in which reject the null if $p< \alpha/n$, where n is the
 sample size. 2) Hochbergâ€™s setup, in which order the p-values $p_1,\dots,p_n$ is
-associate with corresponding hypothesis $H(1), \dots, H(n)$.Reject all
-hypotheses $H(k) $having $p(k)\leq \alpha/(n+1-k)$, where $ k=1,2,\dots,n$. 3)
+associate with corresponding hypothesis $H(1), \dots, H(n)$. Reject all
+hypotheses $H(k) $ having $p(k)\leq \alpha/(n+1-k)$, where $ k=1,2,\dots,n$. 3)
 Benjamini-Hochberg procedure, in which Order the p-values $P(1),P(2),\dots,P(n)$
 and their associated hypothesis $H(1),\dots,H(n)$. Reject all hypotheses H(k)
 having $P(k) \leq (k/n)\times \alpha $ ($k=1,\dots ,n$).
 
 To be consistent with previous example, these three methods are also implemented
-on the MRI data of 11th subject: (1) with Bonferroni correction and outliers
+on the fMRI data of 11th subject: (1) with Bonferroni correction and outliers
 removed, there are 32896 voxels out of 147456 are not normally distributed; (2)
 with Hochberg's procedure and outliers removed, there are 4843 voxels out of
-147456 are not normally distributed; (3) with Benjamini-Hochberg's procedure and
-outliers removed, there are 0 voxels out of 147456 are not normally distributed.
-
+147456 that are not normally distributed; (3) with Benjamini-Hochberg's procedure and
+outliers removed, there are 0 voxels out of 147456 that are not normally distributed.
 
 \section{Discussion}
 
-\subsection{analysis that will be performed}
+\subsection{Future Analysis}
 
-Extending and finetuning K-Means: We will continue working towards our goal of
+\textbf{Extending and finetuning k-means}: We will continue working towards our goal of
 revealing functional clustering of the brain. This can be done by:
- 
-Improving the input features by inspecting and removing first principal
+ Improving the input features by inspecting and removing first principal
 components of the datasets. This need to be done with care by visually
 inspecting the principal components and consulting literature on the types and
 characteristics of noise. One criterion of noise can be that the fluctuation has
@@ -235,67 +235,37 @@ residuals. This is the opposite of linear modelling to fit the data since in
 this case, the aim is not to have a model to fit the data as best as possible
 but to make use of the residuals in subsequent classification algorithms.
 
-%\begin{figure}
-\centering
+\begin{center}
 \includegraphics[width=12cm, height=12cm]{first_pcs_removed.jpg}
-%\caption{An example of removing first principal components to reduce noise in the data}
-%\end{figure}
+\end{center}
 
-Improving other analyses: applying the same methods of noise reduction in
+\textbf{Improving other analyses}: applying the same methods of noise reduction in
 K-means in other analyses, 
 such as correlations to refine the results and possibly make comparisons with
 K-means. This is because both types of analysis serve to discover activation
 regions. 
 
-Scaling analyses to make comparisons across different subject groups: at this
+\textbf{Scaling analyses to make comparisons across different subject groups}: at this
 stage, we focused on developing the scripts to analyze and make comparisons
 within single subjects. From now on, we will apply the analyses across subject
 groups in order to draw conclusions on differences in healthy and schizophrenia
 subjects. To achieve this, some averaging techniques are necessary for
 cross-group comparison. One example already mentioned is the merging algorithm
-for K-means clustering. Research other machine learning techniques to further
-explore activation regions.
+for K-means clustering. 
 
-Since one of our goals is to demonstrate activation regions revealed by the
+\textbf{Research other machine learning techniques to further
+explore activation regions}: a greater variety of methods will allow us to reveal different insights about the data and make comparisons richer, giving us the freedom to explore and discuss the merits of different machine learning algorithms with respect to fMRI. 
+
+\textbf{Talairach Space Transformation}: since one of our goals is to demonstrate activation regions revealed by the
 datasets and compare those provided in the literature, we need to transform
 coordinates to and back from Talairach space since most coordinates in
 literature are provided in that space.
 
-\subsection{discussion about the data}
+\subsection{Lessons Learned}
 
-The dataset we use for our analysis is multi-layered and ambiguous in some
-sense. In our dataset, there are 3 tasks runs for each subject as well as 7
-condition files explained the scan timeline for each run. At the first glance,
-it is hard to see which one is useful and should be analyzed, and it is only
-after deep investigation and wide research about the format of the data that we
-can start the accessing the real data we need. 
+The dataset we use for our analysis is multi-layered and ambiguous in some sense. In our dataset, there are 3 runs for each subject as well as 7 condition files explaining the scan timeline for each run. In our analysis, the condition record we used has fractional seconds for scan duration (0.769951s), a very small proportion of the TR. In the example analysis seen in class, the durations we dealt with were always a multiple of the TR (2.5s). In this case, if we use the same TR as the scale, we would have to divide 0.769951 by 2.5 (around 0.30798) to fit the scale, the resulting convolution will deviate from the real scenario, causing bias. Therefore, we adopted the following strategy to tackle this problem: (1) rescaling data, converting from 2.5s to 0.1s as the unit; (2) in each 2.5s interval, choosing the median value to represent convolved data in that time interval; (3) convolving the data using the standard approach. This generates the convolved function we used in the analysis of correlations. 
 
-In our analysis, the condition record we used has fraction seconds for scan
-duration (0.769951s), a very small proportion of TR. In the previous analysis,
-the duration we dealt with are always a multiple of TR (2.5s), in which
-reasonably chose TR as the unit. While in our case, if we still stick to use
-TR=2.5s as the scale, meaning we have to divide 0.769951 by 2.5 (around 0.30798)
-to fit the scale, the resulted convolution will be far deviated from the real
-scenario which will be reflected as huge errors in the future
-analysis. Therefore, we adopted the following strategy to tackle this problem:
-1) rescale data, converting from 2.5s to 0.1s as the unit; 2) in each 2.5s
-interval, we chose the median value to represent convolved data in that time
-interval; 3) convolve the data in the standard approach. This gives the
-convolved function that we used in the analysis of correlation. 
-
-Further, the analysis done in the paper  â€œBrain Network Connectivity in
-Individuals with Schizophrenia and their Siblingsâ€ is based on the Resting State
-dataset, and they investigate the connectivity of the regions in the brain for
-patients and healthy controls. We tried to reproduce their result using the
-data, however, we encounter the problem of separating the resting state data
-from the entire time set since it involves complicated techniques that way
-beyond our ability. Consequently, it is important for us to find another
-potential, executable topic given the current dataset and develop a coherent
-rigorous statistical analysis.
-
-Above all, we are dealing with the real world imperfect data and we need to
-effectively exploit the data we currently have and be open minded to all the
-interesting issues arose from the data which may be investigated in the future.
+Furthermore, the analysis done in the paper by Repovs \textit{et al.}€ is based on the Resting State dataset, in which they investigate the connectivity of the regions in the brain for patients and healthy controls \cite{repovs2012}. We tried to reproduce their result using the data; however, we encountered the problem of separating the resting state data from the rest of the BOLD signals. Consequently, it is important for us to find another potential, executable topic given the current dataset and develop a coherent rigorous statistical analysis.
 
 \bibliography{report}
 
