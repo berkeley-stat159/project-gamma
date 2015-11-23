@@ -3,17 +3,13 @@ import kmeans
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
-from nilearn import image
 from pca_utils import first_pcs_removed
-from general_utils import prepare_data, prepare_cond_filenames, prepare_images, index_iter_2d, prepare_data_single, prepare_mask
-from correlation import correlation_map, correlation_map_without_convoluation, correlation_map_linear, correlation_map_without_convoluation_linear
-from sklearn.preprocessing import scale
+from general_utils import prepare_data_single, prepare_mask
 from sklearn.decomposition import PCA
 
 
 def generate_clusters(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters = 5):
 
-  
   labels_list = generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters)
 
   result_labels = kmeans.merge_n_clusters(labels_list, n_clusters, feature_list_1.shape)
@@ -54,139 +50,6 @@ def plot_all(result_labels_1, result_labels_2, subject_num_1, subject_num_2, ana
 
   plt.savefig(output_filename + "subject%s_%s_%s_%s" % (subject_num_1, subject_num_2, analysis_name, title))
 
-  plt.show()
-
-def plot_single_subject(result_labels_1, result_labels_2, result_labels_3, subject_num, analysis_name, title):
-  fig = plt.figure()
-
-  ax1 = fig.add_subplot(331)
-  ax1.set_title("Subject%s, Task001, z = 15, %s" % (subject_num, title))
-  ax1.imshow(result_labels_1[...,15], cmap=plt.get_cmap("hot"))
-  ax2 = fig.add_subplot(332)
-  ax2.set_title("Subject%s, Task002, z = 15, %s" % (subject_num, title))
-  ax2.imshow(result_labels_2[...,15], cmap=plt.get_cmap("hot"))
-  ax3 = fig.add_subplot(333)
-  ax3.set_title("Subject%s, Task003, z = 15, %s" % (subject_num, title))
-  ax3.imshow(result_labels_3[...,15], cmap=plt.get_cmap("hot"))
-
-  ax4 = fig.add_subplot(334)
-  ax4.set_title("Subject%s, Task001, z = 20, %s" % (subject_num, title))
-  ax4.imshow(result_labels_1[...,20], cmap=plt.get_cmap("hot"))
-  ax5 = fig.add_subplot(335)
-  ax5.set_title("Subject%s, Task002, z = 20, %s" % (subject_num, title))
-  ax5.imshow(result_labels_2[...,20], cmap=plt.get_cmap("hot"))
-  ax6 = fig.add_subplot(336)
-  ax6.set_title("Subject%s, Task003, z = 20, %s" % (subject_num, title))
-  ax6.imshow(result_labels_3[...,20], cmap=plt.get_cmap("hot"))
-
-  ax7 = fig.add_subplot(337)
-  ax7.set_title("Subject%s, Task001, z = 25, %s" % (subject_num, title))
-  ax7.imshow(result_labels_1[...,25], cmap=plt.get_cmap("hot"))
-  ax8 = fig.add_subplot(338)
-  ax8.set_title("Subject%s, Task002, z = 25, %s" % (subject_num, title))
-  ax8.imshow(result_labels_2[...,25], cmap=plt.get_cmap("hot"))
-  ax9 = fig.add_subplot(339)
-  ax9.set_title("Subject%s, Task003, z = 25, %s" % (subject_num, title))
-  ax9.imshow(result_labels_3[...,25], cmap=plt.get_cmap("hot"))
-
-  plt.savefig(output_filename + "subject%s_%s_%s" % (subject_num, analysis_name, title))
-
-  plt.show()
-
-# this function is wrong. It is actually keeping only the first pcs, not removing them
-def plot_first_pcs_removed(data):
-  
-  data_2d = data.reshape((-1,data.shape[-1]))  
-  pca = PCA(n_components=3)
-  result = pca.fit(data_2d).transform(data_2d)
-  result_comp_0 = result[...,0].reshape(data.shape[0:-1])
-  result_comp_1 = result[...,1].reshape(data.shape[0:-1])
-  result_comp_2 = result[...,2].reshape(data.shape[0:-1])
-  
-  fig = plt.figure()
-
-  ax1 = fig.add_subplot(331)
-  ax1.set_title("z=15, PCs_removed=1")
-  ax1.imshow(result_comp_0[...,15])
-  ax2 = fig.add_subplot(332)
-  ax2.set_title("z=15, PCs_removed=2")
-  ax2.imshow(result_comp_1[...,15])
-  ax3 = fig.add_subplot(333)
-  ax3.set_title("z=15, PCs_removed=3")
-  ax3.imshow(result_comp_2[...,15])
-
-  ax4 = fig.add_subplot(334)
-  ax4.set_title("z=20, PCs_removed=1")
-  ax4.imshow(result_comp_0[...,20])
-  ax5 = fig.add_subplot(335)
-  ax5.set_title("z=20, PCs_removed=2")
-  ax5.imshow(result_comp_1[...,20])
-  ax6 = fig.add_subplot(336)
-  ax6.set_title("z=20, PCs_removed=3")
-  ax6.imshow(result_comp_2[...,20])
-
-  ax7 = fig.add_subplot(337)
-  ax7.set_title("z=25, PCs_removed=1")
-  ax7.imshow(result_comp_0[...,25])
-  ax8 = fig.add_subplot(338)
-  ax8.set_title("z=25, PCs_removed=2")
-  ax8.imshow(result_comp_1[...,25])
-  ax9 = fig.add_subplot(339)
-  ax9.set_title("z=25, PCs_removed=3")
-  ax9.imshow(result_comp_2[...,25])
-
-  plt.tight_layout()
-
-  plt.savefig(output_filename + "first_pcs_removed.pdf", format='pdf', dpi=1000)
-
-  plt.show()
-
-
-def plot_single_subject_across_methods(result_labels_1, result_labels_2, result_labels_3):
-  fig = plt.figure()
-
-  ax1 = fig.add_subplot(331)
-  ax1.set_title("z = 15, mean")
-  ax1.imshow(result_labels_1[...,15])
-  ax2 = fig.add_subplot(332)
-  ax2.set_title("z = 15, scaled")
-  ax2.imshow(result_labels_2[...,15])
-  ax3 = fig.add_subplot(333)
-  ax3.set_title("z = 15, raw")
-  ax3.imshow(result_labels_3[...,15])
-
-  ax4 = fig.add_subplot(334)
-  ax4.set_title("z = 20, mean")
-  ax4.imshow(result_labels_1[...,20])
-  ax5 = fig.add_subplot(335)
-  ax5.set_title("z = 20, scaled")
-  ax5.imshow(result_labels_2[...,20])
-  ax6 = fig.add_subplot(336)
-  ax6.set_title("z = 20, raw")
-  ax6.imshow(result_labels_3[...,20])
-
-  ax7 = fig.add_subplot(337)
-  ax7.set_title("z = 25, mean")
-  ax7.imshow(result_labels_1[...,25])
-  ax8 = fig.add_subplot(338)
-  ax8.set_title("z = 25, scaled")
-  ax8.imshow(result_labels_2[...,25])
-  ax9 = fig.add_subplot(339)
-  ax9.set_title("z = 25, raw")
-  ax9.imshow(result_labels_3[...,25])
-
-  plt.tight_layout()
-
-  plt.savefig(output_filename + "subject_across_methods.pdf", format='pdf', dpi=1000)
-
-  plt.show()
-
-
-def superimpose_onto_anatomy(raw_data, labels, depth, group_index):
-  plt.imshow(np.mean(raw_data,axis=3)[...,depth])
-  plane = labels[...,depth]
-  points = [i for i in index_iter_2d(plane.shape) if plane[i] == group_index]
-  plt.scatter(*zip(*points))
   plt.show()
 
 def prepare_residuals(subject_num, task_num, standard_source_prefix):

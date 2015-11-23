@@ -10,7 +10,7 @@ We employ two methods to find activation regions. A comparison is made.
 import project_config
 import numpy as np
 import nibabel as nib
-from kmeans_analysis import plot_all, plot_single_subject
+from kmeans_analysis import plot_all
 from general_utils import vol_index_iter, prepare_data_single, index_iter_2d, prepare_mask
 import matplotlib.pyplot as plt
 from correlation import correlation_map_linear, correlation_map_without_convoluation_linear
@@ -101,7 +101,7 @@ def plot_group(group_activation_result, output_filename):
     ax.imshow(group_activation_result[group][...,depth], interpolation="nearest", cmap="gray")
 
     plane = group_activation_result[group][...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.18]
+    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.10]
     if len(points) > 0:
       ax.scatter(*zip(*points))
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
   task_num = "001"
   cond_num = "002"
 
-  # single_subject_activation_across_methods(standard_source_prefix, cond_filepath_011, subject_num, task_num)
+  single_subject_activation_across_methods(standard_source_prefix, cond_filepath_011, subject_num, task_num)
 
 
 
