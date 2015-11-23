@@ -3,55 +3,24 @@ import kmeans
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
+from nilearn import image
+from pca_utils import first_pcs_removed
+from general_utils import prepare_data, prepare_cond_filenames, prepare_images, index_iter_2d, prepare_data_single, prepare_mask
+from correlation import correlation_map, correlation_map_without_convoluation, correlation_map_linear, correlation_map_without_convoluation_linear
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-"""
-Replace these variables before running the script
-"""
-output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
-subject_num_1 = "001"
-subject_num_2 = "002"
 
-def prepare_data(subject_num):
-  BOLD_file_1 = '/Users/fenglin/Desktop/stat159/lab/ds115_sub001-005/sub%s/BOLD/task001_run001/bold.nii.gz' % (subject_num)
-  BOLD_file_2 = '/Users/fenglin/Desktop/stat159/lab/ds115_sub001-005/sub%s/BOLD/task002_run001/bold.nii.gz' % (subject_num)
-  BOLD_file_3 = '/Users/fenglin/Desktop/stat159/lab/ds115_sub001-005/sub%s/BOLD/task003_run001/bold.nii.gz' % (subject_num)
+def generate_clusters(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters = 5):
 
-  img_1 = nib.load(BOLD_file_1)
-  data_1 = img_1.get_data()
-  data_1 = data_1[..., 5:]
+  
+  labels_list = generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters)
 
-  img_2 = nib.load(BOLD_file_2)
-  data_2 = img_2.get_data()
-  data_2 = data_2[..., 5:]
-
-  img_3 = nib.load(BOLD_file_3)
-  data_3 = img_3.get_data()
-  data_3 = data_3[..., 5:]
-
-  return data_1, data_2, data_3
-
-def generate_clusters(subject_num, feature_list_1, feature_list_2, feature_list_3):
-
-  n_clusters = 5
-  TR = project_config.TR
-
-  labels_1 = kmeans.perform_kMeans_clustering_analysis(feature_list_1, n_clusters)
-  labels_2 = kmeans.perform_kMeans_clustering_analysis(feature_list_2, n_clusters)
-  labels_3 = kmeans.perform_kMeans_clustering_analysis(feature_list_3, n_clusters)
-
-  labels_list = [labels_1, labels_2, labels_3]
-
-  result_labels = kmeans.merge_n_clusters(labels_list, n_clusters, labels_1.shape)
+  result_labels = kmeans.merge_n_clusters(labels_list, n_clusters, feature_list_1.shape)
 
   return result_labels
 
-def generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3):
-
-  n_clusters = 5
-  TR = project_config.TR
+def generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters = 5):
 
   labels_1 = kmeans.perform_kMeans_clustering_analysis(feature_list_1, n_clusters)
   labels_2 = kmeans.perform_kMeans_clustering_analysis(feature_list_2, n_clusters)
@@ -92,38 +61,39 @@ def plot_single_subject(result_labels_1, result_labels_2, result_labels_3, subje
 
   ax1 = fig.add_subplot(331)
   ax1.set_title("Subject%s, Task001, z = 15, %s" % (subject_num, title))
-  ax1.imshow(result_labels_1[...,15])
+  ax1.imshow(result_labels_1[...,15], cmap=plt.get_cmap("hot"))
   ax2 = fig.add_subplot(332)
   ax2.set_title("Subject%s, Task002, z = 15, %s" % (subject_num, title))
-  ax2.imshow(result_labels_2[...,15])
+  ax2.imshow(result_labels_2[...,15], cmap=plt.get_cmap("hot"))
   ax3 = fig.add_subplot(333)
   ax3.set_title("Subject%s, Task003, z = 15, %s" % (subject_num, title))
-  ax3.imshow(result_labels_3[...,15])
+  ax3.imshow(result_labels_3[...,15], cmap=plt.get_cmap("hot"))
 
   ax4 = fig.add_subplot(334)
   ax4.set_title("Subject%s, Task001, z = 20, %s" % (subject_num, title))
-  ax4.imshow(result_labels_1[...,20])
+  ax4.imshow(result_labels_1[...,20], cmap=plt.get_cmap("hot"))
   ax5 = fig.add_subplot(335)
   ax5.set_title("Subject%s, Task002, z = 20, %s" % (subject_num, title))
-  ax5.imshow(result_labels_2[...,20])
+  ax5.imshow(result_labels_2[...,20], cmap=plt.get_cmap("hot"))
   ax6 = fig.add_subplot(336)
   ax6.set_title("Subject%s, Task003, z = 20, %s" % (subject_num, title))
-  ax6.imshow(result_labels_3[...,20])
+  ax6.imshow(result_labels_3[...,20], cmap=plt.get_cmap("hot"))
 
   ax7 = fig.add_subplot(337)
   ax7.set_title("Subject%s, Task001, z = 25, %s" % (subject_num, title))
-  ax7.imshow(result_labels_1[...,25])
+  ax7.imshow(result_labels_1[...,25], cmap=plt.get_cmap("hot"))
   ax8 = fig.add_subplot(338)
   ax8.set_title("Subject%s, Task002, z = 25, %s" % (subject_num, title))
-  ax8.imshow(result_labels_2[...,25])
+  ax8.imshow(result_labels_2[...,25], cmap=plt.get_cmap("hot"))
   ax9 = fig.add_subplot(339)
   ax9.set_title("Subject%s, Task003, z = 25, %s" % (subject_num, title))
-  ax9.imshow(result_labels_3[...,25])
+  ax9.imshow(result_labels_3[...,25], cmap=plt.get_cmap("hot"))
 
   plt.savefig(output_filename + "subject%s_%s_%s" % (subject_num, analysis_name, title))
 
   plt.show()
 
+# this function is wrong. It is actually keeping only the first pcs, not removing them
 def plot_first_pcs_removed(data):
   
   data_2d = data.reshape((-1,data.shape[-1]))  
@@ -212,45 +182,71 @@ def plot_single_subject_across_methods(result_labels_1, result_labels_2, result_
   plt.show()
 
 
+def superimpose_onto_anatomy(raw_data, labels, depth, group_index):
+  plt.imshow(np.mean(raw_data,axis=3)[...,depth])
+  plane = labels[...,depth]
+  points = [i for i in index_iter_2d(plane.shape) if plane[i] == group_index]
+  plt.scatter(*zip(*points))
+  plt.show()
+
+def prepare_residuals(subject_num, task_num, standard_source_prefix):
+
+  data_4d = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+
+  # mean_vols = np.mean(data_4d, axis=-1)
+  # plt.hist(np.ravel(mean_vols), bins=100)
+  # plt.show()
+
+  # Chose cutoff = 5500 from the histogram
+  cutoff = 5500
+
+  in_brain_mask, in_brain_vols = prepare_mask(data_4d, cutoff)
+
+  # We justified in pca_analysis.py that the first two PCs represent anatomical features.
+
+  residuals = first_pcs_removed(in_brain_vols, 2)
+  return residuals, in_brain_mask
+
+def plot_single(labels, subject_num, output_filename):
+  
+  fig = plt.figure()
+
+  for map_index, depth in (((3,3,1), 30),((3,3,2), 35),((3,3,3), 40),
+                          ((3,3,4), 45),((3,3,5), 50),((3,3,6), 55),
+                          ((3,3,7), 60),((3,3,8), 65),((3,3,9), 70)):
+    ax = fig.add_subplot(*map_index)
+    ax.set_title("z=%d" % (depth))
+    ax.imshow(labels[...,depth], interpolation="nearest", cmap="gray")
+
+  plt.tight_layout()
+  plt.suptitle("Sub011, Control Group")
+  plt.savefig(output_filename + "kmeans_across_cluters_single_sub.pdf", format='pdf', dpi=1000)
+  plt.show()
+
+
+def single_subject_kmeans(standard_source_prefix, cond_filepath, subject_num, task_num):
+
+  residuals, in_brain_mask = prepare_residuals(subject_num, task_num, standard_source_prefix)
+
+  labels = kmeans.perform_kMeans_clustering_analysis(residuals.reshape((-1, residuals.shape[-1])), 6)
+
+  b_vols = np.zeros(in_brain_mask.shape) + float('inf')
+  b_vols[in_brain_mask] = labels
+
+  return b_vols
+
+
 if __name__ == "__main__": 
-  s1_data_1, s1_data_2, s1_data_3 = prepare_data(subject_num_1)
-  s2_data_1, s2_data_2, s2_data_3 = prepare_data(subject_num_2)
 
-  shape = s1_data_1.shape
+  standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
+  standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
+  cond_filepath_011 = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/ds115_sub010-014/sub011/model/model001/onsets/task001_run001/cond002.txt"
+  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
+  output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
 
-  s1_mean1, s1_mean2, s1_mean3 = np.mean(s1_data_1, axis=3), np.mean(s1_data_2, axis=3), np.mean(s1_data_3, axis=3)
-  s1_mean1, s1_mean2, s1_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s1_mean1, s1_mean2, s1_mean3)]
-  s2_mean1, s2_mean2, s2_mean3 = np.mean(s2_data_1, axis=3), np.mean(s2_data_2, axis=3), np.mean(s2_data_3, axis=3)
-  s2_mean1, s2_mean2, s2_mean3 = [elem.reshape(elem.shape + (1,)) for elem in (s2_mean1, s2_mean2, s2_mean3)]
+  subject_num = "011"
+  task_num = "001"
+  cond_num = "002"
 
-  """
-  Single subject, different tasks, means
-  """
-  s1_mean_1_result, s1_mean_2_result, s1_mean_3_result = generate_clusters_multiple(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
-  plot_single_subject(s1_mean_1_result, s1_mean_2_result, s1_mean_3_result, subject_num_1, "kmeans", "single_subject_mean")
-
-  """
-  Across subjects, average of all tasks, means
-  """
-  result_labels_s1_mean = generate_clusters(subject_num_1, s1_mean1, s1_mean2, s1_mean3)
-  result_labels_s2_mean = generate_clusters(subject_num_2, s2_mean1, s2_mean2, s2_mean3)
-  plot_all(result_labels_s1_mean, result_labels_s2_mean, subject_num_1, subject_num_2, "kmeans", "mean")
-
-  """
-  Single subject, different tasks, scaled full time courses
-  """
-  s1_scaled_1, s1_scaled_2, s1_scaled_3 = [scale(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s1_data_1, s1_data_2, s1_data_3)]
-  s2_scaled_1, s2_scaled_2, s2_scaled_3 = [scale(elem.reshape((-1, elem.shape[-1])), axis=0, copy=True).reshape(shape) for elem in (s2_data_1, s2_data_2, s2_data_3)]
-
-  s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result = generate_clusters_multiple(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
-  plot_single_subject(s1_scaled_1_result, s1_scaled_2_result, s1_scaled_3_result, subject_num_1, "kmeans", "single_subject")
-
-  """
-  Across subjects, average of all tasks, scaled full time courses
-  """
-  s1_result_labels_data = generate_clusters(subject_num_1, s1_scaled_1, s1_scaled_2, s1_scaled_3)
-  s2_result_labels_data = generate_clusters(subject_num_2, s2_scaled_1, s2_scaled_2, s2_scaled_3)
-  plot_all(s1_result_labels_data, s2_result_labels_data, subject_num_1, subject_num_2, "kmeans", "scaled")
-
-  # Single subject, comparisons across different feature sets
-  plot_single_subject_across_methods(result_labels_s1_mean, s1_scaled_1_result, s1_result_labels_data)
+  labels = single_subject_kmeans(standard_source_prefix, cond_filepath_011, subject_num, task_num)
+  plot_single(labels, subject_num, output_filename)
