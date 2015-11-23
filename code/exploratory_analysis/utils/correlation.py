@@ -24,8 +24,9 @@ def correlation_map(data, cond_filename):
 
 def correlation_map_linear(data, cond_filename):
   """
-  Generate a cross-correlation per voxel between BOLD signals and a convolved 
-  gamma baseline function. Assume that the first 5 images are already dropped.
+  This is different from correlation_map in that it accepts a 2d data 
+  (n_samples, n_time_slices) so that it is suitable for working with
+  brain masks.
   """
   convolved = conv_main(data.shape[-1] + 5, cond_filename, TR)[5:]
   corrs = np.zeros((data.shape[:-1]))
@@ -40,9 +41,9 @@ def correlation_map_linear(data, cond_filename):
 
 def correlation_map_without_convoluation_linear(data, cond_filename):
   """
-  Generate a cross-correlation per voxel between BOLD signals and a square wave
-  baseline function, which represents the boolean array of the on-off time 
-  course. Assume that the first 5 images are already dropped.
+  This is different from correlation_map_without_convoluation in that it accepts a 2d data 
+  (n_samples, n_time_slices) so that it is suitable for working with
+  brain masks.
   """
   n_trs = data.shape[-1] + 5
   time_course = events2neural_rounded(cond_filename, TR, n_trs)[5:]

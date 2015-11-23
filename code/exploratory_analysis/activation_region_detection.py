@@ -5,6 +5,9 @@ prediction values and a gamma hrf function (see conv.py).
 
 We employ two methods to find activation regions. A comparison is made.
 
+Using only the convolved baseline function, we conduct an analysis across
+group (con, con_sib, scz, scz_sib) averages.
+
 """
 
 import project_config

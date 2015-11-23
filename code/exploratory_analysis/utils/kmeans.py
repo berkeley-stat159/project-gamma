@@ -6,7 +6,6 @@ from itertools import product
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 from general_utils import vol_index_iter
-from scipy.cluster.vq import kmeans2
 
 def perform_kMeans_clustering_analysis(feature_data, n_clusters):
 

@@ -1,6 +1,10 @@
+"""
+A simple script to download preprocessed data.
+"""
+
 from urllib import urlretrieve
 
-for sub in range(20, 103):
+for sub in range(0, 103):
   if len(str(sub)) == 1:
     sub_str = "00" + str(sub) 
   elif len(str(sub)) == 2:
