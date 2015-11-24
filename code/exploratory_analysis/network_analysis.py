@@ -24,19 +24,30 @@ def roi_cor (data, roi1,roi2):
 		# returns the mean Fisher's z value of all the correlations among voxels in ROI1 and ROI2
 	"""
 
-	cor_z = np.zeros((len(roi1),len(roi2)))
+	timecourse1 = [data[roi1[i]] for i in range(0,len(roi1))]
+	avg_time1 = np.mean(timecourse1,axis=0)
+	timecourse2 = [data[roi2[j]] for j in range(0,len(roi2))]
+	avg_time2 = np.mean(timecourse2,axis=0)
+	cor = np.corrcoef(avg_time1,avg_time2)[1,0]
+	if cor >= 1:
+	 	cor=0.99999
+	z = 1/2*(math.log((1+cor)/(1-cor)))
+	return z
 
-	for i in range(0,len(roi1)):
-		for j in range(0,len(roi2)):
 
-			data1 = data[roi1[i]]
-			data2 = data[roi2[j]]
-			cor=np.corrcoef(data1,data2)[1,0]
-			if cor >= 1:
-				cor=0.99999
-			cor_z[i,j] = 1/2*(math.log((1+cor)/(1-cor)))  # Q: how to deal with cor=1 
+	# cor_z = np.zeros((len(roi1),len(roi2)))
 
-	return np.mean(cor_z)
+	# for i in range(0,len(roi1)):
+	# 	for j in range(0,len(roi2)):
+
+	# 		data1 = data[roi1[i]]
+	# 		data2 = data[roi2[j]]
+	# 		cor=np.corrcoef(data1,data2)[1,0]
+	# 		if cor >= 1:
+	# 			cor=0.99999
+	# 		cor_z[i,j] = 1/2*(math.log((1+cor)/(1-cor)))  # Q: how to deal with cor=1 
+
+	# return np.mean(cor_z)
 
 def network_cor(data,net1,net2, is_same):
 	"""
@@ -78,7 +89,7 @@ def ci_within (data,dics):
 	#Output:
 		# a list of tuples(CIs); within nework
 	"""
-	return [network_cor(data,rois,rois, True) for rois in dics]
+	return [network_cor(data,rois,rois, True) for rois in dics] #("wDMN","wFP","wCER","wCO")
 
 
 def ci_bewteen (data,dics):
@@ -94,7 +105,7 @@ def ci_bewteen (data,dics):
 
 	ci_bet = []
 	for i in range(0,len(dics)):
-		for j in range(0,len(dics)):
+		for j in range(i+1,len(dics)):
 			ci_bet.append(network_cor(data,dics[i],dics[j], False))
 	return ci_bet #CI for ("bDMN-FP","bDMN-CER","bDMN-CO","bFP-CER","bFP-CO","bCER-CO")
 
@@ -124,3 +135,25 @@ z_values_per_network_con = ci_within(data_con,trilist_con)
 
 trilist_scz = dictolist(dic, mm_to_vox_scz, in_brain_mask_scz)
 z_values_per_network_scz = ci_within(data_scz,trilist_scz)
+
+z_values_bnet_con = ci_bewteen(data_con,trilist_con)
+z_values_bnet_scz = ci_bewteen(data_scz,trilist_scz)
+
+
+
+"""
+z_values result:
+
+		wDMN  	  wFP 	  wCER 		wCO
+SCZ     0.3772   0.4749  0.8110    0.5984
+CON     0.6591   0.5506  0.5294    0.6857
+
+		bDMN-FP    bDMN-CER   bDMN-CO   bFP-CER   bFP-CO   bCER-CO
+SCZ		0.3461     0.4329     0.2381     0.4344    0.3586   0.3219  
+CON 	0.4966	   0.3411     0.3652     0.3778    0.4737   0.3187
+
+In the paper, it is said the connectivity of bFP-CER and bCER-CO are reduced for SCZ patients.
+	
+
+
+"""
