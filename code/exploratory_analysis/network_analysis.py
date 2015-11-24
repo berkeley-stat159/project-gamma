@@ -98,7 +98,6 @@ def ci_bewteen (data,dics):
 			ci_bet.append(network_cor(data,dics[i],dics[j], False))
 	return ci_bet #CI for ("bDMN-FP","bDMN-CER","bDMN-CO","bFP-CER","bFP-CO","bCER-CO")
 
-
 def dictolist (dic, mm_to_vox, in_brain_mask):
 	networks=dic.keys() #['Default', 'Fronto-Parietal', 'Cerebellar', 'Cingulo-Opercular'] with caution
 	list_net=[]
@@ -109,6 +108,20 @@ def dictolist (dic, mm_to_vox, in_brain_mask):
 			list_roi.append(roi_extraction.get_voxels(mm_to_vox, dic[i][j], in_brain_mask))
 		list_net.append(list_roi)
 	return list_net
+
+def summarize_overlap(network1, network2):
+	res = []
+	for roi1 in network1:
+		for roi2 in network2:
+			center1, voxels1 = roi1
+			center2, voxels2 = roi2
+			x1, y1, z1 = center1
+			x2, y2, z2 = center2
+			if abs(x1 - x2) > 8 or abs(y1 - y2) > 8 or abs(z1 - z2) > 8:
+				res.append(0)
+			else:
+				res.append(len(set(voxels1) == set(voxels2)))
+	return res
 
 dic = roi_extraction.dic
 
