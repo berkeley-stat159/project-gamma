@@ -5,6 +5,8 @@ from scipy import stats
 import nibabel as nib
 import numpy.linalg as npl
 import roi_extraction
+import itertools
+
 
 file_name_con = "sub011_task001_run001_func_data_mni.nii.gz"
 file_name_scz = "sub001_task001_run001_func_data_mni.nii.gz"
@@ -33,21 +35,6 @@ def roi_cor (data, roi1,roi2):
 	 	cor=0.99999
 	z = 1/2*(math.log((1+cor)/(1-cor)))
 	return z
-
-
-	# cor_z = np.zeros((len(roi1),len(roi2)))
-
-	# for i in range(0,len(roi1)):
-	# 	for j in range(0,len(roi2)):
-
-	# 		data1 = data[roi1[i]]
-	# 		data2 = data[roi2[j]]
-	# 		cor=np.corrcoef(data1,data2)[1,0]
-	# 		if cor >= 1:
-	# 			cor=0.99999
-	# 		cor_z[i,j] = 1/2*(math.log((1+cor)/(1-cor)))  # Q: how to deal with cor=1 
-
-	# return np.mean(cor_z)
 
 def network_cor(data,net1,net2, is_same):
 	"""
@@ -120,20 +107,6 @@ def dictolist (dic, mm_to_vox, in_brain_mask):
 		list_net.append(list_roi)
 	return list_net
 
-def summarize_overlap(network1, network2):
-	res = []
-	for roi1 in network1:
-		for roi2 in network2:
-			center1, voxels1 = roi1
-			center2, voxels2 = roi2
-			x1, y1, z1 = center1
-			x2, y2, z2 = center2
-			if abs(x1 - x2) > 8 or abs(y1 - y2) > 8 or abs(z1 - z2) > 8:
-				res.append(0)
-			else:
-				res.append(len(set(voxels1) == set(voxels2)))
-	return res
-
 dic = roi_extraction.dic
 
 mm_to_vox_con = npl.inv(img_con.affine)
@@ -142,6 +115,11 @@ mm_to_vox_scz = npl.inv(img_scz.affine)
 in_brain_mask_con = np.mean(data_con, axis=-1) > 5000
 in_brain_mask_scz = np.mean(data_scz, axis=-1) > 5000
 #we choose 5000 values by inspecting the histogram of data values
+
+min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
+# min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
+# shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
+# avoid overlap.
 
 trilist_con = dictolist(dic, mm_to_vox_con, in_brain_mask_con)
 z_values_per_network_con = ci_within(data_con,trilist_con)
@@ -152,21 +130,15 @@ z_values_per_network_scz = ci_within(data_scz,trilist_scz)
 z_values_bnet_con = ci_bewteen(data_con,trilist_con)
 z_values_bnet_scz = ci_bewteen(data_scz,trilist_scz)
 
+# z_values result:
 
+# 		wDMN  	  wFP 	  wCER 		wCO
+# SCZ     0.3772   0.4749  0.8110    0.5984
+# CON     0.6591   0.5506  0.5294    0.6857
 
-"""
-z_values result:
+# 		bDMN-FP    bDMN-CER   bDMN-CO   bFP-CER   bFP-CO   bCER-CO
+# SCZ		0.3461     0.4329     0.2381     0.4344    0.3586   0.3219  
+# CON 	0.4966	   0.3411     0.3652     0.3778    0.4737   0.3187
 
-		wDMN  	  wFP 	  wCER 		wCO
-SCZ     0.3772   0.4749  0.8110    0.5984
-CON     0.6591   0.5506  0.5294    0.6857
+# In the paper, it is said the connectivity of bFP-CER and bCER-CO are reduced for SCZ patients.
 
-		bDMN-FP    bDMN-CER   bDMN-CO   bFP-CER   bFP-CO   bCER-CO
-SCZ		0.3461     0.4329     0.2381     0.4344    0.3586   0.3219  
-CON 	0.4966	   0.3411     0.3652     0.3778    0.4737   0.3187
-
-In the paper, it is said the connectivity of bFP-CER and bCER-CO are reduced for SCZ patients.
-	
-
-
-"""
