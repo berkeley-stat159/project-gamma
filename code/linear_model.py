@@ -8,7 +8,7 @@ from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
 from gaussian_filter import spatial_smooth
 from matplotlib import colors
-from t_test import perform_t_tests
+from hypothesis import perform_t_tests
 
 import pdb
 
