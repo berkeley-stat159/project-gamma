@@ -1,3 +1,4 @@
+import project_config
 from scipy.spatial import cKDTree
 from general_utils import vol_index_iter
 from scipy.ndimage.filters import gaussian_filter

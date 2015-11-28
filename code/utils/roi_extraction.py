@@ -113,7 +113,7 @@ class SphereExtractor(object):
 		return [self.points[i] for i in self.tree.query_ball_point(center, self.dist_from_center)]
 	
 dic = {}
-with open ("/Users/fenglin/Desktop/stat159/project-gamma/code/utils/net_roi.txt") as f:
+with open ("../../data/net_roi.txt") as f:
 	for lines in f:
 		(key_region, k_roi, val1, val2, val3)= lines.split()
 		loc = [int(val1),int(val2),int(val3)]
