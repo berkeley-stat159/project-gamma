@@ -14,7 +14,7 @@ import project_config
 import numpy as np
 import nibabel as nib
 from kmeans_analysis import plot_all
-from general_utils import vol_index_iter, prepare_data_single, index_iter_2d, prepare_mask
+from general_utils import vol_index_iter, prepare_data_single, index_iter_2d, prepare_mask, form_cond_filepath
 import matplotlib.pyplot as plt
 from correlation import correlation_map_linear, correlation_map_without_convoluation_linear
 from conv import conv_main
@@ -112,10 +112,6 @@ def plot_group(group_activation_result, output_filename):
   plt.savefig(output_filename + "activation_regions_across_groups.pdf", format='pdf', dpi=1000)
 
   plt.show()
-
-
-def form_cond_filepath(subject_num, task_num, cond_num, cond_filepath_prefix):
-  return join(cond_filepath_prefix, "sub%s" % (subject_num), "model/model001/onsets", "task%s_run001" % (task_num), "cond%s.txt" % (cond_num))
 
 def group_activation_conv(standard_group_source_prefix, cond_filepath_prefix, cond_num, grouping = None):
   task_nums = ("001", "002", "003")

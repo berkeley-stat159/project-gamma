@@ -3,7 +3,7 @@ Test roi_extraction module
 
 Run with::
 
-    nosetests test_pearson_2d.py
+    nosetests test_roi_extraction.py
 """
 import numpy as np
 import nibabel as nib

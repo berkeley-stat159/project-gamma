@@ -2,6 +2,10 @@ import sys
 sys.path.append('utils')
 
 TR = 2.5
+#we choose cutoff value values by inspecting the histogram of data values of the standard mni brain
+MNI_CUTOFF = 5000
+
+MIN_STD_SHAPE = (91, 109, 91)
 
 groups = {"fmri_con":("011", "012", "015", "020", "023", "035", "036", "037"),
           "fmri_con_sib":("010", "013", "014", "016", "021", "022", "038"),

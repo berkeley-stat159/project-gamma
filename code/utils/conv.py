@@ -2,10 +2,10 @@ import project_config
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import gamma
-from stimuli_revised import events2neural
+from stimuli_revised import events2neural, events2neural_target_non_target, events2neural_std
 
 TIME_UNIT = 0.1
-HRF_TIME_LENGTH = 30
+HRF_TIME_LENGTH = 24
 
 def hrf(times):
     # Gamma pdf for the peak
@@ -26,6 +26,28 @@ def rescaled (convolved,TR,n_trs):
   tmp = np.reshape(convolved,(n_trs,int(TR/TIME_UNIT)))
   ret = np.median(tmp,axis=1)
   return ret
+
+def conv_target_non_target(n_trs, filename, error_fname, TR, tr_divs = 100.0):
+  """
+  Convolve the target and non-target portions of the conditional file separately.
+  E.g. cond003 is such an example.
+  """
+  target_neural, nontarget_neural = events2neural_target_non_target(filename, error_fname, n_trs, tr_divs)
+  hrf_times = np.arange(0, HRF_TIME_LENGTH, 1 / tr_divs)
+  hrf_at_hr = hrf(hrf_times)
+  target_convolved = np.convolve(target_neural, hrf_at_hr)[:len(target_neural)]
+  nontarget_convolved = np.convolve(nontarget_neural, hrf_at_hr)[:len(nontarget_neural)]
+  
+  tr_indices = np.arange(n_trs)
+  hr_tr_indices = np.round(tr_indices * tr_divs).astype(int)
+  
+  return target_convolved[hr_tr_indices], nontarget_convolved[hr_tr_indices]
+
+def conv_std(n_trs, filename, TR):
+  neural = events2neural_std(filename, TR, n_trs)
+  hrf_times = np.arange(0, HRF_TIME_LENGTH, 1)
+  hrf_at_hr = hrf(hrf_times)
+  return np.convolve(neural, hrf_at_hr)[:len(neural)]
 
 def conv_main(n_trs, filename, TR):
   """ 

@@ -11,11 +11,18 @@ def index_iter_2d(shape):
   return product(range(shape[0]), range(shape[1]))
 
 def prepare_data_single(subject_num, task_num, is_standard, source_prefix):
+  img = prepare_img_single(subject_num, task_num, is_standard, source_prefix)
+  return img.get_data()[..., 5:]
+
+def prepare_img_single(subject_num, task_num, is_standard, source_prefix):
   if is_standard:
     img = nib.load(join(source_prefix, "sub%s_task%s_run001_func_data_mni.nii.gz" % (subject_num, task_num)))
   else:
     img = nib.load(join(source_prefix, "ds115_sub001-005/sub%s/BOLD/task%s_run001/bold.nii.gz" % (subject_num, task_num)))
-  return img.get_data()[..., 5:]
+  return img
+
+def form_cond_filepath(subject_num, task_num, cond_num, cond_filepath_prefix):
+  return join(cond_filepath_prefix, "sub%s" % (subject_num), "model/model001/onsets", "task%s_run001" % (task_num), "cond%s.txt" % (cond_num))
 
 def prepare_mask(data_4d, cutoff):
   in_brain_mask = np.mean(data_4d, axis=-1) > cutoff
