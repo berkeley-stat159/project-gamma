@@ -4,6 +4,7 @@ import numpy.linalg as npl
 import nibabel as nib
 import itertools as itt
 import matplotlib.pyplot as plt
+import os
 from scipy.spatial.distance import pdist
 from general_utils import vol_index_iter
 from scipy.spatial import cKDTree
@@ -113,7 +114,9 @@ class SphereExtractor(object):
 		return [self.points[i] for i in self.tree.query_ball_point(center, self.dist_from_center)]
 	
 dic = {}
-with open ("../../data/net_roi.txt") as f:
+
+net_roi_filename = os.path.join(os.path.dirname(__file__), '../../data/net_roi.txt')
+with open (net_roi_filename) as f:
 	for lines in f:
 		(key_region, k_roi, val1, val2, val3)= lines.split()
 		loc = [int(val1),int(val2),int(val3)]
