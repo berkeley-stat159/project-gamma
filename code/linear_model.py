@@ -8,36 +8,9 @@ from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
 from gaussian_filter import spatial_smooth
 from matplotlib import colors
-from scipy.stats import t as t_dist
+from t_test import perform_t_tests
 
 import pdb
-
-def RSE(X,Y, betas_hat):
-  Y_hat = X.dot(betas_hat)
-  res = Y - Y_hat
-  RSS = np.sum(res ** 2, 0)
-  df = X.shape[0] - npl.matrix_rank(X)
-  MRSS = RSS * 1.0 / df
-    
-  return MRSS, df
-
-def hypothesis(betas_hat, v_cov, df): #assume only input variance of beta1
-  # Get std of beta1_hat
-  sd_beta = np.sqrt(v_cov)
-  # Get T-value
-  t_stat = betas_hat[0, :] / sd_beta
-  # Get p value for t value using cumulative density dunction
-  ltp = np.array([t_dist.cdf(i, df) for i in t_stat]) #lower tail p
-  p = 1 - ltp
-  return p, t_stat
-
-def compute_p_values(design_mat, betas_hat, Y):
-  s2, df = RSE(design_mat, Y, betas_hat)
-  cov_matrix = npl.inv(design_mat.T.dot(design_mat))[0,0]
-  beta_cov = s2 * cov_matrix
-  #T-test on null hypothesis
-  p_value, t_value = hypothesis(betas_hat, beta_cov, df)
-  return p_value, t_value
 
 def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num):
 
@@ -100,8 +73,9 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
 
   pad_thickness = 3
   fwhm = 4
+  t_test_target_beta = 0
 
-  p_value, t_value = compute_p_values(X, B, Y)
+  p_value = perform_t_tests(X, B, Y, t_test_target_beta)
 
   p_vols = np.zeros((data.shape[0:-1]))
   p_vols[in_brain_mask] = p_value
@@ -147,7 +121,7 @@ if __name__ == "__main__":
   b_vols_smooth_0_back, in_brain_mask, U, Y, data, p_vols_smooth = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
 
   # visualize p values for target regressor
-  plot(p_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  plot_p_values(p_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, 40)
 
   # show target betas
   plot(b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, 0, 40)
