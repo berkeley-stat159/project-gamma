@@ -144,7 +144,7 @@ def group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping
 				mean_z_values_per_net_pair = subject_z_values(img, data, dist_from_center, dic, in_brain_mask)
 				for network_pair_name, z_value in mean_z_values_per_net_pair.items():
 					if network_pair_name not in z_values_store[tn]:
-						group_name = "con" if group in ("fmri_con", "fmri_con_sib") else "scz"
+						group_name = "con" if group in ("fmri_con", "fmri_con_sib", "fmri_scz_sib") else "scz"
 						z_values_store[tn][group_name][network_pair_name] = [z_value]
 					else:
 						z_values_store[tn][group_name][network_pair_name].append(z_value)
@@ -154,29 +154,29 @@ dic = roi_extraction.dic
 dist_from_center = 4
 CUTOFF = project_config.MNI_CUTOFF
 
-# mm_to_vox_con = npl.inv(img_con.affine)
-# mm_to_vox_scz = npl.inv(img_scz.affine)
+mm_to_vox_con = npl.inv(img_con.affine)
+mm_to_vox_scz = npl.inv(img_scz.affine)
 
-# in_brain_mask_con = np.mean(data_con, axis=-1) > CUTOFF
-# in_brain_mask_scz = np.mean(data_scz, axis=-1) > CUTOFF
+in_brain_mask_con = np.mean(data_con, axis=-1) > CUTOFF
+in_brain_mask_scz = np.mean(data_scz, axis=-1) > CUTOFF
 
-# min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
-# min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
-# shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
-# avoid overlap.
+min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
+min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
+shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
+avoid overlap.
 
-# roi_extractor_con = roi_extraction.SphereExtractor(in_brain_mask_con, dist_from_center)
-# roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_center)
+roi_extractor_con = roi_extraction.SphereExtractor(in_brain_mask_con, dist_from_center)
+roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_center)
 
-# expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
-# expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
+expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
+expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
 
-# z_values_per_network_con = ci_within(data_con, expanded_dic_con)
+z_values_per_network_con = ci_within(data_con, expanded_dic_con)
 
-# z_values_per_network_scz = ci_within(data_scz, expanded_dic_scz)
+z_values_per_network_scz = ci_within(data_scz, expanded_dic_scz)
 
-# z_values_bnet_con = ci_bewteen(data_con, expanded_dic_con)
-# z_values_bnet_scz = ci_bewteen(data_scz, expanded_dic_scz)
+z_values_bnet_con = ci_bewteen(data_con, expanded_dic_con)
+z_values_bnet_scz = ci_bewteen(data_scz, expanded_dic_scz)
 
 # z_values result:
 

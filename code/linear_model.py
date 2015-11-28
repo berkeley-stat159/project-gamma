@@ -8,8 +8,36 @@ from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
 from gaussian_filter import spatial_smooth
 from matplotlib import colors
+from scipy.stats import t as t_dist
 
 import pdb
+
+def RSE(X,Y, betas_hat):
+  Y_hat = X.dot(betas_hat)
+  res = Y - Y_hat
+  RSS = np.sum(res ** 2, 0)
+  df = X.shape[0] - npl.matrix_rank(X)
+  MRSS = RSS * 1.0 / df
+    
+  return MRSS, df
+
+def hypothesis(betas_hat, v_cov, df): #assume only input variance of beta1
+  # Get std of beta1_hat
+  sd_beta = np.sqrt(v_cov)
+  # Get T-value
+  t_stat = betas_hat[0, :] / sd_beta
+  # Get p value for t value using cumulative density dunction
+  ltp = np.array([t_dist.cdf(i, df) for i in t_stat]) #lower tail p
+  p = 1 - ltp
+  return p, t_stat
+
+def compute_p_values(design_mat, betas_hat, Y):
+  s2, df = RSE(design_mat, Y, betas_hat)
+  cov_matrix = npl.inv(design_mat.T.dot(design_mat))[0,0]
+  beta_cov = s2 * cov_matrix
+  #T-test on null hypothesis
+  p_value, t_value = hypothesis(betas_hat, beta_cov, df)
+  return p_value, t_value
 
 def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num):
 
@@ -30,8 +58,8 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
 
   block_regressor = events2neural_std(cond_filename_005, TR, n_trs)[5:]
 
-  block_1_cues = conv_std(n_trs, cond_filename_001, TR)[5:]
-  block_2_cues = conv_std(n_trs, cond_filename_004, TR)[5:]
+  block_start_cues = conv_std(n_trs, cond_filename_001, TR)[5:]
+  block_end_cues = conv_std(n_trs, cond_filename_004, TR)[5:]
 
   linear_drift = np.linspace(-1, 1, n_trs)
   qudratic_drift = linear_drift ** 2
@@ -47,20 +75,19 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   unscaled_cov = Y_demeaned.dot(Y_demeaned.T)
   U, S, V = npl.svd(unscaled_cov)
 
-  X = np.ones((n_trs - 5, 13))
+  X = np.ones((n_trs - 5, 12))
   X[:, 0] = target_convolved
   X[:, 1] = nontarget_convolved
   X[:, 2] = block_regressor
-  X[:, 3] = block_1_cues
-  X[:, 4] = block_2_cues
+  X[:, 3] = block_start_cues
+  X[:, 4] = block_end_cues
   X[:, 5] = linear_drift
   X[:, 6] = qudratic_drift
   X[:, 7] = U[:,0]
   X[:, 8] = U[:,1]
   X[:, 9] = U[:,2]
   X[:, 10] = U[:,3]
-  X[:, 11] = U[:,4]
-  # 12th column is the intercept
+  # 11th column is the intercept
 
   B = npl.pinv(X).dot(Y)
 
@@ -68,19 +95,26 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   for i in range(Y.shape[-1]):
     r_squared = 1 - np.sum((Y[:,i] - X.dot(B[:,i]))**2) * 1.0 / np.sum((Y[:,i] - np.mean(Y[:,i])) ** 2)
     rs_squared.append(r_squared)
+
   print "mean R squared across all voxels is " + str(np.mean(rs_squared))
-  # mean R squared across all voxels is 0.1129. This is too low.
-
-  pdb.set_trace()
-
-  b_vols = np.zeros((data.shape[0:-1] + (13,)))
-  b_vols[in_brain_mask, :] = B.T
 
   pad_thickness = 3
   fwhm = 4
 
+  p_value, t_value = compute_p_values(X, B, Y)
+
+  p_vols = np.zeros((data.shape[0:-1]))
+  p_vols[in_brain_mask] = p_value
+  p_vols_smooth = spatial_smooth(p_vols.reshape(p_vols.shape + (1,)), in_brain_mask, pad_thickness, fwhm)
+
+  b_vols = np.zeros((data.shape[0:-1] + (12,)))
+  b_vols[in_brain_mask, :] = B.T
+
   b_vols_smooth = spatial_smooth(b_vols, in_brain_mask, pad_thickness, fwhm)
-  return b_vols_smooth, in_brain_mask, U, Y, data
+  return b_vols_smooth, in_brain_mask, U, Y, data, p_vols_smooth
+
+def plot_p_values(b_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, depth):
+  plot(b_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, 0, depth)
 
 def plot(b_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, beta_index, depth):
   b_vols_smooth[~in_brain_mask] = np.nan
@@ -110,7 +144,10 @@ if __name__ == "__main__":
   brain_structure = nib.load(brain_structure_path).get_data()
   nice_cmap_values = np.loadtxt(nice_cmap_values_path)
   
-  b_vols_smooth_0_back, in_brain_mask, U, Y, data = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
+  b_vols_smooth_0_back, in_brain_mask, U, Y, data, p_vols_smooth = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
+
+  # visualize p values for target regressor
+  plot(p_vols_smooth, in_brain_mask, brain_structure, nice_cmap_values, 40)
 
   # show target betas
   plot(b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, 0, 40)
@@ -136,7 +173,7 @@ if __name__ == "__main__":
 
   task_num = "003"
 
-  b_vols_smooth_2_back, in_brain_mask, U, Y, data = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
+  b_vols_smooth_2_back, in_brain_mask, U, Y, data, p_vols_smooth = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
 
   # show 2-back target betas
   plot(b_vols_smooth_2_back, in_brain_mask, brain_structure, nice_cmap_values, 0, 40)
