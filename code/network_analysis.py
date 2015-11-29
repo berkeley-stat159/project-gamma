@@ -65,18 +65,18 @@ def network_cor(data, net1, net2, is_same):
 	else:
 		return [roi_cor(data,voxels_1, voxels_2) for roi_name_1, voxels_1 in net1.items() for roi_name_2, voxels_2 in net2.items()]
 
-def ci_within (data,dic):
+def z_within (data,dic):
 	"""
 	#Input: 
 		#triple nesting lists
 		#image data
 	#Output:
-		# a list of tuples(CIs); within nework
+		# a list of tuples(average z-values); within nework
 	"""
 	return {network_name: network_cor(data,rois,rois, True) for network_name, rois in dic.items()}
 
 
-def ci_bewteen (data,dic):
+def z_bewteen (data,dic):
 	"""
 	#Input: 
 		#triple nesting lists
@@ -85,14 +85,14 @@ def ci_bewteen (data,dic):
 		#a list of tuples(CIs); between network
 	"""
 
-	ci_bet = {}
+	z_bet = {}
 	networks = dic.keys()
 	for i in range(0,len(networks)):
 		for j in range(i+1,len(networks)):
 			network_name_1 = networks[i]
 			network_name_2 = networks[j]
-			ci_bet[network_name_1+"-"+network_name_2] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
-	return ci_bet
+			z_bet[network_name_1+"-"+network_name_2] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
+	return z_bet
 
 def expand_dic(dic, mm_to_vox, roi_extractor):
 	expanded_dic = {}
@@ -123,8 +123,8 @@ def subject_z_values(img, data, dist_from_center, dic, in_brain_mask):
 
 	expanded_dic = expand_dic(dic, mm_to_vox, roi_extractor)
 
-	mean_z_values = ci_within(data, expanded_dic)
-	mean_z_values.update(ci_bewteen(data, expanded_dic))
+	mean_z_values = z_within(data, expanded_dic)
+	mean_z_values.update(z_bewteen(data, expanded_dic))
 	return mean_z_values
 
 def group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping = None):
@@ -171,12 +171,12 @@ roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_
 expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
 expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
 
-z_values_per_network_con = ci_within(data_con, expanded_dic_con)
+z_values_per_network_con = z_within(data_con, expanded_dic_con)
 
-z_values_per_network_scz = ci_within(data_scz, expanded_dic_scz)
+z_values_per_network_scz = z_within(data_scz, expanded_dic_scz)
 
-z_values_bnet_con = ci_bewteen(data_con, expanded_dic_con)
-z_values_bnet_scz = ci_bewteen(data_scz, expanded_dic_scz)
+z_values_bnet_con = z_bewteen(data_con, expanded_dic_con)
+z_values_bnet_scz = z_bewteen(data_scz, expanded_dic_scz)
 
 # z_values result:
 
