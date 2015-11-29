@@ -18,13 +18,13 @@ def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR 
 
     # if there are any errors, treat them as targets
     task_errors = np.loadtxt(error_fname)
+
     if task_errors.size > 0:
         task_errors = task_errors.reshape((-1, 3))
         task_errors[:,2] = 1.0
-        target_task = np.append(target_task, task_errors, axis=0)
 
     res = []
-    for cond_data in (target_task, nontarget_task):
+    for cond_data in (target_task, nontarget_task, task_errors):
         onsets_seconds = cond_data[:, 0]
         duration_seconds = cond_data[:, 1]
         amplitudes = cond_data[:, 2]
@@ -34,14 +34,15 @@ def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR 
         high_res_onset_indices = onsets_in_scans * tr_divs
         high_res_durations = duration_seconds / TR * tr_divs
         for hr_onset, hr_duration, amplitude in zip(high_res_onset_indices, high_res_durations, amplitudes):
+            if hr_duration == 0: continue
             hr_onset = int(round(hr_onset))
             hr_duration = int(round(hr_duration))
             high_res_neural[hr_onset:hr_onset + hr_duration] = amplitude
         res.append(high_res_neural)
 
-    target_neural, nontarget_neural = res
+    target_neural, nontarget_neural, error_neural = res
 
-    return target_neural, nontarget_neural
+    return target_neural, nontarget_neural, error_neural
 
 
 def events2neural(task_fname, time_unit, n_trs, TR = 2.5):

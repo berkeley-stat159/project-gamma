@@ -20,19 +20,10 @@ def pad_boundary_per_image(data, brain_mask, pad_thickness):
     if len(neighbors) != 0:
       data[i] = np.mean([data[brain_points[j]] for j in neighbors])
 
-def spatial_smooth(data_4d, brain_mask, pad_thickness, fwhm):
-  """
-  Copy data_4d
-  """
-
-  sig = sigma(fwhm)
-
+def spatial_smooth(data_4d, brain_mask, pad_thickness, sigma, should_pad):
   copy_data = np.array(data_4d)
-  for i in range(data_4d.shape[-1]):
-    image = data_4d[..., i]
-    pad_boundary_per_image(image, brain_mask, pad_thickness)
-    copy_data[..., i] = gaussian_filter(image, sig)
-  return copy_data
-
-def sigma(fwhm):
-  return fwhm / math.sqrt((8.0 * math.log(2.0)))
+  if should_pad:
+    for i in range(data_4d.shape[-1]):
+      print "padded volumn " + str(i)
+      pad_boundary_per_image(data_4d[..., i], brain_mask, pad_thickness)
+  return gaussian_filter(copy_data, [sigma, sigma, sigma, 0])
