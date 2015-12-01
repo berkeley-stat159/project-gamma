@@ -3,10 +3,14 @@ A set of functions for extracting and visualizing results from applying independ
 preprocessed neuroimaging data.
 """
 
+# NOTE TO SELF -- APPLY PCA, DROP FIRST 2 COMPONENTS, USE MASKING PROCEDURE FROM CODE IN CLASS (INSTEAD OF MASKING THAT COMES FROM NILEARN), PERFORM ICA ON RESIDUALS FROM PCA (PER VOXEL), ...
+
 import os
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
+sys.path.append('../exploratory_analysis/utils')
+from pca_utils import *
 
 def prep_data(data_path='/Users/nimahejazi/Dropbox/159_projData/preprocessed/',subj_num):
   BOLD_file_1 = os.path.join(data_path,'sub'+subj_num+'_BOLD','task001_run001/filtered_func_data_mni'+'.'+'nii.gz')
@@ -84,20 +88,3 @@ def ica_vis(subj_num):
 plot_stat_map(image.index_img(component_img_3, 5), mean_img_3, output_file=os.path.join(data_path,'sub'+subj_num+'_BO\
 LD','task003_run001'+'ica_1'+'.jpg'))
   plot_stat_map(image.index_img(component_img_3, 12), mean_img_3, output_file=os.path.join(data_path,'sub'+subj_num+'_BOLD','task003_run001'+'ica_2'+'.jpg'))
-
-
-
-import project_config
-from sklearn.decomposition import PCA
-
-def first_pcs_removed(data_2d, n_pcs_removed):
-  pca = PCA(n_components=n_pcs_removed)
-  fitted = pca.fit(data_2d).transform(data_2d)
-  reconstruct = pca.inverse_transform(fitted)
-  residuals = data_2d - reconstruct
-  return residuals
-
-def project_onto_first_pcs(data_2d,n_pcs):
-  pca = PCA(n_components=n_pcs)
-  fitted = pca.fit(data_2d).transform(data_2d)
-  return fitted
