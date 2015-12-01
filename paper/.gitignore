@@ -1,6 +1,5 @@
-proposal.aux
-proposal.log
-proposal.synctex.gz
-proposal.bbl
-proposal.blg
-proposal.pdf
+*.aux
+*.log
+*.synctex.gz
+*.bbl
+*.blg
