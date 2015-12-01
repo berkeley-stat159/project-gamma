@@ -81,12 +81,115 @@ activities, instead of just anatomical subdivisions. Two preliminary types of
 analysis are performed and introduced below, along with diagnostic checks of the
 validity of the results. 
 
+For all BOLD datasets used in analysis, we removed the first five images to allow measurements to achieve steady state. They were preprocessed with 1. motion correction (coregistration in time to partially correct for movement during the run and between runs)
+2. temporary high-pass filtering to remove low frequency drifts / noise; 3. registration to a standard anatomical template (the MNI template). Additionally, each image was passed thorugh a gaussian filter of sigma=2. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain are smoothed with meansurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain.
+However, the current analysis was performed without padding because the implementation was very slow.
+
+
 \subsection{Data Analysis}
 
 \subsubsection{Generalized Linear Model}
 
-Before the discussion on the specifics of our GLM, it is worthwhile to discuss the details of the condition files in the dataset because we make use of all condition files in the GLM. The keys in Metadata folder of the dataset does not correpsond to the condition files so the keys and the related descriptions of the condition files are redefined as below...
+Before the discussion on the specifics of our GLM, it is worthwhile to discuss
+the details of the condition files in the dataset because we make use of all
+condition files in the GLM. The keys in Metadata folder of the dataset does not
+correpsond to the condition files so the keys and the related descriptions of
+the condition files are redefined as below. 
 
+\begin{itemize}
+
+\item cond001: Start cues for both blocks of the run.
+
+\item cond002: The visual stimuli (i.e. letters) presenteed to the subject. The
+intensities are all one becasue there is only one homogeneous event type.
+
+\item cond003: The target and non-target events during the run. A target is the event
+that the current letter that is the same as the nth preceeding letter. Note that
+for 0-back, the 0th preceeding letter is pre-specificed before the run instead
+of being presented continuously throughout the run. A non-target is the opposite
+of a target, in which the current letter is not the same. 
+
+\item cond004: Done cues for both blocks of the run.
+
+\item cond005: Start and durations of the two blocks with a rest (i.e. fixation)
+period in between the blocks. This is different from resting-state data, which
+is mentioned in the reference papers but is not included on the OpenfMRI
+website. 
+
+\item cond006: This is unknown and is not explained in the paper.
+
+\item cond007: Errors made by the subject when responding for each letter shown
+whether it was the same as a pre-specified (0-back) or preceding (1,2-back)
+letter.
+
+\end{itemize}
+
+We can now turn to describe the regressors in the GLM on each voxel time
+course. For all convolutions below, we convolve a specified condition file
+on-off time course at a time unit of 0.01 TR with a gamma function and take the
+convolved values at the start of each TR.
+
+\begin{itemize}
+\item reg001: Convolution of target events from cond003. Essentially, we split cond003
+into separate regressors, target and non-target with the assumption that they
+different in the levels of activitities.
+
+\item reg002: Convolution of non-target events from cond003.
+
+\item reg003: On-off time course from cond005. This regressor is included to account
+for mean differences in the two blocks of the same run.
+
+\item reg004: Convolution of start cues from cond001. This is separated from the
+target and non-target regressors in that it is not part of tasks and that it is
+not likely to involve heavy working memory load as tasks.
+
+\item reg005: Convolution of done cues from cond004. It has the same purpose as
+reg004.
+
+\item reg006 and reg007: A linear drift term and a quadratic drift term included as
+potential nuisansance regressors. Their significance is investigated below.
+
+\item reg007: A quadratic drift term includede as a potential nuisansance regressors. 
+
+\item reg008 and reg009: The first two principal components of the data. Based on the
+projections shown below, we decide that the first two are not functional
+features.
+
+\item reg010: Intercept term.
+
+\end{itemize}
+
+%\begin{center}                                                                                                        
+%\includegraphics[width=12cm, height=12cm]{subject_across_methods.jpg}                                               
+%\end{center} 
+
+For each $\beta$ on each voxel time course, a linear regression two-tailed
+t-test is conducted to access whether there is a significant linear relationship
+between the dependent variable Y and the regressor associated with the $\beta$
+with significance levels of 0.05.
+
+null hypothesis: $ \beta = 0$ 
+alternative hypothesis: $\beta \neq 0$
+
+Instead of plotting out the regions of siginifcant p-values, the p-value map of
+the entire brain is presented as results. 
+
+Before performing t-test, we access the validity of t-tests by examining its
+assumptions. The two main assumptions are 1. the residuals of each linear model
+are independent and identically distribued (i.i.d); 2. residuals for the model
+are normally distributed. Shapiro-Wilk Test is performed on the residuals of
+each voxel time course linear model. 37703 out of 207766 voxels fail the
+test. However, when perform a large number of statistical tests, some will have
+p values less than 0.05 purely by chance. To test the normality of several
+models together, three multiple comparison tests, namely, Bonferroni,
+Hochberg's and Benjamini-Hochberg, are performed and results are shows below:
+
+Bonferroni: normality assumption is violated in 6 voxels.
+Hochberg: normality assumption is violated in 262 voxels.
+Benjamini-Hochberg: all of voxels pass the normality test.
+
+In summary, we can conclude that our assumption of normality in residuals is
+generally valid.
 
 \subsubsection{Connectivity Analysis}
 
