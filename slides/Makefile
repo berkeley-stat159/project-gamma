@@ -1,9 +1,9 @@
 .PHONY: all clean
 
-all: clean progress.pdf
+all: clean final_slides.pdf
 
 clean:
-	rm -f progress.pdf
+	rm -f final_slides.pdf
 
-progress.pdf: progress.md
-	pandoc -t beamer -s progress.md -o progress.pdf
+final_slides.pdf: final_slides.md
+	pandoc -t beamer -s final_slides.md -o final_slides.pdf
