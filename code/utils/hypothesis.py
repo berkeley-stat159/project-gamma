@@ -12,7 +12,7 @@ def rse(X,Y, betas_hat):
 
 def perform_t_tests(X, betas_hat, Y, target_beta):
   """
-  Perform one-sided t test w.r.t a beta against the null hypothesis that it is
+  Perform two-sided t test w.r.t a beta against the null hypothesis that it is
   zero for a voxel time course. Obtain p values for t value using its cdf.
   """
   s_sq, df = rse(X, Y, betas_hat)
@@ -22,4 +22,4 @@ def perform_t_tests(X, betas_hat, Y, target_beta):
   t_values = betas_hat[target_beta, :] / sd_beta
   p_values = 1 - np.array([t_distribution.cdf(i, df) for i in t_values])
 
-  return p_values
+  return p_values * 2

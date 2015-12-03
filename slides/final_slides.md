@@ -2,8 +2,6 @@
 % Nima Hejazi, Feng Lin, Luyun Zhao, Xinyue Zhou
 % December 1, 2015
 
-# Background
-
 ## Essential Background
 
 - "Working memory in healthy and schizophrenic individuals"
@@ -16,13 +14,18 @@
 
 ## Goals (GLM)
 
-- A target is the event that the current letter that is the same as the nth preceeding letter
-- A non-target is the opposite of a target, in which the current letter is not the same
-- An activation cluster: to a group of neighboring voxels activated beyond certain statistical threshold (t-test p value) by defined events
-- Goal of GLM: detect the activation clusters of target and non-target events in one subject in the control (healthy) group
-- Subgoals: 
-  (1) Compare 0-back and 2-back tasks for one subject
-  (2) Identify noise regressors so that we can remove them in data for connectivity analysis
+- Goal of GLM: detect the activation clusters of target and non-target events in one control subject
+- Subgoals:
+
+	(1) Compare 0-back and 2-back tasks for one subject
+	(2) Identify noise regressors so that we can remove them from data for connectivity analysis
+
+- Definitions:
+
+	(1) A target: the event that the current letter is the same as the nth preceeding letter
+	(2) A non-target: the opposite of a target, in which the current letter is not the same
+	(3) An activation cluster: a group of neighboring voxels activated beyond certain statistical threshold (t-test p value) by defined events
+
 
 ## Goals (Connectivity)
 
@@ -36,39 +39,48 @@
 ## The Method (GLM - Confition Files)
 
 - cond001: Start cues for both blocks of the run
-- cond002: The letters presenteed to the subject. The intensities are all one becasue there is only one homogeneous event type
-- cond003: The target and non-target events during the run
+- cond002: Letters presenteed to the subject
+- cond003: Target and non-target events during the run
 - cond004: Done cues for both blocks of the run
-- cond005: Start and durations of the two blocks with a rest (i.e. fixation) period in between the blocks.
-- cond006: Excludede; Unknown and unexplained in the paper
-- cond007: Errors made by the subject when responding for each letter shown whether it was the same as a pre-specified (0-back) or preceding (1,2-back) letter
+- cond005: Start times and durations of the two blocks
+- cond006: Excluded; Unknown and not explained in the paper
+- cond007: Errors made by the subject: misidentifying either a target or a non-target
 
 
+## The Method (GLM - Functional Regressors)
 
-## The Method (GLM - Regressors)
+- Convolve neural predictions rescaled at a time unit of 0.01 TR with a gamma function
+- Take the convolved values at the start of each TR
+- Regressors:
 
-- Condition file on-off time course at a time unit of 0.01 TR with a gamma function and take the convolved values at the start of each TR
-- reg001: Convolution of target events
-- reg002: Convolution of non-target events
-- reg003: On-off time course for the two blocks
-- reg004: Convolution of start cues. Separated from the target and non-target regressors because it is not likely to involve heavy working memory load compared to task regressors
-- reg005: Convolution of done cues
-- reg006 and reg007: A linear drift term and a quadratic drift term as potential nuisansance regressors. Their significance is investigated below
-[graph]
-- reg008 and reg009: The first two principal components of the data. Based on the projections shown below, we decide that the first two are not functional features.
-![Control subject, First four principal components]
-- reg010: Intercept term.
+	(1) reg001: Convolution of target events
+	(2) reg002: Convolution of non-target events
+	(3) reg003: On-off neural predictions for the two blocks: account for block differences
+	(4) reg004 & reg005: Convolution of start cues and done cues: Not likely to involve heavy working memory load compared to task-related regressors
+
+## The Method (GLM - Noise Regressors)
+
+- reg006 & reg007: A linear drift term and a quadratic drift term as potential nuisansance regressors
+- reg008 and reg009: The first two principal components of the data. Based on the projections shown below, we decide that the first two are not functional features
+- reg010: Intercept
+
+## The Method (GLM - Noise Regressors)
+![Control subject, First four principal components](../paper/figs/glm_graphs/sub011_task001_first_four_pcs.png)
+
+## The Method (GLM - Noise Regressors)
+![Noise regressors, Betas and p values](../paper/figs/glm_graphs/other_betas_map.png)
 
 ## The Method (GLM - Analysis)
-- Standard processed brain -> pad brain boundary -> pass through Gaussian filter of sigma=2 -> GLM
+- Standard processed brain -> pad brain boundary -> pass through Gaussian filter of $\sigma=2$ -> GLM for each voxel time course
 - For each $\beta$ on each voxel time course, a linear regression two-tailed t-test
-    (1) null hypothesis: $\beta=0$ 
+    (1) null hypothesis: $\beta=0$
     (2) alternative hypothesis: $\beta\neq0$
-- Assumptions: 
-    (1) Residuals of each linear model are independent and identically distribued (i.i.d)
-    (2) Residuals for the model are normally distributed
-        i. Shapiro-Wilk Test per voxel: 37703 out of 207766 voxels failed
-        ii. Test normality of several models together. perform Hochberg (6 / 207766 voxels failed) and Benjamini-Hochberg tests (all passed)
+- Assumption 1: Residuals of each linear model are independent and identically distribued (i.i.d)
+- Assumption 2: Residuals for the model are normally distributed
+    (1) Shapiro-Wilk Test per voxel: 37703 out of 207766 voxels failed
+    (2) Testing normality of several models together
+        i. Hochberg (6 / 207766 voxels failed)
+        ii. Benjamini-Hochberg tests (all passed)
 
 ## Method (Connectivity)
 
