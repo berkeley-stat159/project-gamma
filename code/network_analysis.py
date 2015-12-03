@@ -1,9 +1,11 @@
-import project_config
 from __future__ import division
+import project_config
 from scipy import stats
-from general_utils import prepare_img_single, prepare_mask
+from conv import conv_target_non_target, conv_std
+from stimuli_revised import events2neural_std
+from gaussian_filter import spatial_smooth
+from general_utils import prepare_img_single, prepare_mask, prepare_data_single, form_cond_filepath
 from os.path import join
-from pca_utils import first_pcs_removed
 import numpy as np
 import math
 import nibabel as nib
@@ -11,6 +13,7 @@ import numpy.linalg as npl
 import roi_extraction
 import itertools
 
+import pdb
 
 file_name_con = "/Volumes/G-DRIVE mobile USB/fmri_con/sub011_task001_run001_func_data_mni.nii.gz"
 file_name_scz = "/Volumes/G-DRIVE mobile USB/fmri_scz/sub001_task001_run001_func_data_mni.nii.gz"
@@ -35,10 +38,11 @@ def roi_cor (data, roi1,roi2):
 	timecourse2 = [data[roi2[j]] for j in range(0,len(roi2))]
 	avg_time2 = np.mean(timecourse2,axis=0)
 	cor = np.corrcoef(avg_time1,avg_time2)[1,0]
-	if cor >= 1:
-	 	cor=0.99999
-	z = 1/2*(math.log((1+cor)/(1-cor)))
-	return z
+	# if cor >= 1:
+	#  	cor=0.99999
+	# z = 1/2*(math.log((1+cor)/(1-cor)))
+	# return z
+	return cor
 
 def network_cor(data, net1, net2, is_same):
 	"""
@@ -59,7 +63,6 @@ def network_cor(data, net1, net2, is_same):
 				roi_name_2 = roi_names_2[j]
 				val = roi_cor(data,net1[roi_name_1],net2[roi_name_2])
 				z_values_list.append(val)
-
 		return z_values_list
 
 	else:
@@ -102,17 +105,73 @@ def expand_dic(dic, mm_to_vox, roi_extractor):
 			expanded_dic[i][roi_name] = roi_extractor.get_voxels(mm_to_vox, dic[i][roi_name])
 	return expanded_dic
 
-def preprocessing_pipeline(subject_num, task_num, standard_source_prefix):
+def preprocessing_pipeline(subject_num, task_num, standard_source_prefix, cond_filepath_prefix):
 
   img = prepare_img_single(subject_num, task_num, True, standard_source_prefix)
-  data_4d = img.get_data()[...,5:]
+  data = img.get_data()[..., 5:]
 
-  in_brain_mask, in_brain_vols = prepare_mask(data_4d, CUTOFF)
+  n_trs = data.shape[-1] + 5
 
-  residuals = first_pcs_removed(in_brain_vols, 2)
+  cond_filename_003 = form_cond_filepath(subject_num, task_num, "003", cond_filepath_prefix)
+  cond_filename_005 = form_cond_filepath(subject_num, task_num, "005", cond_filepath_prefix)
+  cond_filename_001 = form_cond_filepath(subject_num, task_num, "001", cond_filepath_prefix)
+  cond_filename_004 = form_cond_filepath(subject_num, task_num, "004", cond_filepath_prefix)
+  cond_filename_007 = form_cond_filepath(subject_num, task_num, "007", cond_filepath_prefix)
 
-  b_vols = np.zeros(data_4d.shape)
-  b_vols[in_brain_mask] = residuals
+  target_convolved, nontarget_convolved, error_convolved = conv_target_non_target(n_trs, cond_filename_003, cond_filename_007, TR, tr_divs = 100.0)
+  target_convolved, nontarget_convolved, error_convolved = target_convolved[5:], nontarget_convolved[5:], error_convolved[5:]
+
+  block_regressor = events2neural_std(cond_filename_005, TR, n_trs)[5:]
+
+  block_start_cues = conv_std(n_trs, cond_filename_001, TR)[5:]
+  block_end_cues = conv_std(n_trs, cond_filename_004, TR)[5:]
+
+  linear_drift = np.linspace(-1, 1, n_trs)
+  qudratic_drift = linear_drift ** 2
+  qudratic_drift -= np.mean(qudratic_drift)
+
+  linear_drift = linear_drift[5:]
+  qudratic_drift = qudratic_drift[5:]
+
+  in_brain_mask, _ = prepare_mask(data, CUTOFF)
+
+  pad_thickness = 2.0
+  sigma = 2.0
+
+  b_vols = spatial_smooth(data, in_brain_mask, pad_thickness, sigma, False)
+  in_brain_tcs = b_vols[in_brain_mask]
+
+  Y = in_brain_tcs.T
+  Y_demeaned = Y - np.mean(Y, axis=1).reshape([-1, 1])
+  unscaled_cov = Y_demeaned.dot(Y_demeaned.T)
+  U, S, V = npl.svd(unscaled_cov)
+
+  n_betas = 10
+
+  X = np.ones((n_trs - 5, n_betas))
+  X[:, 0] = target_convolved
+  X[:, 1] = nontarget_convolved
+  X[:, 2] = error_convolved
+  X[:, 3] = block_regressor
+  X[:, 4] = block_start_cues
+  X[:, 5] = block_end_cues
+  X[:, 6] = linear_drift
+  X[:, 7] = qudratic_drift
+  X[:, 8] = U[:,0]
+  # X[:, 9] = U[:,1]
+  # 9th column is the intercept
+
+  B = npl.pinv(X).dot(Y)
+
+  residuals = in_brain_tcs - X.dot(B).T
+
+  B[(3,4,5,6,7,8,9),:] = 0
+
+  # project Y onto the functional betas
+  functional_Y = X.dot(B).T
+
+  b_vols = np.zeros((data.shape))
+  b_vols[in_brain_mask, :] = functional_Y + residuals
 
   return b_vols, img, in_brain_mask
 
@@ -127,10 +186,10 @@ def subject_z_values(img, data, dist_from_center, dic, in_brain_mask):
 	mean_z_values.update(z_bewteen(data, expanded_dic))
 	return mean_z_values
 
-def group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping = None):
+def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, grouping = None):
 	task_nums = ("001", "002", "003")
   
-	# level 1: task; level 2: group name; level 3: network name; level 3: a list of mean z-values
+	# level 1: task; level 2: group name; level 3: network name; level 4: a list of mean z-values
 	z_values_store = {"001":{"con":{}, "scz":{}},
 										"002":{"con":{}, "scz":{}},
 										"003":{"con":{}, "scz":{}}}
@@ -140,11 +199,12 @@ def group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping
 	for group, subject_nums in group_info.items():
 		for sn in subject_nums:
 			for tn in task_nums:
-				data, img, in_brain_mask = preprocessing_pipeline(sn, tn, join(standard_group_source_prefix, group))
+				data, img, in_brain_mask = preprocessing_pipeline(sn, tn, join(standard_group_source_prefix, group), cond_filepath_prefix)
 				mean_z_values_per_net_pair = subject_z_values(img, data, dist_from_center, dic, in_brain_mask)
+
 				for network_pair_name, z_value in mean_z_values_per_net_pair.items():
-					if network_pair_name not in z_values_store[tn]:
-						group_name = "con" if group in ("fmri_con", "fmri_con_sib", "fmri_scz_sib") else "scz"
+					group_name = "con" if group in ("fmri_con", "fmri_con_sib") else "scz"
+					if network_pair_name not in z_values_store[tn][group_name]:
 						z_values_store[tn][group_name][network_pair_name] = [z_value]
 					else:
 						z_values_store[tn][group_name][network_pair_name].append(z_value)
@@ -153,30 +213,31 @@ def group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping
 dic = roi_extraction.dic
 dist_from_center = 4
 CUTOFF = project_config.MNI_CUTOFF
+TR = project_config.TR
 
-mm_to_vox_con = npl.inv(img_con.affine)
-mm_to_vox_scz = npl.inv(img_scz.affine)
+# mm_to_vox_con = npl.inv(img_con.affine)
+# mm_to_vox_scz = npl.inv(img_scz.affine)
 
-in_brain_mask_con = np.mean(data_con, axis=-1) > CUTOFF
-in_brain_mask_scz = np.mean(data_scz, axis=-1) > CUTOFF
+# in_brain_mask_con = np.mean(data_con, axis=-1) > CUTOFF
+# in_brain_mask_scz = np.mean(data_scz, axis=-1) > CUTOFF
 
-min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
-min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
-shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
-avoid overlap.
+# min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
+# min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
+# shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
+# avoid overlap.
 
-roi_extractor_con = roi_extraction.SphereExtractor(in_brain_mask_con, dist_from_center)
-roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_center)
+# roi_extractor_con = roi_extraction.SphereExtractor(in_brain_mask_con, dist_from_center)
+# roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_center)
 
-expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
-expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
+# expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
+# expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
 
-z_values_per_network_con = z_within(data_con, expanded_dic_con)
+# z_values_per_network_con = z_within(data_con, expanded_dic_con)
 
-z_values_per_network_scz = z_within(data_scz, expanded_dic_scz)
+# z_values_per_network_scz = z_within(data_scz, expanded_dic_scz)
 
-z_values_bnet_con = z_bewteen(data_con, expanded_dic_con)
-z_values_bnet_scz = z_bewteen(data_scz, expanded_dic_scz)
+# z_values_bnet_con = z_bewteen(data_con, expanded_dic_con)
+# z_values_bnet_scz = z_bewteen(data_scz, expanded_dic_scz)
 
 # z_values result:
 
@@ -191,10 +252,14 @@ z_values_bnet_scz = z_bewteen(data_scz, expanded_dic_scz)
 # In the paper, it is said the connectivity of bFP-CER and bCER-CO are reduced for SCZ patients.
 
 standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
+cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
 
-small_group_info = {"fmri_con":("011", "012", "015", "020"),
-          "fmri_con_sib":("010", "013", "014", "016"),
-          "fmri_scz":("007", "009", "017", "027"),
-          "fmri_scz_sib":("006", "008", "018", "019")}
+small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
+          "fmri_con_sib":("010", "013", "014", "021", "022", "038"),
+          "fmri_scz":("007", "009", "017", "031"),
+          "fmri_scz_sib":("006", "008", "018", "024")}
 
-z_values_store = group_z_values(standard_group_source_prefix, dist_from_center, dic, grouping=small_group_info)
+# small_group_info = {"fmri_con":("011",)}
+
+
+z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, grouping=small_group_info)
