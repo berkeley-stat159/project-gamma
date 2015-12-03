@@ -175,21 +175,21 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   p_vols_beta_1[in_brain_mask] = p_values
 
   # test p values of other betas
-  p_values = perform_t_tests(X, B, Y, 2)
-  p_vols_beta_2 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_2[in_brain_mask] = p_values
+  # p_values = perform_t_tests(X, B, Y, 2)
+  # p_vols_beta_2 = np.zeros((data.shape[0:-1]))
+  # p_vols_beta_2[in_brain_mask] = p_values
 
-  p_values = perform_t_tests(X, B, Y, 3)
-  p_vols_beta_3 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_3[in_brain_mask] = p_values
+  # p_values = perform_t_tests(X, B, Y, 3)
+  # p_vols_beta_3 = np.zeros((data.shape[0:-1]))
+  # p_vols_beta_3[in_brain_mask] = p_values
 
-  p_values = perform_t_tests(X, B, Y, 4)
-  p_vols_beta_4 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_4[in_brain_mask] = p_values
+  # p_values = perform_t_tests(X, B, Y, 4)
+  # p_vols_beta_4 = np.zeros((data.shape[0:-1]))
+  # p_vols_beta_4[in_brain_mask] = p_values
 
-  p_values = perform_t_tests(X, B, Y, 5)
-  p_vols_beta_5 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_5[in_brain_mask] = p_values
+  # p_values = perform_t_tests(X, B, Y, 5)
+  # p_vols_beta_5 = np.zeros((data.shape[0:-1]))
+  # p_vols_beta_5[in_brain_mask] = p_values
 
   p_values = perform_t_tests(X, B, Y, 6)
   p_vols_beta_6 = np.zeros((data.shape[0:-1]))
@@ -199,16 +199,26 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   p_vols_beta_7 = np.zeros((data.shape[0:-1]))
   p_vols_beta_7[in_brain_mask] = p_values
 
+  p_values = perform_t_tests(X, B, Y, 8)
+  p_vols_beta_8 = np.zeros((data.shape[0:-1]))
+  p_vols_beta_8[in_brain_mask] = p_values
+
+  p_values = perform_t_tests(X, B, Y, 9)
+  p_vols_beta_9 = np.zeros((data.shape[0:-1]))
+  p_vols_beta_9[in_brain_mask] = p_values
+
   
   # check p values for other betas
-  plot_beta_p_values(p_vols_beta_2, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  plot_beta_p_values(p_vols_beta_3, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  plot_beta_p_values(p_vols_beta_4, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  plot_beta_p_values(p_vols_beta_5, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  plot_beta_p_values(p_vols_beta_6, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  plot_beta_p_values(p_vols_beta_7, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_2, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_3, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_4, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_5, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_6, in_brain_mask, brain_structure, nice_cmap_values, 40)
+  # plot_beta_p_values(p_vols_beta_7, in_brain_mask, brain_structure, nice_cmap_values, 40)
 
-  return b_vols, in_brain_mask, U, Y, data, p_vols_beta_0, p_vols_beta_1  
+  p_vols_beta_6_to_9 = [p_vols_beta_6, p_vols_beta_7, p_vols_beta_8, p_vols_beta_9]
+
+  return b_vols, in_brain_mask, U, Y, data, p_vols_beta_0, p_vols_beta_1, p_vols_beta_6_to_9  
 
 if __name__ == "__main__":
 
@@ -230,8 +240,63 @@ if __name__ == "__main__":
   brain_structure = nib.load(brain_structure_path).get_data()
   nice_cmap_values = np.loadtxt(nice_cmap_values_path)
   
-  b_vols_smooth_0_back, in_brain_mask, U, Y, data, p_vols_0_back_beta_0, p_vols_0_back_beta_1 = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
+  b_vols_smooth_0_back, in_brain_mask, U, Y, data, p_vols_0_back_beta_0, p_vols_0_back_beta_1, p_vols_beta_6_to_9 = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
 
+
+  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
+
+
+  plt.subplot(3,2,1)
+  plt.title("z=%d,%s" % (40, "linear drift,betas"))
+  b_vols_smooth_0_back[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth_0_back[...,40,6], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,3)
+  plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
+  b_vols_smooth_0_back[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth_0_back[...,40,7], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,5)
+  plt.title("z=%d,%s" % (40, "second PC,betas"))
+  b_vols_smooth_0_back[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth_0_back[...,40,9], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,2)
+  plt.title("z=%d,%s" % (40, "linear drift,betas"))
+  p_vols_beta_6_to_9[0][~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(p_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,4)
+  plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
+  p_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(p_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,6)
+  plt.title("z=%d,%s" % (40, "second PC,betas"))
+  p_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(p_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.savefig(output_filename + "other_betas_map.png", format='png', dpi=500)  
+
+  plt.show()
 
   plot_target_betas_n_back(p_vols_0_back_beta_0, b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, "0")
 
