@@ -1,11 +1,11 @@
 % Project Gamma Progress Report
 % Nima Hejazi, Feng Lin, Luyun Zhao, Xinyue Zhou
-% December 1, 2015
+% December 3, 2015
 
 ## Essential Background
 
 - "Working memory in healthy and schizophrenic individuals"
-- Accession number: ds000115 (from the OpenFMRI.org website)
+- Accession number: ds115 (from the OpenFMRI.org website)
 - The paper(s) used ANOVA to explore within/between network connectivity wrt working memory measures.
 - The goal was to identify regions contributing to impaired cognitive function in schizophrenics.
 - The method was fcMRI, collecting activation and connectivity (resting) fMRI data.
@@ -86,8 +86,8 @@
 
 - Remove noise regressors identified in the GLM from the voxel time series
 - Extract the voxels per ROI and validate: given the center index and the diameter
-	(1) ROIs are non-overlapping
-	(2) regions vs cubic regions
+	(1) sphere regions instead of cubic regions
+	(2) ROIs are non-overlapping
 
 
 ## Method (Connectivity)
@@ -99,8 +99,18 @@
 	(4) for several subjects, group the r-values into CON and SCZ group based on the category of the subjects
 	pic to explain the process
 
-## Results (GLM)
+## Results I (GLM)
 
+- Use of the GLM approach reveals that the 2-back task activate occipital and prefrontal regions more, as would be expected based on the higher cognitive load associated with these tasks.
+- The coefficient and p-value maps displayed in the following slides illustrate the activations across several axial slices. 
+- The target 2-back task seems to activate many of the regions we would expect by a task associated with both visual processing and working memory.
+- The non-target 2-back task activates a wider variety of regions, highlighting a difference in the neural dynamics between the two different types of tasks.
+
+## Results II (GLM)
+![Betas and p-values from 2-back tasks](../paper/figs/glm_graphs/sub011_target_betas_2_back.png)
+
+## Results III (GLM)
+![Betas and p-values from 2-back tasks](../paper/figs/glm_graphs/sub011_nontarget_betas_2_back.png)
 
 ## Results (Connectivity)
 - Analyze on 20 subjects, 12 SCZ and 8 CON 
