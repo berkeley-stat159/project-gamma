@@ -21,7 +21,7 @@ def test_events2neural_target_non_target():
   actual_target_neural, actual_nontarget_neural, actual_error_neural = stimuli_revised.events2neural_target_non_target(task_fname, error_fname, 1, 10, TR=1)
   expected_target_neural = np.array([1., 1., 0., 0., 0., 0., 0., 0., 0., 0.])
   expected_nontarget_neural = np.array([ 0., 0.,  0.,  1.,  1., 0., 0., 0., 0., 0.])
-  expected_error_neural = np.array([ 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+  expected_error_neural = np.array([0.] * 10)
   assert_almost_equal(actual_error_neural, expected_error_neural)
   assert_almost_equal(actual_target_neural, expected_target_neural)
   assert_almost_equal(actual_nontarget_neural, expected_nontarget_neural)
