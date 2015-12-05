@@ -14,7 +14,7 @@ import project_config
 import numpy as np
 import nibabel as nib
 from kmeans_analysis import plot_all
-from general_utils import vol_index_iter, prepare_data_single, index_iter_2d, prepare_mask, form_cond_filepath
+from general_utils import vol_index_iter, prepare_standard_data, plane_index_iter, prepare_mask, form_cond_filepath
 import matplotlib.pyplot as plt
 from correlation import correlation_map_linear, correlation_map_without_convoluation_linear
 from conv import conv_main
@@ -36,7 +36,7 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num):
     ax.imshow(corrs_square_wave[...,depth], interpolation="nearest", cmap="gray")
 
     plane = corrs_square_wave[...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.20]
+    points = [(i[1],i[0]) for i in plane_index_iter(plane.shape) if plane[i] >= 0.20]
     if len(points) > 0:
       ax.scatter(*zip(*points))
 
@@ -47,7 +47,7 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num):
     ax.imshow(corrs_conv[...,depth], interpolation="nearest", cmap="gray")
 
     plane = corrs_conv[...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.20]
+    points = [(i[1],i[0]) for i in plane_index_iter(plane.shape) if plane[i] >= 0.20]
     if len(points) > 0:
       ax.scatter(*zip(*points))
 
@@ -58,7 +58,7 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num):
 
 def prepare_residuals(subject_num, task_num, standard_source_prefix):
 
-  data_4d = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+  data_4d = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   # mean_vols = np.mean(data_4d, axis=-1)
   # plt.hist(np.ravel(mean_vols), bins=100)
@@ -104,7 +104,7 @@ def plot_group(group_activation_result, output_filename):
     ax.imshow(group_activation_result[group][...,depth], interpolation="nearest", cmap="gray")
 
     plane = group_activation_result[group][...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.10]
+    points = [(i[1],i[0]) for i in plane_index_iter(plane.shape) if plane[i] >= 0.10]
     if len(points) > 0:
       ax.scatter(*zip(*points))
 

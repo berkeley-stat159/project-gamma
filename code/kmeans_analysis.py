@@ -4,7 +4,7 @@ import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
 from pca_utils import first_pcs_removed
-from general_utils import prepare_data_single, prepare_mask
+from general_utils import prepare_standard_data, prepare_mask
 from sklearn.decomposition import PCA
 
 
@@ -54,7 +54,7 @@ def plot_all(result_labels_1, result_labels_2, subject_num_1, subject_num_2, ana
 
 def prepare_residuals(subject_num, task_num, standard_source_prefix):
 
-  data_4d = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+  data_4d = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   # mean_vols = np.mean(data_4d, axis=-1)
   # plt.hist(np.ravel(mean_vols), bins=100)

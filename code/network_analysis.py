@@ -4,7 +4,7 @@ from scipy import stats
 from conv import conv_target_non_target, conv_std
 from stimuli_revised import events2neural_std
 from gaussian_filter import spatial_smooth
-from general_utils import prepare_img_single, prepare_mask, prepare_data_single, form_cond_filepath
+from general_utils import prepare_standard_img, prepare_mask, prepare_standard_data, form_cond_filepath
 from os.path import join
 import numpy as np
 import math
@@ -107,7 +107,7 @@ def expand_dic(dic, mm_to_vox, roi_extractor):
 
 def preprocessing_pipeline(subject_num, task_num, standard_source_prefix, cond_filepath_prefix):
 
-  img = prepare_img_single(subject_num, task_num, True, standard_source_prefix)
+  img = prepare_standard_img(subject_num, task_num, standard_source_prefix)
   data = img.get_data()[..., 5:]
 
   n_trs = data.shape[-1] + 5

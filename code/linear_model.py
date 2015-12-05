@@ -3,7 +3,7 @@ import numpy as np
 import numpy.linalg as npl
 import matplotlib.pyplot as plt
 import nibabel as nib
-from general_utils import form_cond_filepath, prepare_data_single, prepare_mask
+from general_utils import form_cond_filepath, prepare_standard_data, prepare_mask
 from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
 from gaussian_filter import spatial_smooth
@@ -97,7 +97,7 @@ def plot_nontarget_betas_n_back(p_vols_n_back_beta_1, b_vols_smooth_n_back, in_b
 
 def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num):
 
-  data = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+  data = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   n_trs = data.shape[-1] + 5
 

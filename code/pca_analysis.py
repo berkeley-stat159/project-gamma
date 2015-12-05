@@ -1,6 +1,6 @@
 import project_config
 from pca_utils import project_onto_first_pcs
-from general_utils import prepare_data_single, prepare_mask
+from general_utils import prepare_standard_data, prepare_mask
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
   subject_num = "011"
   task_num = "001"
 
-  data_4d = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+  data_4d = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   mean_vols = np.mean(data_4d, axis=-1)
   plt.hist(np.ravel(mean_vols), bins=100)
