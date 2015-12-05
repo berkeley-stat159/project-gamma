@@ -27,8 +27,8 @@ def test_plane_index_iter():
 def test_data_fetching():
   expected = nib.Nifti1Image(np.ones((2,2,2,6)),np.eye(4))
   filename = 'sub001_task001_run001_func_data_mni.nii.gz'
-  nib.save(expected, os.path.join(os.path.dirname(__file__), 'tmp', filename))
-  source_prefix = os.path.join(os.path.dirname(__file__), 'tmp')
+  nib.save(expected, os.path.join(os.path.dirname(__file__), 'test_data', filename))
+  source_prefix = os.path.join(os.path.dirname(__file__), 'test_data')
   actual = general_utils.prepare_standard_img('001', '001', source_prefix)
   assert_almost_equal(actual.get_data(), expected.get_data())
 
@@ -38,8 +38,8 @@ def test_data_fetching():
   os.remove(os.path.join(source_prefix, filename))
 
 def test_form_cond_filepath():
-  expected = os.path.join(os.path.dirname(__file__), "tmp", "sub001", "model", "model001", "onsets", "task001_run001", "cond001.txt")
-  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), 'tmp')
+  expected = os.path.join(os.path.dirname(__file__), "test_data", "sub001", "model", "model001", "onsets", "task001_run001", "cond001.txt")
+  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), 'test_data')
   actual = general_utils.form_cond_filepath("001", "001", "001", cond_filepath_prefix)
   assert_equal(actual, expected)
 
