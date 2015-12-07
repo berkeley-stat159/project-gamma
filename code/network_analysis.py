@@ -15,13 +15,6 @@ import itertools
 
 import pdb
 
-file_name_con = "/Volumes/G-DRIVE mobile USB/fmri_con/sub011_task001_run001_func_data_mni.nii.gz"
-file_name_scz = "/Volumes/G-DRIVE mobile USB/fmri_scz/sub001_task001_run001_func_data_mni.nii.gz"
-img_con = nib.load(file_name_con)
-img_scz = nib.load(file_name_scz)
-data_con = img_con.get_data()[..., 5:]
-data_scz = img_scz.get_data()[..., 5:]
-
 def roi_cor (data, roi1,roi2):
 	"""
 	#input: 
@@ -38,10 +31,7 @@ def roi_cor (data, roi1,roi2):
 	timecourse2 = [data[roi2[j]] for j in range(0,len(roi2))]
 	avg_time2 = np.mean(timecourse2,axis=0)
 	cor = np.corrcoef(avg_time1,avg_time2)[1,0]
-	# if cor >= 1:
-	#  	cor=0.99999
-	# z = 1/2*(math.log((1+cor)/(1-cor)))
-	# return z
+
 	return cor
 
 def network_cor(data, net1, net2, is_same):
@@ -158,7 +148,6 @@ def preprocessing_pipeline(subject_num, task_num, standard_source_prefix, cond_f
   X[:, 6] = linear_drift
   X[:, 7] = qudratic_drift
   X[:, 8] = U[:,0]
-  # X[:, 9] = U[:,1]
   # 9th column is the intercept
 
   B = npl.pinv(X).dot(Y)
@@ -186,15 +175,17 @@ def subject_z_values(img, data, dist_from_center, dic, in_brain_mask):
 	mean_z_values.update(z_bewteen(data, expanded_dic))
 	return mean_z_values
 
-def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, grouping = None):
+def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, group_info):
 	task_nums = ("001", "002", "003")
   
-	# level 1: task; level 2: group name; level 3: network name; level 4: a list of mean z-values
+	# store layout
+  #   level 1: task (0-back, 1-back, 2-back)
+  #   level 2: group name (CON, SCZ)
+  #   level 3: network name
+  #   level 4: a list of ROI-ROI correlations
 	z_values_store = {"001":{"con":{}, "scz":{}},
 										"002":{"con":{}, "scz":{}},
 										"003":{"con":{}, "scz":{}}}
-
-	group_info = grouping if grouping else project_config.group
   
 	for group, subject_nums in group_info.items():
 		for sn in subject_nums:
@@ -215,42 +206,6 @@ dist_from_center = 4
 CUTOFF = project_config.MNI_CUTOFF
 TR = project_config.TR
 
-# mm_to_vox_con = npl.inv(img_con.affine)
-# mm_to_vox_scz = npl.inv(img_scz.affine)
-
-# in_brain_mask_con = np.mean(data_con, axis=-1) > CUTOFF
-# in_brain_mask_scz = np.mean(data_scz, axis=-1) > CUTOFF
-
-# min_roi_roi_dist = roi_extraction.min_roi_roi_distance(dic)
-# min_roi_roi_dist is 16.49 mm. The choice of ROI diameter in the reference paper is 15mm. This
-# shows the paper probably chose the ROI diameter based on the min pairwise roi distance to
-# avoid overlap.
-
-# roi_extractor_con = roi_extraction.SphereExtractor(in_brain_mask_con, dist_from_center)
-# roi_extractor_scz = roi_extraction.SphereExtractor(in_brain_mask_scz, dist_from_center)
-
-# expanded_dic_con = expand_dic(dic, mm_to_vox_con, roi_extractor_con)
-# expanded_dic_scz = expand_dic(dic, mm_to_vox_scz, roi_extractor_scz)
-
-# z_values_per_network_con = z_within(data_con, expanded_dic_con)
-
-# z_values_per_network_scz = z_within(data_scz, expanded_dic_scz)
-
-# z_values_bnet_con = z_bewteen(data_con, expanded_dic_con)
-# z_values_bnet_scz = z_bewteen(data_scz, expanded_dic_scz)
-
-# z_values result:
-
-# 		wDMN  	  wFP 	  wCER 		wCO
-# SCZ     0.3772   0.4749  0.8110    0.5984
-# CON     0.6591   0.5506  0.5294    0.6857
-
-# 		bDMN-FP    bDMN-CER   bDMN-CO   bFP-CER   bFP-CO   bCER-CO
-# CON 	0.4966	   0.3411     0.3652     0.3778    0.4737   0.3187
-# SCZ		0.3461     0.4329     0.2381     0.4344    0.3586   0.3219  
-
-# In the paper, it is said the connectivity of bFP-CER and bCER-CO are reduced for SCZ patients.
-
 standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
 cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
 
@@ -259,7 +214,4 @@ small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
           "fmri_scz":("007", "009", "017", "031"),
           "fmri_scz_sib":("006", "008", "018", "024")}
 
-# small_group_info = {"fmri_con":("011",)}
-
-
-z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, grouping=small_group_info)
+z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)

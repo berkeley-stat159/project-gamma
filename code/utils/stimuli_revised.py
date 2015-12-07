@@ -29,7 +29,6 @@ def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR 
         duration_seconds = cond_data[:, 1]
         amplitudes = cond_data[:, 2]
         onsets_in_scans = onsets_seconds / TR
-        print tr_divs
         high_res_times = np.arange(0, n_trs, 1 / tr_divs) * TR
         high_res_neural = np.zeros(high_res_times.shape)
         high_res_onset_indices = onsets_in_scans * tr_divs

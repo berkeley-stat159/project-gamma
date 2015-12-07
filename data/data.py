@@ -4,7 +4,8 @@ import hashlib
 import os
 
 
-d = {'ds107_sub001_highres.nii': "fd733636ae8abe8f0ffbfadedd23896c"}
+d = {"actc.txt": 'c9c2130e8ad03698be00afe471038af1',
+     'mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii': 'fb5d52b1162dcf111e2a9b3825c030ae'}
 
 
 def generate_file_md5(filename, blocksize=2**20):
