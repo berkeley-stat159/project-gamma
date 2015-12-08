@@ -47,15 +47,15 @@ activities of these regions may differ across health states \cite{repovs2011,rep
 
 \subsection{Generalized Linearl Model}
 
-The goal of GLM with respect to our dataset is to detect the activation clusters of target and non-target events in one subject in the control (healthy) group. An activation cluster refers to a group of neighboring voxels activated beyond certain statistical threshold (t-test p value) by defined events. We did not set up a quantifiable criterion for example, to definitively separate one cluster from a neighboring cluster, but provide qualitative evidence in terms of beta and p values map. The target and non-target events are defined in the method section below. 
+The goal of GLM with respect to our dataset is to detect the activation clusters of target and non-target events in one subject in the control (healthy) group. An activation cluster refers to a group of neighboring voxels activated beyond certain statistical thresholds (e.g., t-test, p-values) by defined events. We did not set up a quantifiable criterion -- for example, to definitively separate one cluster from a neighboring cluster, but provide qualitative evidence in terms of coefficient and p-value maps. Please see the methods section that follows for the target and non-target events definitions. 
 
-Additionally, GLM is performed for both 0-back and 2-back tasks for the subject so that we can assess the effect of different memory load on activation clusters. Also, through the GLM, we can access the noise structure of the data so that we can remove the noise regressors in connectivity analysis.
+GLM is performed for both 0-back and 2-back tasks for the subject so that we can assess the effect of different memory loads on activation clusters. Through the GLM, we are better able to access the noise structure of the data, so that we can remove the noise regressors as a step towards a connectivity analysis.
 
-Besides analysis pertaining to our goals, we performed various exploratory data analysis (EDA) such as k-means, correlations with different baseline functions that helped in understanding the data. The details of EDA and discussion of the results are in the appendix. 
+Besides analyses pertaining to the goals enumerated above, we performed various exploratory data analyses (EDA), such as K-Means clustering, correlations with different baseline functions that helped in understanding the data, and more. The details of the EDA and relevant discussion of the results can be found in the appendix. 
 
 \subsection{Connectivity Analysis}
 
-We are interested in the response of the brain of the schizophrenia patients in a memory-related task, compared to the healthy controls. The goal of connectivity analysis is to compare the functional brain connectivity, measured by ROI-ROI correlations of 2-back task data between the four networks of the brain (DMN,FP,CO,CER), across CON and SCZ groups. CON is defined as the control group and their siblings and SCZ is defined as the schizophrenia individuals and their siblings. The task data was preprecessed by removing the noise regressors after fitting the GLM described above. The four networks are thought to be critical for cognitive function and as defined in the paper (paper 1): (1) a default mode network (DMN); (2) a dorsal fronto-parietal network (FP); (3) a cingula-opercular network (CO); (4) a cerebellar network (CER). We choose to focus on 2-back task because it is the most difficult to perfom among the three levels of n-back tasks and requires the highest memory load, thus more likely to reveal the difference of the response of the brain of the patients and the controls. 
+We are interested in the neural responses of the schizophrenic patients in a memory-related task, compared to the healthy controls. The goal of connectivity analysis is to compare the functional brain connectivity, measured by ROI-ROI correlations of 2-back task data between the four networks of the brain (DMN, FP, CO, CER), across controls (referred to as CON and composed of members of the control group and their siblings) and schizophrenics (referred to as SCZ and composed of patients with schizophrenia and their siblings). The task data was pre-precessed by removing the noise regressors after fitting the GLM described above. The four aforementioned networks are thought to be critical for cognitive function, as defined in the paper: (1) default mode network (DMN); (2) dorsal fronto-parietal network (FP); (3) cingula-opercular network (CO); (4) cerebellar network (CER) \cite{repovs2012}. We restrict our focus to the 2-back task because it is the most cognitively difficult to perform amongst the three levels of the n-back tasks and requires the highest memory load, thus making it more likely to reveal the differences of the response of the brains of the patients versus those of the controls. 
 
 \section{Data}
 
@@ -82,19 +82,13 @@ of exploratory examinations into the structure of this imaging data.
 
 \subsection{Data Preprocessing}
 
-For all BOLD datasets used in analysis, we removed the first five images to allow measurements to achieve steady state. They were preprocessed with 1. motion correction (coregistration in time to partially correct for movement during the run and between runs)
-2. temporary high-pass filtering to remove low frequency drifts / noise; 3. registration to a standard anatomical template (the MNI template). Additionally, each image was passed thorugh a gaussian filter of sigma=2. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain are smoothed with meansurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain.
-However, the current analysis was performed without padding because the implementation was very slow.
+For all BOLD datasets used in analysis, we removed the first five images to allow measurements to achieve steady state. They were preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). Additionally, each image was passed through a gaussian filter of sigma=2. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain are smoothed with measurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain. However, the current analysis was performed without padding because the implementation was very slow.
 
 \subsection{Data Analysis}
 
 \subsubsection{Generalized Linear Model}
 
-Before the discussion on the specifics of our GLM, it is worthwhile to discuss
-the details of the condition files in the dataset because we make use of all
-condition files in the GLM. The keys in Metadata folder of the dataset does not
-correpsond to the condition files so the keys and the related descriptions of
-the condition files are redefined as below. 
+Before proceeding to discussions of the specifics of our GLM approach, we believe it worthwhile to discuss the details of the condition files in the dataset because we make use of all condition files in the GLM. A major problem we encountered was that the keys in the metadata folder of the dataset that was provided does not correspond to the condition files, so the keys and the related descriptions of the condition files are redefined as given below. 
 
 \begin{itemize}
 
@@ -124,7 +118,7 @@ letter.
 
 \end{itemize}
 
-We can now turn to describe the regressors in the GLM on each voxel time
+We now proceed to describing the regressors in the GLM on each voxel time
 course. For all convolutions below, we convolve a specified condition file
 on-off time course at a time unit of 0.01 TR with a gamma function and take the
 convolved values at the start of each TR.
@@ -167,30 +161,29 @@ features.
 
 For each $\beta$ on each voxel time course, a linear regression two-tailed
 t-test is conducted to access whether there is a significant linear relationship
-between the dependent variable Y and the regressor associated with the $\beta$
-with significance levels of 0.05.
+between the dependent variable Y and the regressor associated with the $\beta$,
+with significance levels of 0.05 for each test. \\
+ 
+Null Hypothesis: $ \beta = 0$ \\
 
-null hypothesis: $ \beta = 0$ 
-alternative hypothesis: $\beta \neq 0$
+Alternative Hypothesis: $\beta \neq 0$ \\
 
-Instead of plotting out the regions of siginifcant p-values, the p-value map of
-the entire brain is presented as results. 
+Instead of plotting out the regions of siginificant p-values, the p-value map of
+the entire brain is presented within the results section that follows. 
 
-Before performing t-test, we access the validity of t-tests by examining its
-assumptions. The two main assumptions are 1. the residuals of each linear model
-are independent and identically distribued (i.i.d); 2. residuals for the model
-are normally distributed. Shapiro-Wilk Test is performed on the residuals of
-each voxel time course linear model. 37703 out of 207766 voxels fail the
-test. However, when perform a large number of statistical tests, some will have
-p values less than 0.05 purely by chance. To test the normality of several
-models together, three multiple comparison tests, namely, Bonferroni,
-Hochberg's and Benjamini-Hochberg, are performed and results are shows below:
+Before performing t-tests, we assess the validity of t-tests by examining its
+assumptions. The two main assumptions are (1) the residuals of each linear model
+are independent and identically distributed (i.i.d), and (2) residuals for the model
+are normally distributed. The Shapiro-Wilk test is performed on the residuals of
+each voxel time course in the linear model. 37703 out of 207766 voxels fail this
+test; however, when performing a large number of statistical tests, some will have
+p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), are performed, and results are shown below:
 
 Bonferroni: normality assumption is violated in 6 voxels.
 Hochberg: normality assumption is violated in 262 voxels.
 Benjamini-Hochberg: all of voxels pass the normality test.
 
-In summary, we can conclude that our assumption of normality in residuals is
+In summary, we can conclude that our assumption of normality in the residuals is
 generally valid.
 
 \subsubsection{Connectivity Analysis}
@@ -203,15 +196,13 @@ follows:
     defined in the GLM section was fitted to each of the BOLD dataset. The
     residuals after removal of the noise regressors (i.e. reg003 to reg010
     listed in the GLM section).
-  \item Extraction of voxels per region of interst (ROI): ROIs of the four
-    networks respectively are defined by a center and a diameter as 15mm (The
-    reference paper üý). Two validations are made before the analysis: (1)
-    it is ensured that the ROIs are non-overlapping by setting the diameters for
-    each ROI sphere as less than the minimum distance between any two given ROIs
-    in the full set, and (2) ROIs are represented as spheres instead of cubes in
-    order to better approximate the underlying neurobiology and to easen the
-    trouble associated with computing minimum distances between the ROIs in the
-    set.
+  \item Extraction of voxels per region of interest (ROI): ROIs of the four
+    networks respectively are defined by a center and a diameter as 15mm \cite{repovs2012}. Two 
+    validations are made before the analysis: (1) it is ensured that the ROIs are non-overlapping by 
+    setting the diameters for each ROI sphere as less than the minimum distance between any two given 
+    ROIs in the full set, and (2) ROIs are represented as spheres instead of cubes in
+    order to better approximate the underlying neurobiology and to make easier the
+    trouble associated with computing minimum distances between the ROIs in the set.
   \item In order to compute the ROI-ROI correlation, several steps were
     followed: (1) for each ROI in a given network, the corresponding voxels were
     extracted and their time series averaged to obtain a single average time
@@ -229,7 +220,7 @@ follows:
     performed. Two requirements need to be met for z to be approximately normal:
     1) r is between variables from a bivariate normal distribution; 2) Sample
     size should be $n \geq 10$. Although some of the some samples shows a normal
-    pattern based on normal Q-Q plot, many others have heavy-tailed density,
+    pattern based on the Gaussian quantil-quantile plot, many others have heavy-tailed density,
     violating the first requirement to arrive at a normal z value. Further more,
     in each ROI and network, more then 100 r's can be obtained, which means
     the distribution of r can be easily plotted. Also, abnormally high z values
@@ -250,7 +241,7 @@ follows:
 \caption{Above: 0-back target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$}
 \end{figure}
 
-As the 0-back task serves primarily as an object recognition task with respect to the activation it induces in the central nervous system, it would be expected that visual processing centers of the brain would be found to be most activated. As seen in both the beta maps and the associated p-value maps, there is considerable (and significant) activation of occipital cortex as well as various regions of the frontal cortex. In contrast to the responses observed with respect to the 2-back task presented below, the coefficient maps for the 0-back task for target images indicates fair amounts of activity across many regions of the brain, as would be expected of a general recognition test, whereas, in the 2-back task for target images, there is noticeably increased magnitudes in the activation of regions in the occipital cortex and in the frontal lobes, as would be expected of a task that involves working memory. It is worth noting that there is considerably less difference between the 0-back target vs. nontarget activation patterns than between the 2-back target vs. nontarget activation patterns, agreeing with the expectations based on psychological constructs such as working memory.
+As the 0-back task serves primarily as an object recognition task with respect to the activation it induces in the central nervous system, it would be expected that visual processing centers of the brain would be found to be most activated. As seen in both the beta maps and the associated p-value maps, there is considerable (and significant) activation of occipital cortex as well as various regions of the frontal cortex. In contrast to the responses observed with respect to the 2-back task presented below, the coefficient maps for the 0-back task for target images indicates fair amounts of activity across many regions of the brain, as would be expected of a general recognition test, whereas, in the 2-back task for target images, there is noticeably increased magnitudes in the activation of regions in the occipital cortex and in the frontal lobes, as would be expected of a task that involves working memory. It is worth noting that there is considerably less difference between the 0-back target vs. non-target activation patterns than between the 2-back target vs. non-target activation patterns, agreeing with the expectations based on psychological constructs such as working memory.
 
 \begin{figure}
 \centering
@@ -259,11 +250,11 @@ As the 0-back task serves primarily as an object recognition task with respect t
 \caption{Above: 2-back target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$}
 \end{figure}
 
-The two figures above display the observed activation patterns present in the 2-back task, which would be expected to activate regions of the prefrontal cortex more significantly than the 0-back task, on the basis that subjects must hold specific representations in memory in order to successfully complete this task. Furthermore, differences in the activation patterns between the target and nontarget 2-back tests shows that the activation during the target task is less distributed, activating more specific regions, as opposed to the generalized activity created by undergoing the nontarget 2-back task.
+The two figures above display the observed activation patterns present in the 2-back task, which would be expected to activate regions of the prefrontal cortex more significantly than the 0-back task, on the basis that subjects must hold specific representations in memory in order to successfully complete this task. Furthermore, differences in the activation patterns between the target and non-target 2-back tests shows that the activation during the target task is less distributed, activating more specific regions, as opposed to the generalized activity created by undergoing the non-target 2-back task.
 
-The nontarget 2-back task activation patterns and associated p-value maps for the coefficients estimated from the linear model indicate that the non-target task generates activity across many regions of the central nervous system, in particular subregions in the frontal lobes (as seen in slice z=60) as well as numerous occipital and midbrain region activations (as seen in the slices z=50 and z=40). The many regions activated in the nontarget 2-back analyses contrast sharply with the 2-back activations in the target group, as activations induced in the slices shown for that category are noticeably more focused in the occipital and frontal lobes.
+The non-target 2-back task activation patterns and associated p-value maps for the coefficients estimated from the linear model indicate that the non-target task generates activity across many regions of the central nervous system, in particular subregions in the frontal lobes (as seen in slice z=60) as well as numerous occipital and midbrain region activations (as seen in the slices z=50 and z=40). The many regions activated in the non-target 2-back analyses contrast sharply with the 2-back activations in the target group, as activations induced in the slices shown for that category are noticeably more focused in the occipital and frontal lobes.
 
-The p-values associated with the coefficient estimates of the activation patterns in the 2-back target task show rather significant activation of frontal and midbrain regions, with these neural activations matching the more focused activation expected of a task more associated with inducing higher cognitive load. What is more, the differences in activation displayed by the two horizontal slices shown above illustrates how activation is distributed across the depths of the whole brain, in general activating frontal lobe regions associated with cognitive activity as well as occipital regions associated with visual task performance. With respect to the nontarget activation patterns displayed in the slices shown below, the map of p-values indicate that activation is much more generally distributed across the brain in the nontarget 2-back task, as would be expected of an error-based neural process.
+The p-values associated with the coefficient estimates of the activation patterns in the 2-back target task show rather significant activation of frontal and midbrain regions, with these neural activations matching the more focused activation expected of a task more associated with inducing higher cognitive load. What is more, the differences in activation displayed by the two horizontal slices shown above illustrates how activation is distributed across the depths of the whole brain, in general activating frontal lobe regions associated with cognitive activity as well as occipital regions associated with visual task performance. With respect to the non-target activation patterns displayed in the slices shown below, the map of p-values indicate that activation is much more generally distributed across the brain in the non-target 2-back task, as would be expected of an error-based neural process.
 
 \subsection{Connectivity Analysis}
 
@@ -273,13 +264,13 @@ The p-values associated with the coefficient estimates of the activation pattern
 \caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks}
 \end{figure}
 
-We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the indivisuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connecticity between the cognitive control networks as compared to CON as indicated in the boxplots of the correlations between networks for CON and SCZ. Previous studies concluded that there?s reduced distal connectivity for indivisuals with schizophrenia and especially between the FP and CER networks and the CO and CER networks (reference paper 1,2). However, the two results are not comparable in the following ways. 1) although we use a smaller dataset of 20 subjects versus 102 subjects used in the reference paper. 2) in the reference papers, many more nuisance regressors were removed from the BOLD time series. We only removed a few common noise regressors outlined in the method section. We obtained the similar result with the previous work and provided similar evidence that schizophrenia reflects a dysconnection syndrome.
+We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Previous studies concluded that there is reduced distal connectivity for individuals with schizophrenia, especially between the FP and CER networks and the CO and CER networks \cite{repovs2011, repovs2012}. However, the two results are not comparable in the following ways: (1) we use a smaller dataset of 20 subjects versus 102 subjects used in the reference paper, and (2) in the reference papers, many more nuisance regressors were removed from the BOLD time series. We only removed a few common noise regressors outlined in the methods section above. We obtained results similar to the previous work and provided similar evidence that schizophrenia reflects a disconnection syndrome.
 
-Within-network correlations are not within the scope of our analysis. A graph showing the results for within-network correlations is included in the appendix.
+Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations is included in the appendix.
 
 \section{Discussion}
 
-For now, we say that there is somewhat reduction in the response of the brain connectivity for the SCZ group compared to the CON, merely from the observation of the boxplots of the correlation r-values. In the future, we plan to perform permutation test to examine whether there?s any statistically significant difference of the correlations between the networks across the CON and SCZ group. Therefore, we can conclude whether there actually has a reduction in the connectivity for the SCZ with stronger evidence.
+For now, we say that there is somewhat reduction in the response of the brain connectivity for the SCZ group compared to the CON, merely from the observation of the box plots of the correlation r-values. In the future, we plan to perform permutation test to examine whether there?s any statistically significant difference of the correlations between the networks across the CON and SCZ group. Therefore, we can conclude whether there actually has a reduction in the connectivity for the SCZ with stronger evidence.
 
 \bibliography{report}
 
