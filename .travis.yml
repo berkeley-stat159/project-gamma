@@ -7,7 +7,6 @@ env:
     - COVERAGE=1
 
 python:
-  - 3.4
   - 2.7
 
 install:
