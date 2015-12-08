@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config
 import numpy as np
 from conv import conv_main

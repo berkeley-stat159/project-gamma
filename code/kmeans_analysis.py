@@ -1,10 +1,12 @@
 import project_config
-import kmeans
+import kmeans, os
 import numpy as np
 import nibabel as nib
 import matplotlib.pyplot as plt
 from pca_utils import first_pcs_removed
-from general_utils import prepare_standard_data, prepare_mask
+from gaussian_filter import spatial_smooth
+from matplotlib import colors
+from general_utils import prepare_standard_data, prepare_mask, form_cond_filepath
 from sklearn.decomposition import PCA
 
 
@@ -80,8 +82,7 @@ def plot_single(labels, subject_num, output_filename, nice_cmap, brain_structure
 
   plt.tight_layout()
   plt.suptitle("Sub011,control,kmeans with k=6")
-  plt.savefig(output_filename + "sub011_kmeans_6_groups_smoothed.pdf", format='pdf', dpi=1000)
-  plt.show()
+  plt.savefig(os.path.join(output_filename, "sub011_kmeans_6_groups_smoothed.png"), format='png', dpi=500)
 
 
 def single_subject_kmeans(standard_source_prefix, cond_filepath, subject_num, task_num):
@@ -99,21 +100,25 @@ def single_subject_kmeans(standard_source_prefix, cond_filepath, subject_num, ta
 
 if __name__ == "__main__": 
 
-  standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
-  standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
-  cond_filepath_011 = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/ds115_sub010-014/sub011/model/model001/onsets/task001_run001/cond002.txt"
-  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
-  output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
-
   data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+
+  standard_source_prefix = data_dir_path
+  cond_filepath_011 = form_cond_filepath("011", "001", "003", data_dir_path)
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   subject_num = "011"
   task_num = "001"
   cond_num = "002"
 
+  plt.rcParams['image.cmap'] = 'gray'
+  plt.rcParams['image.interpolation'] = 'nearest'
+
+  cutoff = project_config.MNI_CUTOFF
+
   nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
   brain_structure = nib.load(brain_structure_path).get_data()
+  nice_cmap_values = np.loadtxt(os.path.join(data_dir_path, "actc.txt"))
   nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
 
   labeled_b_vols = single_subject_kmeans(standard_source_prefix, cond_filepath_011, subject_num, task_num)
