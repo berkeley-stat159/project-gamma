@@ -3,12 +3,13 @@ import numpy as np
 import numpy.linalg as npl
 import matplotlib.pyplot as plt
 import nibabel as nib
-from general_utils import form_cond_filepath, prepare_data_single, prepare_mask
+import os
+from general_utils import form_cond_filepath, prepare_standard_data, prepare_mask
 from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
 from gaussian_filter import spatial_smooth
 from matplotlib import colors
-from hypothesis import perform_t_tests
+from hypothesis import compute_t_values
 
 import pdb
 
@@ -28,76 +29,138 @@ def plot_first_four_pcs(U, Y, depth, output_filename):
     ax.imshow(projection_vols[:,:,depth,pc_index], interpolation="nearest", cmap="gray")
 
   plt.tight_layout()
-  plt.savefig(output_filename + "sub011_task001_first_four_pcs.png", format='png', dpi=500)      
+  plt.savefig(os.path.join(output_filename, "sub011_task001_first_four_pcs.png"), format='png', dpi=500)      
 
-  plt.show()
-
-def plot_beta_p_values(beta_p_vols, in_brain_mask, brain_structure, nice_cmap_values, depth):
-  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
-  beta_p_vols[~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,depth], alpha=0.5)
-  plt.imshow(beta_p_vols[...,depth], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.show()
-
-def plot_target_betas_n_back(p_vols_n_back_beta_0, b_vols_smooth_n_back, in_brain_mask, brain_structure, nice_cmap_values, n_back):
+def plot_target_betas_n_back(t_vols_n_back_beta_0, b_vols_smooth_n_back, in_brain_mask, brain_structure, nice_cmap, n_back):
 
   beta_index = 0
-  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
+
+  plt.figure()
+
+  b_vols_smooth_n_back[~in_brain_mask] = np.nan
+  t_vols_n_back_beta_0[~in_brain_mask] = np.nan
+
+  min_val = np.nanmin(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+  max_val = np.nanmax(b_vols_smooth_n_back[...,(40,50,60),beta_index])
 
   for map_index, depth in (((3,2,1), 40),((3,2,3), 50),((3,2,5), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back target,beta values"))
-    b_vols_smooth_n_back[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
     plt.colorbar()
     plt.tight_layout()
+
+  t_min_val = np.nanmin(t_vols_n_back_beta_0[...,(40,50,60)])
+  t_max_val = np.nanmax(t_vols_n_back_beta_0[...,(40,50,60)])
 
   for map_index, depth in (((3,2,2), 40),((3,2,4), 50),((3,2,6), 60)):
     plt.subplot(*map_index)
-    plt.title("z=%d,%s" % (depth, n_back + "-back target,p values"))
-    p_vols_0_back_beta_0[~in_brain_mask] = np.nan
+    plt.title("z=%d,%s" % (depth, n_back + "-back target,t values"))
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(p_vols_n_back_beta_0[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(t_vols_n_back_beta_0[...,depth], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
     plt.colorbar()
     plt.tight_layout()
 
-  plt.savefig(output_filename + "sub011_target_betas_%s_back.png" % (n_back), format='png', dpi=500)  
+  plt.savefig(os.path.join(output_filename, "sub011_target_betas_%s_back.png" % (n_back)), format='png', dpi=500)  
 
-  plt.show()
-
-def plot_nontarget_betas_n_back(p_vols_n_back_beta_1, b_vols_smooth_n_back, in_brain_mask, brain_structure, nice_cmap_values, n_back):
+def plot_nontarget_betas_n_back(t_vols_n_back_beta_1, b_vols_smooth_n_back, in_brain_mask, brain_structure, nice_cmap, n_back):
 
   beta_index = 1
-  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
+
+  b_vols_smooth_n_back[~in_brain_mask] = np.nan
+  t_vols_n_back_beta_1[~in_brain_mask] = np.nan
+  min_val = np.nanmin(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+  max_val = np.nanmax(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+
+  plt.figure()
 
   for map_index, depth in (((3,2,1), 40),((3,2,3), 50),((3,2,5), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back nontarget,beta values"))
-    b_vols_smooth_n_back[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
     plt.colorbar()
     plt.tight_layout()
+
+  t_min_val = np.nanmin(t_vols_n_back_beta_1[...,(40,50,60)])
+  t_max_val = np.nanmax(t_vols_n_back_beta_1[...,(40,50,60)])
 
   for map_index, depth in (((3,2,2), 40),((3,2,4), 50),((3,2,6), 60)):
     plt.subplot(*map_index)
-    plt.title("z=%d,%s" % (depth, n_back + "-back nontarget,p values"))
-    p_vols_n_back_beta_1[~in_brain_mask] = np.nan
+    plt.title("z=%d,%s" % (depth, n_back + "-back nontarget,t values"))
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(p_vols_n_back_beta_1[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(t_vols_n_back_beta_1[...,depth], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
     plt.colorbar()
     plt.tight_layout()
 
-  plt.savefig(output_filename + "sub011_nontarget_betas_%s_back.png" % (n_back), format='png', dpi=500)  
+  plt.savefig(os.path.join(output_filename, "sub011_nontarget_betas_%s_back.png" % (n_back)), format='png', dpi=500)  
 
-  plt.show()
+def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structure, in_brain_mask, nice_cmap):
+
+  plt.figure()
+
+  min_val = np.nanmin(b_vols_smooth[...,40,(6,7,9)])
+  max_val = np.nanmax(b_vols_smooth[...,40,(6,7,9)])
+
+  plt.subplot(3,2,1)
+  plt.title("z=%d,%s" % (40, "linear drift,betas"))
+  b_vols_smooth[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,6], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,3)
+  plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
+  b_vols_smooth[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,7], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,5)
+  plt.title("z=%d,%s" % (40, "second PC,betas"))
+  b_vols_smooth[~in_brain_mask] = np.nan
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,9], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  t_vols_beta_6_to_9[0][~in_brain_mask] = np.nan
+  t_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
+  t_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
+
+  t_min_val = np.nanmin([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
+  t_max_val = np.nanmax([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
+
+  plt.subplot(3,2,2)
+  plt.title("z=%d,%s" % (40, "linear drift,t values"))
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,4)
+  plt.title("z=%d,%s" % (40, "quadratic drift,t values"))
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.subplot(3,2,6)
+  plt.title("z=%d,%s" % (40, "second PC,t values"))
+  plt.imshow(brain_structure[...,40], alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.colorbar()
+  plt.tight_layout()
+
+  plt.savefig(os.path.join(output_filename, "sub001_noise_regressors_betas_map.png"), format='png', dpi=500)  
 
 
-def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num):
+def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num, output_filename):
 
-  data = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
+  data = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   n_trs = data.shape[-1] + 5
 
@@ -105,8 +168,6 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   cond_filename_005 = form_cond_filepath(subject_num, task_num, "005", cond_filepath_prefix)
   cond_filename_001 = form_cond_filepath(subject_num, task_num, "001", cond_filepath_prefix)
   cond_filename_004 = form_cond_filepath(subject_num, task_num, "004", cond_filepath_prefix)
-
-  # TODO: put cond007 back to 003
   cond_filename_007 = form_cond_filepath(subject_num, task_num, "007", cond_filepath_prefix)
 
   target_convolved, nontarget_convolved, error_convolved = conv_target_non_target(n_trs, cond_filename_003, cond_filename_007, TR, tr_divs = 100.0)
@@ -152,6 +213,11 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   X[:, 9] = U[:,1]
   # 10th column is the intercept
 
+  # plot design matrix
+  plt.figure()
+  plt.imshow(X, aspect=0.1)
+  plt.savefig(os.path.join(output_filename, "sub%s_task%s_design_matrix.png" % (subject_num, task_num)), format='png', dpi=500)      
+
   B = npl.pinv(X).dot(Y)
 
   rs_squared = []
@@ -159,76 +225,57 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
     r_squared = 1 - np.sum((Y[:,i] - X.dot(B[:,i]))**2) * 1.0 / np.sum((Y[:,i] - np.mean(Y[:,i])) ** 2)
     rs_squared.append(r_squared)
 
-  print "mean R squared across all voxels is " + str(np.mean(rs_squared))
+  np.savetxt(os.path.join(output_filename, "glm_mean_R_squared_" + ("0_back" if task_num == "001" else "2_back") + ".txt"), np.array([np.mean(rs_squared)]))
 
   b_vols = np.zeros((data.shape[0:-1] + (n_betas,)))
   b_vols[in_brain_mask, :] = B.T
 
+
+  # compute t values for target and nontarget betas
+
   t_test_target_beta = 0
-  p_values = perform_t_tests(X, B, Y, t_test_target_beta)
-  p_vols_beta_0 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_0[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, t_test_target_beta)
+  t_vols_beta_0 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_0[in_brain_mask] = t_values
 
   t_test_target_beta = 1
-  p_values = perform_t_tests(X, B, Y, t_test_target_beta)
-  p_vols_beta_1 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_1[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, t_test_target_beta)
+  t_vols_beta_1 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_1[in_brain_mask] = t_values
 
-  # test p values of other betas
-  # p_values = perform_t_tests(X, B, Y, 2)
-  # p_vols_beta_2 = np.zeros((data.shape[0:-1]))
-  # p_vols_beta_2[in_brain_mask] = p_values
+  # compute t values for noise regressor betas
 
-  # p_values = perform_t_tests(X, B, Y, 3)
-  # p_vols_beta_3 = np.zeros((data.shape[0:-1]))
-  # p_vols_beta_3[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, 6)
+  t_vols_beta_6 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_6[in_brain_mask] = t_values
 
-  # p_values = perform_t_tests(X, B, Y, 4)
-  # p_vols_beta_4 = np.zeros((data.shape[0:-1]))
-  # p_vols_beta_4[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, 7)
+  t_vols_beta_7 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_7[in_brain_mask] = t_values
 
-  # p_values = perform_t_tests(X, B, Y, 5)
-  # p_vols_beta_5 = np.zeros((data.shape[0:-1]))
-  # p_vols_beta_5[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, 8)
+  t_vols_beta_8 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_8[in_brain_mask] = t_values
 
-  p_values = perform_t_tests(X, B, Y, 6)
-  p_vols_beta_6 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_6[in_brain_mask] = p_values
+  t_values = compute_t_values(X, B, Y, 9)
+  t_vols_beta_9 = np.zeros((data.shape[0:-1]))
+  t_vols_beta_9[in_brain_mask] = t_values
 
-  p_values = perform_t_tests(X, B, Y, 7)
-  p_vols_beta_7 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_7[in_brain_mask] = p_values
+  t_vols_beta_6_to_9 = [t_vols_beta_6, t_vols_beta_7, t_vols_beta_8, t_vols_beta_9]
 
-  p_values = perform_t_tests(X, B, Y, 8)
-  p_vols_beta_8 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_8[in_brain_mask] = p_values
-
-  p_values = perform_t_tests(X, B, Y, 9)
-  p_vols_beta_9 = np.zeros((data.shape[0:-1]))
-  p_vols_beta_9[in_brain_mask] = p_values
-
-  
-  # check p values for other betas
-  # plot_beta_p_values(p_vols_beta_2, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  # plot_beta_p_values(p_vols_beta_3, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  # plot_beta_p_values(p_vols_beta_4, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  # plot_beta_p_values(p_vols_beta_5, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  # plot_beta_p_values(p_vols_beta_6, in_brain_mask, brain_structure, nice_cmap_values, 40)
-  # plot_beta_p_values(p_vols_beta_7, in_brain_mask, brain_structure, nice_cmap_values, 40)
-
-  p_vols_beta_6_to_9 = [p_vols_beta_6, p_vols_beta_7, p_vols_beta_8, p_vols_beta_9]
-
-  return b_vols, in_brain_mask, U, Y, data, p_vols_beta_0, p_vols_beta_1, p_vols_beta_6_to_9  
+  return b_vols, in_brain_mask, U, Y, data, t_vols_beta_0, t_vols_beta_1, t_vols_beta_6_to_9  
 
 if __name__ == "__main__":
 
   # single subject, 0-back
 
-  standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
-  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
-  brain_structure_path = "/Users/fenglin/Downloads/mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii"
-  nice_cmap_values_path = "actc.txt"
-  output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
+  data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
+
+  standard_source_prefix = data_dir_path
+  cond_filepath_prefix = data_dir_path
+  brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+  nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
+  output_filename = data_dir_path
 
   subject_num = "011"
   task_num = "001"
@@ -240,67 +287,15 @@ if __name__ == "__main__":
   brain_structure = nib.load(brain_structure_path).get_data()
   nice_cmap_values = np.loadtxt(nice_cmap_values_path)
   
-  b_vols_smooth_0_back, in_brain_mask, U, Y, data, p_vols_0_back_beta_0, p_vols_0_back_beta_1, p_vols_beta_6_to_9 = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
-
+  b_vols_smooth_0_back, in_brain_mask, U, Y, data, t_vols_0_back_beta_0, t_vols_0_back_beta_1, t_vols_beta_6_to_9 = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num, output_filename)
 
   nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
 
+  plot_noise_regressor_betas(b_vols_smooth_0_back, t_vols_beta_6_to_9, brain_structure, in_brain_mask, nice_cmap)
 
-  plt.subplot(3,2,1)
-  plt.title("z=%d,%s" % (40, "linear drift,betas"))
-  b_vols_smooth_0_back[~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth_0_back[...,40,6], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
+  plot_target_betas_n_back(t_vols_0_back_beta_0, b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap, "0")
 
-  plt.subplot(3,2,3)
-  plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
-  b_vols_smooth_0_back[~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth_0_back[...,40,7], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
-
-  plt.subplot(3,2,5)
-  plt.title("z=%d,%s" % (40, "second PC,betas"))
-  b_vols_smooth_0_back[~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth_0_back[...,40,9], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
-
-  plt.subplot(3,2,2)
-  plt.title("z=%d,%s" % (40, "linear drift,betas"))
-  p_vols_beta_6_to_9[0][~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(p_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
-
-  plt.subplot(3,2,4)
-  plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
-  p_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(p_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
-
-  plt.subplot(3,2,6)
-  plt.title("z=%d,%s" % (40, "second PC,betas"))
-  p_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
-  plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(p_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5)
-  plt.colorbar()
-  plt.tight_layout()
-
-  plt.savefig(output_filename + "other_betas_map.png", format='png', dpi=500)  
-
-  plt.show()
-
-  plot_target_betas_n_back(p_vols_0_back_beta_0, b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, "0")
-
-  plot_nontarget_betas_n_back(p_vols_0_back_beta_1, b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, "0")
+  plot_nontarget_betas_n_back(t_vols_0_back_beta_1, b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap, "0")
   
   # projection of first four 
   plot_first_four_pcs(U, Y, 40, output_filename)
@@ -309,11 +304,8 @@ if __name__ == "__main__":
 
   task_num = "003"
 
-  b_vols_smooth_2_back, in_brain_mask, U, Y, data, p_vols_2_back_beta_0, p_vols_2_back_beta_1 = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num)
+  b_vols_smooth_2_back, in_brain_mask, U, Y, data, t_vols_2_back_beta_0, t_vols_2_back_beta_1, _ = single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num, output_filename)
 
-  plot_target_betas_n_back(p_vols_2_back_beta_0, b_vols_smooth_2_back, in_brain_mask, brain_structure, nice_cmap_values, "2")
+  plot_target_betas_n_back(t_vols_2_back_beta_0, b_vols_smooth_2_back, in_brain_mask, brain_structure, nice_cmap, "2")
 
-  plot_nontarget_betas_n_back(p_vols_2_back_beta_1, b_vols_smooth_2_back, in_brain_mask, brain_structure, nice_cmap_values, "2")
-
-  # show 2-back target betas - 0-back target betas
-  # plot(b_vols_smooth_2_back - b_vols_smooth_0_back, in_brain_mask, brain_structure, nice_cmap_values, 0, 40, "2-back target betas - 0-back target betas")
+  plot_nontarget_betas_n_back(t_vols_2_back_beta_1, b_vols_smooth_2_back, in_brain_mask, brain_structure, nice_cmap, "2")

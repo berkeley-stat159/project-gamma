@@ -4,7 +4,12 @@ import hashlib
 import os
 
 
-d = {'ds107_sub001_highres.nii': "fd733636ae8abe8f0ffbfadedd23896c"}
+d = {os.path.join(os.path.dirname(__file__), "actc.txt"): '1f7101556e2f491a71155e1aed6f823c',
+     os.path.join(os.path.dirname(__file__), 'mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii'): 'fb5d52b1162dcf111e2a9b3825c030ae',
+     os.path.join(os.path.dirname(__file__), 'sub011_task001_run001_func_data_mni.nii'): '50abdd2cc179fb8cca27977ff4ba0e8e',
+     os.path.join(os.path.dirname(__file__), 'sub011_task002_run001_func_data_mni.nii'): '6aedb4dc502fc45f786f089b1ab77dd8',
+     os.path.join(os.path.dirname(__file__), 'sub011_task003_run001_func_data_mni.nii'): '21ec3f73afe425126ccd74fb3385fbff',
+     os.path.join(os.path.dirname(__file__), 'net_roi.txt'): '6c9f140748de388d842cf9ab9ccadc71'}
 
 
 def generate_file_md5(filename, blocksize=2**20):
