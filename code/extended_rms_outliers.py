@@ -33,6 +33,9 @@ high = outliers_utils.iqr_outliers(std)[1][1]
 for i in outlier:
 	std_outlier.append(std[i])
 x=np.arange(data.shape[-1])
+
+plt.figure()
+
 std1, = plt.plot(x,std,'b',label="std values")
 std2, = plt.plot(outlier,std_outlier,'ro',label="outliers")
 lowbound = plt.axhline(y=low,color='r',ls='dashed',label='lower IRQ')
@@ -59,6 +62,9 @@ for i in ext_outlier:
 low_ext = outliers_utils.iqr_outliers(rms)[1][0]
 high_ext = outliers_utils.iqr_outliers(rms)[1][1]
 xxx = np.arange(len(rms))
+
+plt.figure()
+
 plt.axis([0,140,5,15])
 ext1, = plt.plot(xxx,rms,'b',label="rms values")
 ext2, = plt.plot(ext_outlier,ext_outlier_value,'ro',label="extended outliers")
@@ -69,4 +75,3 @@ plt.ylabel('RMS difference')
 plt.xlabel('volumns')
 plt.title('Extended RMS difference outliers for Sub011, Task001')
 plt.savefig(os.path.join(output_dir,'sub011_task011_extended_RMS_outliers.png'))
-plt.show()
