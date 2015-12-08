@@ -52,25 +52,21 @@ def plot_all(result_labels_1, result_labels_2, subject_num_1, subject_num_2, ana
 
   plt.show()
 
-def prepare_residuals(subject_num, task_num, standard_source_prefix):
+def preprocessing_pipeline(subject_num, task_num, standard_source_prefix):
 
   data_4d = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
-  # mean_vols = np.mean(data_4d, axis=-1)
-  # plt.hist(np.ravel(mean_vols), bins=100)
-  # plt.show()
-
-  # Chose cutoff = 5500 from the histogram
-  cutoff = 5500
-
   in_brain_mask, in_brain_vols = prepare_mask(data_4d, cutoff)
 
-  # We justified in pca_analysis.py that the first two PCs represent anatomical features.
+  data_4d_smoothed = spatial_smooth(data_4d, in_brain_mask, 2.0, 2.0, False)
+
+  in_brain_mask, in_brain_vols = prepare_mask(data_4d_smoothed, cutoff)
 
   residuals = first_pcs_removed(in_brain_vols, 2)
+
   return residuals, in_brain_mask
 
-def plot_single(labels, subject_num, output_filename):
+def plot_single(labels, subject_num, output_filename, nice_cmap, brain_structure):
   
   fig = plt.figure()
 
@@ -79,22 +75,24 @@ def plot_single(labels, subject_num, output_filename):
                           ((3,3,7), 60),((3,3,8), 65),((3,3,9), 70)):
     ax = fig.add_subplot(*map_index)
     ax.set_title("z=%d" % (depth))
-    ax.imshow(labels[...,depth], interpolation="nearest", cmap="gray")
+    ax.imshow(brain_structure[...,40], alpha=0.5)
+    ax.imshow(labels[...,depth], cmap=nice_cmap, alpha=0.5)
 
   plt.tight_layout()
-  plt.suptitle("Sub011, Control Group")
-  plt.savefig(output_filename + "kmeans_across_cluters_single_sub.pdf", format='pdf', dpi=1000)
+  plt.suptitle("Sub011,control,kmeans with k=6")
+  plt.savefig(output_filename + "sub011_kmeans_6_groups_smoothed.pdf", format='pdf', dpi=1000)
   plt.show()
 
 
 def single_subject_kmeans(standard_source_prefix, cond_filepath, subject_num, task_num):
 
-  residuals, in_brain_mask = prepare_residuals(subject_num, task_num, standard_source_prefix)
+  residuals, in_brain_mask = preprocessing_pipeline(subject_num, task_num, standard_source_prefix)
 
   labels = kmeans.perform_kMeans_clustering_analysis(residuals.reshape((-1, residuals.shape[-1])), 6)
 
-  b_vols = np.zeros(in_brain_mask.shape) + float('inf')
+  b_vols = np.zeros(in_brain_mask.shape)
   b_vols[in_brain_mask] = labels
+  b_vols[~in_brain_mask] = np.nan
 
   return b_vols
 
@@ -107,9 +105,16 @@ if __name__ == "__main__":
   cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
   output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
 
+  data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
+  brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+
   subject_num = "011"
   task_num = "001"
   cond_num = "002"
 
-  labels = single_subject_kmeans(standard_source_prefix, cond_filepath_011, subject_num, task_num)
-  plot_single(labels, subject_num, output_filename)
+  nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
+  brain_structure = nib.load(brain_structure_path).get_data()
+  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
+
+  labeled_b_vols = single_subject_kmeans(standard_source_prefix, cond_filepath_011, subject_num, task_num)
+  plot_single(labeled_b_vols, subject_num, output_filename, nice_cmap, brain_structure)
