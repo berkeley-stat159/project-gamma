@@ -249,13 +249,11 @@ if __name__ == "__main__":
 
   # single subject, 0-back
 
-  data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
-
   standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
-  cond_filepath_prefix = data_dir_path
-  brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
-  nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
-  output_filename = data_dir_path
+  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
+  brain_structure_path = os.path.join(os.path.dirname(__file__), "..", "data", "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+  nice_cmap_values_path = os.path.join(os.path.dirname(__file__), "..", "data", "actc.txt")
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "data")
 
   subject_num = "011"
   task_num = "001"
