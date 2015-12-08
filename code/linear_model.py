@@ -4,7 +4,9 @@ import numpy.linalg as npl
 import matplotlib.pyplot as plt
 import nibabel as nib
 import os
+import pandas as pd
 from utils import general_utils
+from multiple_comparison import multiple_comp
 from general_utils import form_cond_filepath, prepare_standard_data, prepare_mask
 from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
@@ -214,12 +216,23 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   X[:, 9] = U[:,1]
   # 10th column is the intercept
 
+
   # plot design matrix
   plt.figure()
   plt.imshow(X, aspect=0.1)
   plt.savefig(os.path.join(output_filename, "sub%s_task%s_design_matrix.png" % (subject_num, task_num)), format='png', dpi=500)      
 
   B = npl.pinv(X).dot(Y)
+
+  # test normality of residuals
+  residuals = Y.T - X.dot(B).T
+  alpha_test, bonferroni_test, hochberg_test, benjamini_test = [val * 1.0 / Y.shape[-1] for val in multiple_comp(residuals)]
+  normality_test_results = {"Alpha Test":alpha_test, "Bonferroni Procedure":bonferroni_test,"Hochberg Procedure":hochberg_test,"Benjamini-Hochberg Procedure":benjamini_test}
+
+  normality_test_pd = pd.DataFrame(normality_test_results, index=["Failure Rate"])
+
+  normality_test_pd.to_csv(os.path.join(output_filename, "sub%s_linear_model_normality_tests_failure_rates.csv" % subject_num))
+
 
   rs_squared = []
   for i in range(Y.shape[-1]):

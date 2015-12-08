@@ -31,4 +31,5 @@ analysis:
 	python code/correlations_with_baselines.py
 	python code/network_analysis.py
 	python code/extended_rms_outliers.py
+	python code/kmeans_analysis.py
 
