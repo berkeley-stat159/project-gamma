@@ -1,3 +1,6 @@
 [run]
 branch = True
 include = code/*, data/*
+
+[report]
+omit = code/utils/tests/*, data/tests/*
