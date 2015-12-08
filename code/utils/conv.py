@@ -1,3 +1,4 @@
+from __future__ import division
 import project_config
 import numpy as np
 import matplotlib.pyplot as plt
