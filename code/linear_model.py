@@ -4,6 +4,7 @@ import numpy.linalg as npl
 import matplotlib.pyplot as plt
 import nibabel as nib
 import os
+from utils import general_utils
 from general_utils import form_cond_filepath, prepare_standard_data, prepare_mask
 from stimuli_revised import events2neural_std
 from conv import conv_target_non_target, conv_std
@@ -275,7 +276,7 @@ if __name__ == "__main__":
   cond_filepath_prefix = data_dir_path
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
   nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
-  output_filename = data_dir_path
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   subject_num = "011"
   task_num = "001"
