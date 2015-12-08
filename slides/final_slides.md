@@ -33,8 +33,7 @@
 
 	(1) 2-back task: difficult to perform, requires highest memory load, more likely to reveal the difference
 	(2) four networks: DMN,FP,CO,CER are thought to be critical for cognitive function and defined in the paper		 	 	 		
-	(3) CON: control and their siblings
-        	     SCZ: schizophrenia and their siblings
+	(3) CON: control and their siblings; SCZ: schizophrenia and their siblings
 
 ## The Method (GLM - Confition Files)
 
@@ -97,7 +96,6 @@
 	(2) for any two networks, obtain the correlation matrix containing the r-values of any two ROIs for the two networks;
 	(3) for each subject, we get the correlation matrix;  
 	(4) for several subjects, group the r-values into CON and SCZ group based on the category of the subjects
-	pic to explain the process
 
 ## Results I (GLM)
 
@@ -121,6 +119,6 @@
 
 ## Discussion
 
-- Expand the number of sujects
+- get better result on more subjects 
 - Perform permutation test to statistically validate the difference of connectivity between SCZ and CON
 
