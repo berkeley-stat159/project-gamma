@@ -37,21 +37,28 @@ def plot_target_betas_n_back(t_vols_n_back_beta_0, b_vols_smooth_n_back, in_brai
 
   plt.figure()
 
+  b_vols_smooth_n_back[~in_brain_mask] = np.nan
+  t_vols_n_back_beta_0[~in_brain_mask] = np.nan
+
+  min_val = np.nanmin(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+  max_val = np.nanmax(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+
   for map_index, depth in (((3,2,1), 40),((3,2,3), 50),((3,2,5), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back target,beta values"))
-    b_vols_smooth_n_back[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
     plt.colorbar()
     plt.tight_layout()
+
+  t_min_val = np.nanmin(t_vols_n_back_beta_0[...,(40,50,60)])
+  t_max_val = np.nanmax(t_vols_n_back_beta_0[...,(40,50,60)])
 
   for map_index, depth in (((3,2,2), 40),((3,2,4), 50),((3,2,6), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back target,t values"))
-    t_vols_n_back_beta_0[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(t_vols_n_back_beta_0[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(t_vols_n_back_beta_0[...,depth], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
     plt.colorbar()
     plt.tight_layout()
 
@@ -61,23 +68,29 @@ def plot_nontarget_betas_n_back(t_vols_n_back_beta_1, b_vols_smooth_n_back, in_b
 
   beta_index = 1
 
+  b_vols_smooth_n_back[~in_brain_mask] = np.nan
+  t_vols_n_back_beta_1[~in_brain_mask] = np.nan
+  min_val = np.nanmin(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+  max_val = np.nanmax(b_vols_smooth_n_back[...,(40,50,60),beta_index])
+
   plt.figure()
 
   for map_index, depth in (((3,2,1), 40),((3,2,3), 50),((3,2,5), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back nontarget,beta values"))
-    b_vols_smooth_n_back[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(b_vols_smooth_n_back[...,depth,beta_index], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
     plt.colorbar()
     plt.tight_layout()
+
+  t_min_val = np.nanmin(t_vols_n_back_beta_1[...,(40,50,60)])
+  t_max_val = np.nanmax(t_vols_n_back_beta_1[...,(40,50,60)])
 
   for map_index, depth in (((3,2,2), 40),((3,2,4), 50),((3,2,6), 60)):
     plt.subplot(*map_index)
     plt.title("z=%d,%s" % (depth, n_back + "-back nontarget,t values"))
-    t_vols_n_back_beta_1[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(t_vols_n_back_beta_1[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(t_vols_n_back_beta_1[...,depth], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
     plt.colorbar()
     plt.tight_layout()
 
@@ -87,11 +100,14 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
 
   plt.figure()
 
+  min_val = np.nanmin(b_vols_smooth[...,40,(6,7,9)])
+  max_val = np.nanmax(b_vols_smooth[...,40,(6,7,9)])
+
   plt.subplot(3,2,1)
   plt.title("z=%d,%s" % (40, "linear drift,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,6], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,6], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
   plt.colorbar()
   plt.tight_layout()
 
@@ -99,7 +115,7 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,7], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,7], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
   plt.colorbar()
   plt.tight_layout()
 
@@ -107,31 +123,35 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   plt.title("z=%d,%s" % (40, "second PC,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,9], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(b_vols_smooth[...,40,9], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
   plt.colorbar()
   plt.tight_layout()
 
+  t_vols_beta_6_to_9[0][~in_brain_mask] = np.nan
+  t_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
+  t_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
+
+  t_min_val = np.nanmin([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
+  t_max_val = np.nanmax([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
+
   plt.subplot(3,2,2)
   plt.title("z=%d,%s" % (40, "linear drift,t values"))
-  t_vols_beta_6_to_9[0][~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
   plt.colorbar()
   plt.tight_layout()
 
   plt.subplot(3,2,4)
   plt.title("z=%d,%s" % (40, "quadratic drift,t values"))
-  t_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
   plt.colorbar()
   plt.tight_layout()
 
   plt.subplot(3,2,6)
   plt.title("z=%d,%s" % (40, "second PC,t values"))
-  t_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5)
+  plt.imshow(t_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
   plt.colorbar()
   plt.tight_layout()
 
@@ -251,7 +271,7 @@ if __name__ == "__main__":
 
   data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
 
-  standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
+  standard_source_prefix = data_dir_path
   cond_filepath_prefix = data_dir_path
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
   nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
