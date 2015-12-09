@@ -43,3 +43,45 @@ def test_min_roi_roi_distance():
     if actual is None:
         raise RuntimeError("function returned None")
     assert_almost_equal(actual, expected)
+
+
+def test_co2vox():
+    coordinate = np.array([0.0,0,0])
+    affine_matrix = [[  -2.,    0.,    0.,   90.],
+                     [   0.,    2.,    0., -126.],
+                     [   0.,    0.,    2.,  -72.],
+                     [   0.,    0.,    0.,    1.]]
+    mm_to_vox = npl.inv(affine_matrix)
+    vox_to_mm = affine_matrix
+    new  = roi_extraction.co2vox( coordinate,mm_to_vox)
+    expected = nib.affines.apply_affine(vox_to_mm, new)
+    if expected is None:
+        raise RuntimeError("function returned None")
+    assert_array_equal(coordinate, expected)
+
+# def test_ROI_region():
+#     x_range = range(41,49)
+#     y_range = range(51,59)
+#     z_range  = range(41,49)
+#     center = [(41+49)/2,(51+59)/2,(41+49)/2]
+#     tmp = [x,y,z]
+#     actual = list(itt.product(*a))
+#     expected = ROI_region(center)
+#     if actual is None:
+#         raise RuntimeError("function returned None")
+#     assert_array_equal(actual, expected)
+
+# def test_filter_ROI():
+
+
+
+
+
+
+
+
+
+
+
+
+

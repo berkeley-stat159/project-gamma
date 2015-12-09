@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 import math
 
@@ -19,9 +20,8 @@ def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR 
     # if there are any errors, treat them as targets
     task_errors = np.loadtxt(error_fname)
 
-
     task_errors = task_errors.reshape((-1, 3))
-    task_errors[:,2] = 1.0    
+    task_errors[:,2] = 1.0
 
     res = []
     for cond_data in (target_task, nontarget_task, task_errors):

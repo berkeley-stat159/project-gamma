@@ -1,19 +1,27 @@
 % Project Gamma Progress Report
 % Nima Hejazi, Feng Lin, Luyun Zhao, Xinyue Zhou
 <<<<<<< HEAD
+<<<<<<< HEAD
 % December 1, 2015
 =======
 % December 3, 2015
 >>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
+=======
+% December 3, 2015
+>>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 ## Essential Background
 
 - "Working memory in healthy and schizophrenic individuals"
 <<<<<<< HEAD
+<<<<<<< HEAD
 - Accession number: ds000115 (from the OpenFMRI.org website)
 =======
 - Accession number: ds115 (from the OpenFMRI.org website)
 >>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
+=======
+- Accession number: ds115 (from the OpenFMRI.org website)
+>>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 - The paper(s) used ANOVA to explore within/between network connectivity wrt working memory measures.
 - The goal was to identify regions contributing to impaired cognitive function in schizophrenics.
 - The method was fcMRI, collecting activation and connectivity (resting) fMRI data.
@@ -99,12 +107,17 @@
 - Remove noise regressors identified in the GLM from the voxel time series
 - Extract the voxels per ROI and validate: given the center index and the diameter
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(1) ROIs are non-overlapping
 	(2) regions vs cubic regions
 =======
 	(1) sphere regions instead of cubic regions
 	(2) ROIs are non-overlapping
 >>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
+=======
+	(1) sphere regions instead of cubic regions
+	(2) ROIs are non-overlapping
+>>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 
 ## Method (Connectivity)
@@ -117,12 +130,15 @@
 <<<<<<< HEAD
 	pic to explain the process
 
-## Results (GLM)
+## Results I (GLM)
 
+<<<<<<< HEAD
 =======
 
 ## Results I (GLM)
 
+=======
+>>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 - Use of the GLM approach reveals that the 2-back task activate occipital and prefrontal regions more, as would be expected based on the higher cognitive load associated with these tasks.
 - The coefficient and p-value maps displayed in the following slides illustrate the activations across several axial slices. 
 - The target 2-back task seems to activate many of the regions we would expect by a task associated with both visual processing and working memory.
@@ -133,7 +149,10 @@
 
 ## Results III (GLM)
 ![Betas and p-values from 2-back tasks](../paper/figs/glm_graphs/sub011_nontarget_betas_2_back.png)
+<<<<<<< HEAD
 >>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
+=======
+>>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 ## Results (Connectivity)
 - Analyze on 20 subjects, 12 SCZ and 8 CON 

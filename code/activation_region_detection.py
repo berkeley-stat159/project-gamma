@@ -13,69 +13,65 @@ group (con, con_sib, scz, scz_sib) averages.
 import project_config
 import numpy as np
 import nibabel as nib
-from kmeans_analysis import plot_all
-from general_utils import vol_index_iter, prepare_data_single, index_iter_2d, prepare_mask, form_cond_filepath
+import os
 import matplotlib.pyplot as plt
+from general_utils import prepare_standard_data, plane_index_iter, prepare_mask
 from correlation import correlation_map_linear, correlation_map_without_convoluation_linear
+from gaussian_filter import spatial_smooth
 from conv import conv_main
-from stimuli_revised import events2neural_rounded
 from pca_utils import first_pcs_removed
 from os.path import join
+from matplotlib import colors
 import pdb
 
 TR = project_config.TR
 
-def plot_across_methods(corrs_square_wave, corrs_conv, subject_num):
+def plot_across_methods(corrs_square_wave, corrs_conv, subject_num, brain_structure, nice_cmap_values, in_brain_mask):
   
   fig = plt.figure()
 
-  for map_index, depth in ((321, 20),(323, 40),(325, 50)):
+  nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
 
-    ax = fig.add_subplot(map_index)
-    ax.set_title("Subject%s, z = %d, %s" % (subject_num, depth, "sw"))
-    ax.imshow(corrs_square_wave[...,depth], interpolation="nearest", cmap="gray")
+  for map_index, depth in (((3,2,1), 20),((3,2,3), 40),((3,2,5), 50)):
 
-    plane = corrs_square_wave[...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.20]
-    if len(points) > 0:
-      ax.scatter(*zip(*points))
+    plt.subplot(*map_index)
+    plt.title("z=%d, %s" % (depth, "sw"))
 
-  for map_index, depth in ((322, 20),(324, 40),(326, 50)):
+    corrs_square_wave[~in_brain_mask] = np.nan
+    plt.imshow(brain_structure[...,depth], alpha=0.5)
+    plt.imshow(corrs_square_wave[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.colorbar()
+    plt.tight_layout()
 
-    ax = fig.add_subplot(map_index)
-    ax.set_title("Subject%s, z = %d, %s" % (subject_num, depth, "conv"))
-    ax.imshow(corrs_conv[...,depth], interpolation="nearest", cmap="gray")
+  for map_index, depth in (((3,2,2), 20),((3,2,4), 40),((3,2,6), 50)):
 
-    plane = corrs_conv[...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.20]
-    if len(points) > 0:
-      ax.scatter(*zip(*points))
+    plt.subplot(*map_index)
+    plt.title("z=%d, %s" % (depth, "conv"))
 
-  plt.tight_layout()
-  plt.savefig(output_filename + "activation_region_across_methods_same_sub.pdf", format='pdf', dpi=1000)      
+    corrs_conv[~in_brain_mask] = np.nan
+    plt.imshow(brain_structure[...,depth], alpha=0.5)
+    plt.imshow(corrs_conv[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.colorbar()
+    plt.tight_layout()
 
-  plt.show()
+  plt.savefig(os.path.join(output_filename, "sub%s_voxel_wise_correlation_across_methods.png" % (subject_num)), format='png', dpi=500)
 
 def prepare_residuals(subject_num, task_num, standard_source_prefix):
 
-  data_4d = prepare_data_single(subject_num, task_num, True, standard_source_prefix)
-
-  # mean_vols = np.mean(data_4d, axis=-1)
-  # plt.hist(np.ravel(mean_vols), bins=100)
-  # plt.show()
-
-  # Chose cutoff = 5500 from the histogram
-  cutoff = 5500
+  data_4d = prepare_standard_data(subject_num, task_num, standard_source_prefix)
 
   in_brain_mask, in_brain_vols = prepare_mask(data_4d, cutoff)
 
-  # We justified in pca_analysis.py that the first two PCs represent anatomical features.
+  data_4d_smoothed = spatial_smooth(data_4d, in_brain_mask, 2.0, 2.0, False)
+
+  in_brain_mask, in_brain_vols = prepare_mask(data_4d_smoothed, cutoff)
 
   residuals = first_pcs_removed(in_brain_vols, 2)
+
   return residuals, in_brain_mask
 
 
-def single_subject_activation_across_methods(standard_source_prefix, cond_filepath, subject_num, task_num):
+def single_subject_activation_across_methods(standard_source_prefix, cond_filepath, subject_num, task_num, brain_structure, nice_cmap_values):
 
   residuals, in_brain_mask = prepare_residuals(subject_num, task_num, standard_source_prefix)
 
@@ -88,74 +84,29 @@ def single_subject_activation_across_methods(standard_source_prefix, cond_filepa
   b_vols_corrs_conv = np.zeros(in_brain_mask.shape)
   b_vols_corrs_conv[in_brain_mask] = corrs_conv
 
-  plot_across_methods(b_vols_corrs_sw, b_vols_corrs_conv, subject_num)
-
-def plot_group(group_activation_result, output_filename):
-  
-  fig = plt.figure()
-
-  for map_index, depth, group in (((4,3,1), 20, "fmri_con"),((4,3,2), 40, "fmri_con"),((4,3,3), 50, "fmri_con"),
-                                 ((4,3,4), 20, "fmri_con_sib"),((4,3,5), 40, "fmri_con_sib"),((4,3,6), 50, "fmri_con_sib"),
-                                 ((4,3,7), 20, "fmri_scz"),((4,3,8), 40, "fmri_scz"),((4,3,9), 50, "fmri_scz"),
-                                 ((4,3,10), 20, "fmri_scz_sib"),((4,3,11), 40, "fmri_scz_sib"),((4,3,12), 50, "fmri_scz_sib")):
-
-    ax = fig.add_subplot(*map_index)
-    ax.set_title("z=%d,%s" % (depth, group))
-    ax.imshow(group_activation_result[group][...,depth], interpolation="nearest", cmap="gray")
-
-    plane = group_activation_result[group][...,depth]
-    points = [(i[1],i[0]) for i in index_iter_2d(plane.shape) if plane[i] >= 0.10]
-    if len(points) > 0:
-      ax.scatter(*zip(*points))
-
-  plt.tight_layout()
-  plt.savefig(output_filename + "activation_regions_across_groups.pdf", format='pdf', dpi=1000)
-
-  plt.show()
-
-def group_activation_conv(standard_group_source_prefix, cond_filepath_prefix, cond_num, grouping = None):
-  task_nums = ("001", "002", "003")
-  res = {}
-
-  group_info = grouping if grouping else project_config.group
-  
-  for group, subject_nums in group_info.items():
-    group_corrs_conv = []
-    for sn in subject_nums:
-      residuals, masks = zip(*[prepare_residuals(sn, tn, join(standard_group_source_prefix, group)) for tn in task_nums])
-      corrs_conv = [correlation_map_linear(r, form_cond_filepath(sn, tn, cond_num, cond_filepath_prefix)) for r, tn in zip(residuals, task_nums)]
-      b_vols = [np.zeros(masks[0].shape) for i in task_nums]
-      b_vols[0][masks[0]] = corrs_conv[0]
-      b_vols[1][masks[1]] = corrs_conv[1]
-      b_vols[2][masks[2]] = corrs_conv[2]
-      group_corrs_conv.extend(b_vols)
-    res[group] = np.mean(group_corrs_conv, axis=0)
-  return res
+  plot_across_methods(b_vols_corrs_sw, b_vols_corrs_conv, subject_num, brain_structure, nice_cmap_values, in_brain_mask)
 
 if __name__ == "__main__":
 
+  brain_structure_path = os.path.join(os.path.dirname(__file__), "..", "data", "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+  nice_cmap_values_path = os.path.join(os.path.dirname(__file__), "..", "data", "actc.txt")
+
+  plt.rcParams['image.cmap'] = 'gray'
+  plt.rcParams['image.interpolation'] = 'nearest'
+
   standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
-  standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
-  cond_filepath_011 = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/sub011/model/model001/onsets/task001_run001/cond002.txt"
+  cond_filepath_011 = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/sub011/model/model001/onsets/task001_run001/cond003.txt"
   cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
-  output_filename = "/Users/fenglin/Desktop/stat159/liam_results/"
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "data")
 
   subject_num = "011"
   task_num = "001"
-  cond_num = "002"
+  cond_num = "003"
 
-  single_subject_activation_across_methods(standard_source_prefix, cond_filepath_011, subject_num, task_num)
+  cutoff = project_config.MNI_CUTOFF
 
+  brain_structure = nib.load(brain_structure_path).get_data()
+  nice_cmap_values = np.loadtxt(nice_cmap_values_path)
 
-
-  small_group_info = {"fmri_con":("011", "012", "015", "020"),
-          "fmri_con_sib":("010", "013", "014", "016"),
-          "fmri_scz":("007", "009", "017", "027"),
-          "fmri_scz_sib":("006", "008", "018", "019")}
-
-
-  results = group_activation_conv(standard_group_source_prefix, cond_filepath_prefix, cond_num, small_group_info)
-  plot_group(results, output_filename)
-
-
+  single_subject_activation_across_methods(standard_source_prefix, cond_filepath_011, subject_num, task_num, brain_structure, nice_cmap_values)
   
