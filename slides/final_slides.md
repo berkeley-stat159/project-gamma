@@ -1,27 +1,11 @@
 % Project Gamma Progress Report
 % Nima Hejazi, Feng Lin, Luyun Zhao, Xinyue Zhou
-<<<<<<< HEAD
-<<<<<<< HEAD
-% December 1, 2015
-=======
 % December 3, 2015
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
-% December 3, 2015
->>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 ## Essential Background
 
 - "Working memory in healthy and schizophrenic individuals"
-<<<<<<< HEAD
-<<<<<<< HEAD
-- Accession number: ds000115 (from the OpenFMRI.org website)
-=======
 - Accession number: ds115 (from the OpenFMRI.org website)
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
-- Accession number: ds115 (from the OpenFMRI.org website)
->>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 - The paper(s) used ANOVA to explore within/between network connectivity wrt working memory measures.
 - The goal was to identify regions contributing to impaired cognitive function in schizophrenics.
 - The method was fcMRI, collecting activation and connectivity (resting) fMRI data.
@@ -49,16 +33,7 @@
 
 	(1) 2-back task: difficult to perform, requires highest memory load, more likely to reveal the difference
 	(2) four networks: DMN,FP,CO,CER are thought to be critical for cognitive function and defined in the paper		 	 	 		
-<<<<<<< HEAD
-<<<<<<< HEAD
-	(3) CON: control and their siblings
-        	     SCZ: schizophrenia and their siblings
-=======
 	(3) CON: control and their siblings; SCZ: schizophrenia and their siblings
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
-	(3) CON: control and their siblings; SCZ: schizophrenia and their siblings
->>>>>>> a1b1dd95d7472e0e79d3b393485fa553d061f2bf
 
 ## The Method (GLM - Confition Files)
 
@@ -110,18 +85,8 @@
 
 - Remove noise regressors identified in the GLM from the voxel time series
 - Extract the voxels per ROI and validate: given the center index and the diameter
-<<<<<<< HEAD
-<<<<<<< HEAD
-	(1) ROIs are non-overlapping
-	(2) regions vs cubic regions
-=======
 	(1) sphere regions instead of cubic regions
 	(2) ROIs are non-overlapping
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
-	(1) sphere regions instead of cubic regions
-	(2) ROIs are non-overlapping
->>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 
 ## Method (Connectivity)
@@ -131,21 +96,9 @@
 	(2) for any two networks, obtain the correlation matrix containing the r-values of any two ROIs for the two networks;
 	(3) for each subject, we get the correlation matrix;  
 	(4) for several subjects, group the r-values into CON and SCZ group based on the category of the subjects
-<<<<<<< HEAD
-<<<<<<< HEAD
-	pic to explain the process
-=======
->>>>>>> a1b1dd95d7472e0e79d3b393485fa553d061f2bf
 
 ## Results I (GLM)
 
-<<<<<<< HEAD
-=======
-
-## Results I (GLM)
-
-=======
->>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 - Use of the GLM approach reveals that the 2-back task activate occipital and prefrontal regions more, as would be expected based on the higher cognitive load associated with these tasks.
 - The coefficient and p-value maps displayed in the following slides illustrate the activations across several axial slices. 
 - The target 2-back task seems to activate many of the regions we would expect by a task associated with both visual processing and working memory.
@@ -156,10 +109,6 @@
 
 ## Results III (GLM)
 ![Betas and p-values from 2-back tasks](../paper/figs/glm_graphs/sub011_nontarget_betas_2_back.png)
-<<<<<<< HEAD
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
->>>>>>> 350d33b1b03fd4a7367ebc7c1a778d958c507141
 
 ## Results (Connectivity)
 - Analyze on 20 subjects, 12 SCZ and 8 CON 
@@ -170,14 +119,5 @@
 
 ## Discussion
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-- Expand the number of sujects
-=======
 - get better result on more subjects 
->>>>>>> 0ff728917c1e2f92a1af81991bb4912965770290
-=======
-- get better result on more subjects 
->>>>>>> a1b1dd95d7472e0e79d3b393485fa553d061f2bf
 - Perform permutation test to statistically validate the difference of connectivity between SCZ and CON
-
