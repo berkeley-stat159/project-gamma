@@ -86,6 +86,26 @@ def test_filter_ROI():
         raise RuntimeError("function returned None")
     assert_array_equal(actual, expected)
 
+def test_get_voxel():
+    coor = np.array([0.0,0,0])
+    affine_matrix = [[  -2.,    0.,    0.,   90.],
+                     [   0.,    2.,    0., -126.],
+                     [   0.,    0.,    2.,  -72.],
+                     [   0.,    0.,    0.,    1.]]
+    mm_to_vox = npl.inv(affine_matrix)
+    in_brain_mask = np.zeros((91,109,91), dtype=bool) 
+    in_brain_mask[45:91,63:109,36:91] = True #half of the brain are true
+    actual = roi_extraction.get_voxels(mm_to_vox, coor, in_brain_mask)
+    x_range = range(45,49)
+    y_range = range(63,67)
+    z_range  = range(36,40)
+    tmp = [x_range,y_range,z_range]
+    expected = list(itt.product(*tmp))
+    #a = roi_extraction.co2vox( coordinate,mm_to_vox), the index is (45,63,36)
+    if actual is None:
+        raise RuntimeError("function returned None")
+    assert_array_equal(actual, expected)
+
 
 
 
