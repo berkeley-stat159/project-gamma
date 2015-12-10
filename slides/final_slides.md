@@ -121,4 +121,3 @@
 
 - get better result on more subjects 
 - Perform permutation test to statistically validate the difference of connectivity between SCZ and CON
-
