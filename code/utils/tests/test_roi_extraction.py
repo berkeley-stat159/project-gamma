@@ -55,10 +55,10 @@ def test_co2vox():
     mm_to_vox = npl.inv(affine_matrix)
     vox_to_mm = affine_matrix
     new  = roi_extraction.co2vox( coordinate,mm_to_vox)
-    expected = nib.affines.apply_affine(vox_to_mm, new)
-    if expected is None:
+    actual = nib.affines.apply_affine(vox_to_mm, new)
+    if actual is None:
         raise RuntimeError("function returned None")
-    assert_array_equal(coordinate, expected)
+    assert_array_equal(coordinate, actual)
 
 def test_ROI_region():
     x_range = range(41,49)
@@ -85,14 +85,6 @@ def test_filter_ROI():
     if actual is None:
         raise RuntimeError("function returned None")
     assert_array_equal(actual, expected)
-
-
-# def test_filter_ROI():
-#     affine_matrix = [[  -2.,    0.,    0.,   90.],
-#                      [   0.,    2.,    0., -126.],
-#                      [   0.,    0.,    2.,  -72.],
-#                      [   0.,    0.,    0.,    1.]]
-#     mm_to_vox = npl.inv(affine_matrix)
 
 
 
