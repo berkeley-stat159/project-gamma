@@ -9,6 +9,7 @@ import numpy as np
 import nibabel as nib
 import numpy.linalg as npl
 import math
+import itertools as itt
 from .. import roi_extraction
 
 from numpy.testing import assert_array_equal, assert_almost_equal
@@ -59,17 +60,17 @@ def test_co2vox():
         raise RuntimeError("function returned None")
     assert_array_equal(coordinate, expected)
 
-# def test_ROI_region():
-#     x_range = range(41,49)
-#     y_range = range(51,59)
-#     z_range  = range(41,49)
-#     center = [(41+49)/2,(51+59)/2,(41+49)/2]
-#     tmp = [x,y,z]
-#     actual = list(itt.product(*a))
-#     expected = ROI_region(center)
-#     if actual is None:
-#         raise RuntimeError("function returned None")
-#     assert_array_equal(actual, expected)
+def test_ROI_region():
+    x_range = range(41,49)
+    y_range = range(51,59)
+    z_range  = range(41,49)
+    center = [(41+49)/2,(51+59)/2,(41+49)/2]
+    tmp = [x_range,y_range,z_range]
+    actual = list(itt.product(*tmp))
+    expected = roi_extraction.ROI_region(center)
+    if actual is None:
+        raise RuntimeError("function returned None")
+    assert_array_equal(actual, expected)
 
 # def test_filter_ROI():
 
