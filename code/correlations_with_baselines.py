@@ -15,7 +15,7 @@ import numpy as np
 import nibabel as nib
 import os
 import matplotlib.pyplot as plt
-from general_utils import prepare_standard_data, plane_index_iter, prepare_mask
+from general_utils import prepare_standard_data, plane_index_iter, prepare_mask, form_cond_filepath
 from correlation import correlation_map_linear, correlation_map_without_convoluation_linear
 from gaussian_filter import spatial_smooth
 from conv import conv_main
@@ -32,6 +32,9 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num, brain_struct
 
   nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
 
+  min_val_sw = np.nanmin(corrs_square_wave[...,(20,40,50)])
+  max_val_sw = np.nanmax(corrs_square_wave[...,(20,40,50)])
+
   for map_index, depth in (((3,2,1), 20),((3,2,3), 40),((3,2,5), 50)):
 
     plt.subplot(*map_index)
@@ -39,9 +42,12 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num, brain_struct
 
     corrs_square_wave[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(corrs_square_wave[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(corrs_square_wave[...,depth], cmap=nice_cmap, alpha=0.5, vmin=min_val_sw, vmax=max_val_sw)
     plt.colorbar()
     plt.tight_layout()
+
+  min_val_corr = np.nanmin(corrs_conv[...,(20,40,50)])
+  max_val_corr = np.nanmax(corrs_conv[...,(20,40,50)])
 
   for map_index, depth in (((3,2,2), 20),((3,2,4), 40),((3,2,6), 50)):
 
@@ -50,7 +56,7 @@ def plot_across_methods(corrs_square_wave, corrs_conv, subject_num, brain_struct
 
     corrs_conv[~in_brain_mask] = np.nan
     plt.imshow(brain_structure[...,depth], alpha=0.5)
-    plt.imshow(corrs_conv[...,depth], cmap=nice_cmap, alpha=0.5)
+    plt.imshow(corrs_conv[...,depth], cmap=nice_cmap, alpha=0.5, vmin=min_val_corr, vmax=max_val_corr)
     plt.colorbar()
     plt.tight_layout()
 
@@ -88,20 +94,20 @@ def single_subject_activation_across_methods(standard_source_prefix, cond_filepa
 
 if __name__ == "__main__":
 
-  brain_structure_path = os.path.join(os.path.dirname(__file__), "..", "data", "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
-  nice_cmap_values_path = os.path.join(os.path.dirname(__file__), "..", "data", "actc.txt")
+  data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
+  brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
+  nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
 
   plt.rcParams['image.cmap'] = 'gray'
   plt.rcParams['image.interpolation'] = 'nearest'
 
-  standard_source_prefix = "/Volumes/G-DRIVE mobile USB/fmri_con/"
-  cond_filepath_011 = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/sub011/model/model001/onsets/task001_run001/cond003.txt"
-  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
-  output_filename = os.path.join(os.path.dirname(__file__), "..", "data")
-
   subject_num = "011"
   task_num = "001"
   cond_num = "003"
+
+  standard_source_prefix = data_dir_path
+  cond_filepath_011 = form_cond_filepath(subject_num, task_num, cond_num, data_dir_path)
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   cutoff = project_config.MNI_CUTOFF
 

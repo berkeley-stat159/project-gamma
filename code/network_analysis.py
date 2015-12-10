@@ -7,13 +7,79 @@ from gaussian_filter import spatial_smooth
 from general_utils import prepare_standard_img, prepare_mask, prepare_standard_data, form_cond_filepath
 from os.path import join
 import numpy as np
+import os
 import math
 import nibabel as nib
 import numpy.linalg as npl
 import roi_extraction
 import itertools
+import json
+from ggplot import *
+import pandas as pd
 
 import pdb
+
+def create_f (task, dic, namelist, find_nw):
+    con_group = "con"
+    scz_group = 'scz'
+
+    sub_dic_con = dic[task][con_group]
+    sub_dic_scz = dic[task][scz_group]
+    corrs = np.array([])
+    network = np.array([])
+    for name in namelist:
+      corrs = np.append(corrs, np.ravel(sub_dic_con[name]))
+      network =np.append(network, [find_nw[name] + ",con"]*len(np.ravel(sub_dic_con[name])))
+      corrs = np.append(corrs, np.ravel(sub_dic_scz[name]))
+      network =np.append(network, [find_nw[name] + ",scz"]*len(np.ravel(sub_dic_scz[name])))
+    data_f = pd.DataFrame(corrs)
+    data_f['networks']=network
+    data_f.columns = ['corrs','networks']
+    return data_f
+
+def generate_connectivity_results(connectivity_results, output_filename):
+  
+  find_nw = {}
+  find_nw['Default-Cerebellar']='bDMN-CER'
+  find_nw['Cerebellar-Cingulo-Opercular']='bCO-CER'
+  find_nw['Default-Cingulo-Opercular']='bDMN-CO'
+  find_nw['Default']='wDMN'
+  find_nw['Fronto-Parietal-Cerebellar']='bFP-CER'
+  find_nw['Cingulo-Opercular']='wCO'
+  find_nw['Default-Fronto-Parietal']='bDMN-FP'
+  find_nw['Fronto-Parietal']='wFP'
+  find_nw['Cerebellar']='wCER'
+  find_nw['Fronto-Parietal-Cingulo-Opercular']='bFP-CO'
+  
+  between_namelist = ['Default-Cerebellar','Cerebellar-Cingulo-Opercular','Default-Cingulo-Opercular'
+  ,'Fronto-Parietal-Cerebellar','Default-Fronto-Parietal','Fronto-Parietal-Cingulo-Opercular']
+
+  within_namelist = ['Default','Fronto-Parietal','Cerebellar','Cingulo-Opercular']
+  
+  f_within = create_f ('003', connectivity_results, within_namelist, find_nw)
+  
+  plt1 = ggplot(f_within, aes(x='corrs', y='networks')) +\
+      geom_boxplot()+\
+      ggtitle("Within-Network Correlations in CON and SCZ Group")+\
+      xlab("Correlation")+\
+      ylab("Networks")+\
+      scale_x_continuous(limits=(-1.0, 1.0))
+
+  ggsave(plt1, os.path.join(output_filename, "within_network_connectivity_plot.png"))
+
+  between_namelist = ['Default-Cerebellar','Cerebellar-Cingulo-Opercular','Default-Cingulo-Opercular'
+  ,'Fronto-Parietal-Cerebellar','Default-Fronto-Parietal','Fronto-Parietal-Cingulo-Opercular']
+  
+  f_between = create_f('003', connectivity_results, between_namelist, find_nw)
+  
+  plt2 = ggplot(f_between, aes(x='corrs', y='networks')) +\
+      geom_boxplot()+\
+      ggtitle("Between-Network Correlations in CON and SCZ Group")+\
+      xlab("Correlation")+\
+      ylab("Networks")+\
+      scale_x_continuous(limits=(-1.0, 1.0))
+
+  ggsave(plt2, os.path.join(output_filename, "inter_network_connectivity_plot.png"))
 
 def roi_cor (data, roi1,roi2):
 	"""
@@ -201,17 +267,23 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 						z_values_store[tn][group_name][network_pair_name].append(z_value)
 	return z_values_store
 
-dic = roi_extraction.dic
-dist_from_center = 4
-CUTOFF = project_config.MNI_CUTOFF
-TR = project_config.TR
+if __name__ == "__main__":
 
-standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
-cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
+  dic = roi_extraction.dic
+  dist_from_center = 4
+  CUTOFF = project_config.MNI_CUTOFF
+  TR = project_config.TR
 
-small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
-          "fmri_con_sib":("010", "013", "014", "021", "022", "038"),
-          "fmri_scz":("007", "009", "017", "031"),
-          "fmri_scz_sib":("006", "008", "018", "024")}
+  standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
+  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
 
-z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
+  small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
+            "fmri_con_sib":("010", "013", "014", "021", "022", "038"),
+            "fmri_scz":("007", "009", "017", "031"),
+            "fmri_scz_sib":("006", "008", "018", "024")}
+
+  z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
+
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
+
+  generate_connectivity_results(z_values_store, output_filename)

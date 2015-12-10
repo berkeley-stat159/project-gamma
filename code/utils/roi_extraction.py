@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config
 import numpy as np
 import numpy.linalg as npl
@@ -84,10 +86,6 @@ def get_voxels(mm_to_vox, coor, in_brain_mask):
 	"""
 	b = ROI_region(co2vox(coor,mm_to_vox))
 	return filter_ROI(b, in_brain_mask)	
-
-def get_voxels(mm_to_vox, coor, in_brain_mask):
-	b = ROI_region(co2vox(coor,mm_to_vox))
-	return filter_ROI(b, in_brain_mask)
 
 class SphereExtractor(object):
 	def __init__(self, in_brain_mask, dist_from_center):
