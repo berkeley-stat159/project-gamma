@@ -285,7 +285,7 @@ def permute (r1,r2):
   t_obs = np.mean(r1)-np.mean(r2)
   pool = r1+r2
   diff = []
-  for i in range(0,100000):
+  for i in range(0,1000):
     sample = random.sample(pool,n1)
     diff.append(np.mean(sample)-(sum(pool)-sum(sample))/n2)
   print(sum(list(i <= t_obs for i in diff)))
