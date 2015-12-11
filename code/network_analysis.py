@@ -245,3 +245,9 @@ if __name__ == "__main__":
   dmn_fp_p_value = permute(scz_dmn_fp,con_dmn_fp)
   fp_co_p_value = permute(scz_fp_co,con_fp_co)
 
+  permute_results = {"bDMN-CER": dmn_cer_p_value, "bCO-CER": cer_co_p_value, "bDMN-CO": dmn_co_p_value, "bFP-CER": fp_cer_p_value, "bDMN-FP": dmn_fp_p_value, "bFP-CO": fp_co_p_value}
+
+  permute_pd = pd.DataFrame(permute_results, index=["Permution Test P Values"])
+  
+  pd_fig = permute_pd.plot().get_figure()
+  pd_fig.savefig(os.path.join(output_filename, "connectivity_permute_test_results.png"), format='png', dpi=500)

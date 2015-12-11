@@ -1,4 +1,4 @@
-.PHONY: all clean coverage test data analysis paper
+.PHONY: all clean coverage test data analysis paper conditionfiles
 
 all: clean
 
@@ -24,13 +24,11 @@ analysis:
 verbose:
 	nosetests -v code/utils data         
 
-data:
-	wget -P ./data http://www.jarrodmillman.com/rcsds/_downloads/actc.txt
-	wget -P ./data http://nipy.bic.berkeley.edu/rcsds/mni_icbm152_nlin_asym_09c_2mm/mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii
-	wget -O ./data/sub011_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub011_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub011_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
-	
+conditionfiles:
+
+	# condition files for the 20 subjects in the data section. The condition files are bundled
+	# together with entire data packages on https://openfmri.org/dataset/ds000115.
+
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub010-014.tgz
 	tar -xvzf ./data/ds115_sub010-014.tgz
 
@@ -49,6 +47,22 @@ data:
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub035-039.tgz
 	tar -xvzf ./data/ds115_sub035-039.tgz
 
+data:
+
+	# color map for plotting nice map
+
+	wget -P ./data http://www.jarrodmillman.com/rcsds/_downloads/actc.txt
+
+	# structural image of the brain
+
+	wget -P ./data http://nipy.bic.berkeley.edu/rcsds/mni_icbm152_nlin_asym_09c_2mm/mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii
+	
+	# 60 runs of BOLD images for 20 subjects
+
+	wget -O ./data/sub011_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/sub011_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/sub011_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	
 	wget -O ./data/sub012_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
 	wget -O ./data/sub012_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
 	wget -O ./data/sub012_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
