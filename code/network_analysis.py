@@ -258,7 +258,7 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 	for group, subject_nums in group_info.items():
 		for sn in subject_nums:
 			for tn in task_nums:
-				data, img, in_brain_mask = preprocessing_pipeline(sn, tn, join(standard_group_source_prefix, group), cond_filepath_prefix)
+				data, img, in_brain_mask = preprocessing_pipeline(sn, tn, standard_group_source_prefix, cond_filepath_prefix)
 				mean_z_values_per_net_pair = subject_z_values(img, data, dist_from_center, dic, in_brain_mask)
 
 				for network_pair_name, z_value in mean_z_values_per_net_pair.items():
@@ -270,16 +270,15 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 	return z_values_store
 
 def permute (r1,r2):
-# """
-# This function performs the permuation test to two lists of r-values (r1:scz; r2:con).
-# Ho: mu_r1 = mu_r2
-# H1: muri < mu_r2
-# input:
-# 1.r1 and r2 are two arrays containing the r-values
-# output:
-# 1. one sided p-values
-
-# """
+  """
+  This function performs the permuation test to two lists of r-values (r1:scz; r2:con).
+  Ho: mu_r1 = mu_r2
+  H1: muri < mu_r2
+  input:
+  1.r1 and r2 are two arrays containing the r-values
+  output:
+  1. one sided p-values
+  """
   n1 = len(r1)
   n2 = len(r2)
   t_obs = np.mean(r1)-np.mean(r2)
@@ -300,8 +299,9 @@ if __name__ == "__main__":
   CUTOFF = project_config.MNI_CUTOFF
   TR = project_config.TR
 
-  standard_group_source_prefix = "/Volumes/G-DRIVE mobile USB/"
-  cond_filepath_prefix = "/Volumes/G-DRIVE mobile USB/fmri_non_mni/"
+  standard_group_source_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
+  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
+  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
             "fmri_con_sib":("010", "013", "014", "021", "022", "038"),
@@ -310,35 +310,32 @@ if __name__ == "__main__":
 
   z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
 
-  output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
-
   generate_connectivity_results(z_values_store, output_filename)
 
-##perform permutation test
-# target r-values into list
-con_dmn_cer = np.ravel(z_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
-scz_dmn_cer = np.ravel(z_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
+  # change target r-values into list format
+  con_dmn_cer = np.ravel(z_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
+  scz_dmn_cer = np.ravel(z_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
 
-con_cer_co = np.ravel(z_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
-scz_cer_co = np.ravel(z_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
+  con_cer_co = np.ravel(z_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
+  scz_cer_co = np.ravel(z_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
 
-con_dmn_co = np.ravel(z_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
-scz_dmn_co = np.ravel(z_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
+  con_dmn_co = np.ravel(z_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
+  scz_dmn_co = np.ravel(z_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
 
-con_fp_cer = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
-scz_fp_cer = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
+  con_fp_cer = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
+  scz_fp_cer = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
 
-con_dmn_fp = np.ravel(z_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
-scz_dmn_fp = np.ravel(z_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
+  con_dmn_fp = np.ravel(z_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
+  scz_dmn_fp = np.ravel(z_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
 
-con_fp_co = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
-scz_fp_co = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+  con_fp_co = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+  scz_fp_co = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
 
-#actual test
-permute(scz_dmn_cer,con_dmn_cer)
-permute(scz_cer_co,con_cer_co)
-permute(scz_dmn_co,con_dmn_co)
-permute(scz_fp_cer,con_fp_cer)
-permute(scz_dmn_fp,con_dmn_fp)
-permute(scz_fp_co,con_fp_co)
+  # perform permutation test
+  dmn_cer_p_value = permute(scz_dmn_cer,con_dmn_cer)  
+  cer_co_p_value = permute(scz_cer_co,con_cer_co)
+  dmn_co_p_value = permute(scz_dmn_co,con_dmn_co)
+  fp_cer_p_value = permute(scz_fp_cer,con_fp_cer)
+  dmn_fp_p_value = permute(scz_dmn_fp,con_dmn_fp)
+  fp_co_p_value = permute(scz_fp_co,con_fp_co)
 
