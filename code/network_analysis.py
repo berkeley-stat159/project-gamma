@@ -1,22 +1,23 @@
+"""
+Script for inter-netowrk and intra-network connectivity analysis.
+"""
+
 from __future__ import division
 import project_config
-from scipy import stats
 from conv import conv_target_non_target, conv_std
 from stimuli_revised import events2neural_std
 from gaussian_filter import spatial_smooth
 from general_utils import prepare_standard_img, prepare_mask, prepare_standard_data, form_cond_filepath
 from os.path import join
+from connectivity_utils import c_between, c_within
 import numpy as np
 import os
 import math
 import nibabel as nib
 import numpy.linalg as npl
 import roi_extraction
-import itertools
-import json
 from ggplot import *
 import pandas as pd
-import itertools 
 import random
 
 import pdb
@@ -82,78 +83,6 @@ def generate_connectivity_results(connectivity_results, output_filename):
       scale_x_continuous(limits=(-1.0, 1.0))
 
   ggsave(plt2, os.path.join(output_filename, "inter_network_connectivity_plot.png"))
-
-def roi_cor (data, roi1,roi2):
-	"""
-	#input: 
-		# roi1 and roi2 are two list of tuples indicating the voxel 
-		# only necessary to call this method if roi1 != roi2
-		# indexes of the ROI1 and ROI2 respectively
-		# data
-	#output: 
-		# returns the mean Fisher's z value of all the correlations among voxels in ROI1 and ROI2
-	"""
-
-	timecourse1 = [data[roi1[i]] for i in range(0,len(roi1))]
-	avg_time1 = np.mean(timecourse1,axis=0)
-	timecourse2 = [data[roi2[j]] for j in range(0,len(roi2))]
-	avg_time2 = np.mean(timecourse2,axis=0)
-	cor = np.corrcoef(avg_time1,avg_time2)[1,0]
-
-	return cor
-
-def network_cor(data, net1, net2, is_same):
-	"""
-	#Input:
-		#net1 and net2 are two dictionaries of ROI names to voxels belonging to that ROI
-	#Output: 
-		a list of z values
-	"""
-
-	roi_names_1 = net1.keys()
-	roi_names_2 = net2.keys()
-
-	if is_same:
-		z_values_list = []
-		for i in range(0,len(roi_names_1)):
-			for j in range(i + 1,len(roi_names_2)):
-				roi_name_1 = roi_names_1[i]
-				roi_name_2 = roi_names_2[j]
-				val = roi_cor(data,net1[roi_name_1],net2[roi_name_2])
-				z_values_list.append(val)
-		return z_values_list
-
-	else:
-		return [roi_cor(data,voxels_1, voxels_2) for roi_name_1, voxels_1 in net1.items() for roi_name_2, voxels_2 in net2.items()]
-
-def z_within (data,dic):
-	"""
-	#Input: 
-		#triple nesting lists
-		#image data
-	#Output:
-		# a list of tuples(average z-values); within nework
-	"""
-	return {network_name: network_cor(data,rois,rois, True) for network_name, rois in dic.items()}
-
-
-def z_bewteen (data,dic):
-	"""
-	#Input: 
-		#triple nesting lists
-		#image data
-	#Output:
-		#a list of tuples(CIs); between network
-	"""
-
-	z_bet = {}
-	networks = dic.keys()
-	for i in range(0,len(networks)):
-		for j in range(i+1,len(networks)):
-			network_name_1 = networks[i]
-			network_name_2 = networks[j]
-			z_bet[network_name_1+"-"+network_name_2] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
-	return z_bet
 
 def expand_dic(dic, mm_to_vox, roi_extractor):
 	expanded_dic = {}
@@ -239,8 +168,8 @@ def subject_z_values(img, data, dist_from_center, dic, in_brain_mask):
 
 	expanded_dic = expand_dic(dic, mm_to_vox, roi_extractor)
 
-	mean_z_values = z_within(data, expanded_dic)
-	mean_z_values.update(z_bewteen(data, expanded_dic))
+	mean_z_values = c_within(data, expanded_dic)
+	mean_z_values.update(c_between(data, expanded_dic))
 	return mean_z_values
 
 def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, group_info):
