@@ -105,7 +105,7 @@ if __name__ == "__main__":
   task_num = "001"
   cond_num = "003"
 
-  standard_source_prefix = data_dir_path
+  standard_source_prefix = os.path.join(data_dir_path, "preprocessed")
   cond_filepath_011 = form_cond_filepath(subject_num, task_num, cond_num, data_dir_path)
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 

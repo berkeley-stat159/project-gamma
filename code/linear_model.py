@@ -234,9 +234,8 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
   normality_test_results = {"Alpha Test":alpha_test, "Bonferroni Procedure":bonferroni_test,"Hochberg Procedure":hochberg_test,"Benjamini-Hochberg Procedure":benjamini_test}
 
   normality_test_pd = pd.DataFrame(normality_test_results, index=["Failure Rate"])
-  
-  pd_fig = normality_test_pd.plot().get_figure()
-  pd_fig.savefig(os.path.join(output_filename, "sub%s_linear_model_normality_tests_failure_rates.png" % subject_num), format='png', dpi=500)
+
+  normality_test_pd.to_csv(os.path.join(output_filename, "sub%s_linear_model_normality_tests_failure_rates.csv" % subject_num))
 
   rs_squared = []
   for i in range(Y.shape[-1]):
@@ -289,8 +288,8 @@ if __name__ == "__main__":
 
   data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
 
-  standard_source_prefix = data_dir_path
-  cond_filepath_prefix = data_dir_path
+  standard_source_prefix = os.path.join(data_dir_path, "preprocessed")
+  cond_filepath_prefix = os.path.join(data_dir_path, "condition_files")
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
   nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")

@@ -249,5 +249,4 @@ if __name__ == "__main__":
 
   permute_pd = pd.DataFrame(permute_results, index=["Permution Test P Values"])
   
-  pd_fig = permute_pd.plot().get_figure()
-  pd_fig.savefig(os.path.join(output_filename, "connectivity_permute_test_results.png"), format='png', dpi=500)
+  permute_pd.to_csv(os.path.join(output_filename, "sub%s_connectivity_permutation_results.csv" % subject_num))

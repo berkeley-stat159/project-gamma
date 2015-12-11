@@ -11,12 +11,16 @@ coverage:
 test:
 	nosetests code/utils data
 
+paper:
+	make clean -C paper
+	make -C paper
+
 validate:
 	python data/data.py
 
 analysis:
-	python code/linear_model.py
-	python code/correlations_with_baselines.py
+	# python code/linear_model.py
+	# python code/correlations_with_baselines.py
 	python code/network_analysis.py
 	python code/extended_rms_outliers.py
 	python code/kmeans_analysis.py
