@@ -1,3 +1,8 @@
+"""
+Convenient methods for preparing fMRI data as well as
+condition files.
+"""
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config

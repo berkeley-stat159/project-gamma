@@ -1,3 +1,12 @@
+"""
+Different versions of the events2neural function. All are
+needed to deal with different condition file formats and 
+specific needs of callers, such as handling the possibility
+of an empty but legal error condition file and retrieving
+the convolved time course at different resolution.
+"""
+
+
 from __future__ import division
 import numpy as np
 import math

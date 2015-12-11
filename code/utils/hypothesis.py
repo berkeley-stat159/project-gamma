@@ -1,3 +1,8 @@
+"""
+Helpers for computing t values w.r.t a beta against the null hypothesis that
+it is zero for a voxel time course.
+"""
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config

@@ -1,4 +1,9 @@
-"""sub011, task001_run_001"""
+"""
+Script to apply extended rms outlier detection on a run. 
+Results of the analysis are to understand the noise in 
+fMRI data and justify the need for additional preprocessing
+steps.
+"""
 
 import project_config
 import nibabel as nib

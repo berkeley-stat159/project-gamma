@@ -1,3 +1,7 @@
+"""
+Wrapper for k-means clustering that takes cares of reshaping and generating labels.
+"""
+
 from __future__ import division
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,7 +22,7 @@ def perform_kMeans_clustering_analysis(feature_data, n_clusters):
 
   Returns
   -------
-  labels_3d : array has the same shape as img_data.shape. Each elem is the
+  labels : array has the same shape as img_data.shape. Each elem is the
   cluster label of the data.
 
   """
