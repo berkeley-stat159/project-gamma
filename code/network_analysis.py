@@ -161,18 +161,18 @@ def preprocessing_pipeline(subject_num, task_num, standard_source_prefix, cond_f
 
   return b_vols, img, in_brain_mask
 
-def subject_z_values(img, data, dist_from_center, dic, in_brain_mask):
+def subject_c_values(img, data, dist_from_center, dic, in_brain_mask):
 	mm_to_vox = npl.inv(img.affine)
 
 	roi_extractor = roi_extraction.SphereExtractor(in_brain_mask, dist_from_center)
 
 	expanded_dic = expand_dic(dic, mm_to_vox, roi_extractor)
 
-	mean_z_values = c_within(data, expanded_dic)
-	mean_z_values.update(c_between(data, expanded_dic))
-	return mean_z_values
+	mean_c_values = c_within(data, expanded_dic)
+	mean_c_values.update(c_between(data, expanded_dic))
+	return mean_c_values
 
-def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, group_info):
+def group_c_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, group_info):
 	task_nums = ("001", "002", "003")
   
 	# store layout
@@ -180,7 +180,7 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
   #   level 2: group name (CON, SCZ)
   #   level 3: network name
   #   level 4: a list of ROI-ROI correlations
-	z_values_store = {"001":{"con":{}, "scz":{}},
+	c_values_store = {"001":{"con":{}, "scz":{}},
 										"002":{"con":{}, "scz":{}},
 										"003":{"con":{}, "scz":{}}}
   
@@ -188,15 +188,15 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 		for sn in subject_nums:
 			for tn in task_nums:
 				data, img, in_brain_mask = preprocessing_pipeline(sn, tn, standard_group_source_prefix, cond_filepath_prefix)
-				mean_z_values_per_net_pair = subject_z_values(img, data, dist_from_center, dic, in_brain_mask)
+				mean_c_values_per_net_pair = subject_c_values(img, data, dist_from_center, dic, in_brain_mask)
 
-				for network_pair_name, z_value in mean_z_values_per_net_pair.items():
+				for network_pair_name, c_value in mean_c_values_per_net_pair.items():
 					group_name = "con" if group in ("fmri_con", "fmri_con_sib") else "scz"
-					if network_pair_name not in z_values_store[tn][group_name]:
-						z_values_store[tn][group_name][network_pair_name] = [z_value]
+					if network_pair_name not in c_values_store[tn][group_name]:
+						c_values_store[tn][group_name][network_pair_name] = [c_value]
 					else:
-						z_values_store[tn][group_name][network_pair_name].append(z_value)
-	return z_values_store
+						c_values_store[tn][group_name][network_pair_name].append(c_value)
+	return c_values_store
 
 def permute (r1,r2):
   """
@@ -237,28 +237,28 @@ if __name__ == "__main__":
             "fmri_scz":("007", "009", "017", "031"),
             "fmri_scz_sib":("006", "008", "018", "024")}
 
-  z_values_store = group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
+  c_values_store = group_c_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
 
-  generate_connectivity_results(z_values_store, output_filename)
+  generate_connectivity_results(c_values_store, output_filename)
 
   # change target r-values into list format
-  con_dmn_cer = np.ravel(z_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
-  scz_dmn_cer = np.ravel(z_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
+  con_dmn_cer = np.ravel(c_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
+  scz_dmn_cer = np.ravel(c_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
 
-  con_cer_co = np.ravel(z_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
-  scz_cer_co = np.ravel(z_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
+  con_cer_co = np.ravel(c_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
+  scz_cer_co = np.ravel(c_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
 
-  con_dmn_co = np.ravel(z_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
-  scz_dmn_co = np.ravel(z_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
+  con_dmn_co = np.ravel(c_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
+  scz_dmn_co = np.ravel(c_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
 
-  con_fp_cer = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
-  scz_fp_cer = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
+  con_fp_cer = np.ravel(c_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
+  scz_fp_cer = np.ravel(c_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
 
-  con_dmn_fp = np.ravel(z_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
-  scz_dmn_fp = np.ravel(z_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
+  con_dmn_fp = np.ravel(c_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
+  scz_dmn_fp = np.ravel(c_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
 
-  con_fp_co = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
-  scz_fp_co = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+  con_fp_co = np.ravel(c_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+  scz_fp_co = np.ravel(c_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
 
   # perform permutation test
   dmn_cer_p_value = permute(scz_dmn_cer,con_dmn_cer)  

@@ -26,7 +26,6 @@ def roi_cor (data, roi1,roi2):
   timecourse2 = [data[roi2[j]] for j in range(0,len(roi2))]
   avg_time2 = np.mean(timecourse2,axis=0)
   cor = np.corrcoef(avg_time1,avg_time2)[1,0]
-
   return cor
 
 def network_cor(data, net1, net2, is_same):
