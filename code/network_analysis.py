@@ -205,8 +205,8 @@ if __name__ == "__main__":
   CUTOFF = project_config.MNI_CUTOFF
   TR = project_config.TR
 
-  standard_group_source_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
-  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
+  standard_group_source_prefix = os.path.join(os.path.dirname(__file__), "..", "data", "preprocessed")
+  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), "..", "data", "condition_files")
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),
@@ -245,3 +245,8 @@ if __name__ == "__main__":
   dmn_fp_p_value = permute(scz_dmn_fp,con_dmn_fp)
   fp_co_p_value = permute(scz_fp_co,con_fp_co)
 
+  permute_results = {"bDMN-CER": dmn_cer_p_value, "bCO-CER": cer_co_p_value, "bDMN-CO": dmn_co_p_value, "bFP-CER": fp_cer_p_value, "bDMN-FP": dmn_fp_p_value, "bFP-CO": fp_co_p_value}
+
+  permute_pd = pd.DataFrame(permute_results, index=["Permution Test P Values"])
+  
+  permute_pd.to_csv(os.path.join(output_filename, "sub%s_connectivity_permutation_results.csv" % subject_num))

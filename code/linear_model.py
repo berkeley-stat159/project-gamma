@@ -237,7 +237,6 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
 
   normality_test_pd.to_csv(os.path.join(output_filename, "sub%s_linear_model_normality_tests_failure_rates.csv" % subject_num))
 
-
   rs_squared = []
   for i in range(Y.shape[-1]):
     r_squared = 1 - np.sum((Y[:,i] - X.dot(B[:,i]))**2) * 1.0 / np.sum((Y[:,i] - np.mean(Y[:,i])) ** 2)
@@ -289,8 +288,8 @@ if __name__ == "__main__":
 
   data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
 
-  standard_source_prefix = data_dir_path
-  cond_filepath_prefix = data_dir_path
+  standard_source_prefix = os.path.join(data_dir_path, "preprocessed")
+  cond_filepath_prefix = os.path.join(data_dir_path, "condition_files")
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
   nice_cmap_values_path = os.path.join(data_dir_path, "actc.txt")
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")

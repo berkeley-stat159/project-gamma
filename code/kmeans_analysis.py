@@ -67,7 +67,7 @@ if __name__ == "__main__":
   data_dir_path = os.path.join(os.path.dirname(__file__), "..", "data")
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
 
-  standard_source_prefix = data_dir_path
+  standard_source_prefix = os.path.join(data_dir_path, "preprocessed")
   cond_filepath_011 = form_cond_filepath("011", "001", "003", data_dir_path)
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
