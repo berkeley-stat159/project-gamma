@@ -1,3 +1,7 @@
+"""
+Script for linear modeling of fMRI data to identify noise regressors and to investigate activation clusters.
+"""
+
 import project_config
 import numpy as np
 import numpy.linalg as npl

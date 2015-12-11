@@ -37,7 +37,7 @@ def conv_target_non_target(n_trs, filename, error_fname, TR, tr_divs = 100.0):
   Convolve the target and non-target portions of the conditional file separately.
   E.g. cond003 is such an example.
   """
-  target_neural, nontarget_neural, error_neural = events2neural_target_non_target(filename, error_fname, n_trs, tr_divs)
+  target_neural, nontarget_neural, error_neural = events2neural_target_non_target(filename, error_fname, n_trs, tr_divs, TR)
   hrf_times = np.arange(0, HRF_TIME_LENGTH, 1 / tr_divs)
   hrf_at_hr = hrf(hrf_times)
   target_convolved = np.convolve(target_neural, hrf_at_hr)[:len(target_neural)]
@@ -76,7 +76,7 @@ def conv_main(n_trs, filename, TR):
 
   """
   hrf_at_trs = hrf_prep(HRF_TIME_LENGTH)
-  neural_prediction = events2neural(filename, 0.1, n_trs)
+  neural_prediction = events2neural(filename, 0.1, n_trs, TR)
   all_tr_times = np.arange(n_trs * TR / TIME_UNIT) * TIME_UNIT
   convolved = np.convolve(neural_prediction, hrf_at_trs)
   n_to_remove = len(hrf_at_trs) - 1

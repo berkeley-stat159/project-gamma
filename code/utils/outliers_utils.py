@@ -1,3 +1,7 @@
+"""
+Helpers for extended outlier detection.
+"""
+
 import numpy as np
 
 def vol_std(data):

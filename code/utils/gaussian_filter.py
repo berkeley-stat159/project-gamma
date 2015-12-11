@@ -1,3 +1,12 @@
+"""
+Wrapper for gaussian filter that supports padding of the
+boundary with voxel values inside the brain boundary. The
+purpose of padding is so that gaussian filter results
+are not distorted too badly nearly the brain boundary because
+of the extremely low fMRI measurements outside the brain
+boundary.
+"""
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config
