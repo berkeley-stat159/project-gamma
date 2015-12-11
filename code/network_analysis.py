@@ -205,8 +205,8 @@ if __name__ == "__main__":
   CUTOFF = project_config.MNI_CUTOFF
   TR = project_config.TR
 
-  standard_group_source_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
-  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), "..", "data")
+  standard_group_source_prefix = os.path.join(os.path.dirname(__file__), "..", "data", "preprocessed")
+  cond_filepath_prefix = os.path.join(os.path.dirname(__file__), "..", "data", "condition_files")
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   small_group_info = {"fmri_con":("011", "012", "015", "035", "036", "037"),

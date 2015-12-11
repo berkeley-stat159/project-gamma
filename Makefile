@@ -59,82 +59,82 @@ data:
 	
 	# 60 runs of BOLD images for 20 subjects
 
-	wget -O ./data/sub011_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub011_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub011_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub011_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub011_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub011_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub011/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 	
-	wget -O ./data/sub012_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub012_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub012_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub012_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub012_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub012_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub012/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub015_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub015_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub015_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub015_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub015_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub015_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub015/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub035_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub035_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub035_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub035_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub035_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub035_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub035/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub036_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub036_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub036_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub036_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub036_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub036_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub036/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub037_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub037_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub037_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub037_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub037_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub037_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub037/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub010_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub010_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub010_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub010_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub010_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub010_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub010/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub013_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub013_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub013_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub013_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub013_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub013_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub013/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub014_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub014_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub014_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub014_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub014_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub014_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub014/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub021_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub021_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub021_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub021_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub021_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub021_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub021/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub022_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub022_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub022_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub022_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub022_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub022_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub022/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub038_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub038_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub038_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub038_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub038_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub038_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub038/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub007_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub007_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub007_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub007_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub007_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub007_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub007/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub009_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub009_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub009_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub009_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub009_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub009_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub009/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub017_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub017_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub017_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub017_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub017_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub017_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub017/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub031_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub031_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub031_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub031_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub031_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub031_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub031/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub006_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub006_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub006_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub006_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub006_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub006_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub006/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub008_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub008_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub008_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub008_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub008_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub008_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub008/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub018_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub018_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub018_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub018_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub018_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub018_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub018/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
 
-	wget -O ./data/sub024_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub024_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
-	wget -O ./data/sub024_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub024_task001_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task001_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub024_task002_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task002_run001.feat/filtered_func_data_mni.nii.gz
+	wget -O ./data/preprocessed/sub024_task003_run001_func_data_mni.nii.gz http://nipy.bic.berkeley.edu/rcsds/ds115/sub024/model/model001/task003_run001.feat/filtered_func_data_mni.nii.gz
