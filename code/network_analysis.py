@@ -249,4 +249,5 @@ if __name__ == "__main__":
 
   permute_pd = pd.DataFrame(permute_results, index=["Permution Test P Values"])
   
-  permute_pd.to_csv(os.path.join(output_filename, "sub%s_connectivity_permutation_results.csv" % subject_num))
+  permute_pd.to_csv(os.path.join(output_filename, "connectivity_permutation_results.csv"))
+  
