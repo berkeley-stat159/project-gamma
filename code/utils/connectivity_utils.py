@@ -6,7 +6,29 @@ from __future__ import division
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config
+import random
 import numpy as np
+
+def permute (r1,r2):
+  """
+  This function performs the permuation test to two lists of r-values (r1:scz; r2:con).
+  Ho: mu_r1 = mu_r2
+  H1: muri < mu_r2
+  input:
+  1.r1 and r2 are two arrays containing the r-values
+  output:
+  1. one sided p-values
+  """
+  n1 = len(r1)
+  n2 = len(r2)
+  t_obs = np.mean(r1)-np.mean(r2)
+  pool = r1+r2
+  diff = []
+  for i in range(0,1000):
+    sample = random.sample(pool,n1)
+    diff.append(np.mean(sample)-(sum(pool)-sum(sample))/n2)
+  p_value = sum(list(i <= t_obs for i in diff))/len(diff)
+  return p_value
 
 def roi_cor (data, roi1,roi2):
   """

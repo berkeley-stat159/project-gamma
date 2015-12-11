@@ -9,7 +9,7 @@ from stimuli_revised import events2neural_std
 from gaussian_filter import spatial_smooth
 from general_utils import prepare_standard_img, prepare_mask, prepare_standard_data, form_cond_filepath
 from os.path import join
-from connectivity_utils import c_between, c_within
+from connectivity_utils import c_between, c_within, permute
 import numpy as np
 import os
 import math
@@ -197,28 +197,6 @@ def group_c_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 					else:
 						c_values_store[tn][group_name][network_pair_name].append(c_value)
 	return c_values_store
-
-def permute (r1,r2):
-  """
-  This function performs the permuation test to two lists of r-values (r1:scz; r2:con).
-  Ho: mu_r1 = mu_r2
-  H1: muri < mu_r2
-  input:
-  1.r1 and r2 are two arrays containing the r-values
-  output:
-  1. one sided p-values
-  """
-  n1 = len(r1)
-  n2 = len(r2)
-  t_obs = np.mean(r1)-np.mean(r2)
-  pool = r1+r2
-  diff = []
-  for i in range(0,1000):
-    sample = random.sample(pool,n1)
-    diff.append(np.mean(sample)-(sum(pool)-sum(sample))/n2)
-  p_value = sum(list(i <= t_obs for i in diff))/len(diff)
-  return p_value
-
 
 if __name__ == "__main__":
 
