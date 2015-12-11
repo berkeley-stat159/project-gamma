@@ -1,8 +1,10 @@
 """
-Script to apply extended rms outlier detection on a run. 
-Results of the analysis are to understand the noise in 
-fMRI data and justify the need for additional preprocessing
-steps.
+EDA:
+
+This module detects the exteded RMS outliers and generates the plot for those outliers.
+Results of the analysis are to understand the noise in fMRI data and justify the need 
+for additional preprocessing steps.
+We detect the outliers on "sub011, task001_run_001"
 """
 
 import project_config
