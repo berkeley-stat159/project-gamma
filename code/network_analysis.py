@@ -216,7 +216,6 @@ def permute (r1,r2):
   for i in range(0,1000):
     sample = random.sample(pool,n1)
     diff.append(np.mean(sample)-(sum(pool)-sum(sample))/n2)
-  print(sum(list(i <= t_obs for i in diff)))
   p_value = sum(list(i <= t_obs for i in diff))/len(diff)
   return p_value
 
