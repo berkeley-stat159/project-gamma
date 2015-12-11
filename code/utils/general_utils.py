@@ -25,7 +25,7 @@ def prepare_standard_img(subject_num, task_num, source_prefix):
   return nib.load(join(source_prefix, "sub%s_task%s_run001_func_data_mni.nii.gz" % (subject_num, task_num)))
 
 def form_cond_filepath(subject_num, task_num, cond_num, cond_filepath_prefix):
-  return join(cond_filepath_prefix, "sub%s" % (subject_num), "model/model001/onsets", "task%s_run001" % (task_num), "cond%s.txt" % (cond_num))
+  return join(cond_filepath_prefix, "condition_files", "sub%s" % (subject_num), "model/model001/onsets", "task%s_run001" % (task_num), "cond%s.txt" % (cond_num))
 
 def prepare_mask(data_4d, cutoff):
   in_brain_mask = np.mean(data_4d, axis=-1) > cutoff
