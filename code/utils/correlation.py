@@ -1,10 +1,11 @@
 """
 EDA: 
 
-This module compute the correlations between the voxel value and the time_course 
-based on two different ways (baseline method and square wave method).
-
+Different methods for calculating correlations between the fMRI time courses 
+and the neural prediction values.Both methods are needed so that we can compare 
+the results from different baseline functions (square wave and gamma function) in the analysis.
 """
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config

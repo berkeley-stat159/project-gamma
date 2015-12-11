@@ -1,3 +1,12 @@
+"""
+An EDA script to understand hidden structure of the brain via
+kmeans. One limitation of the script is that the built-in method
+hides away the choice of initial values for kmeans. One further step to
+extend the analysis is to feed in different initialization values
+and see whether the cluster labels will differ drastically.
+"""
+
+
 import project_config
 import kmeans, os
 import numpy as np
@@ -8,51 +17,6 @@ from gaussian_filter import spatial_smooth
 from matplotlib import colors
 from general_utils import prepare_standard_data, prepare_mask, form_cond_filepath
 from sklearn.decomposition import PCA
-
-
-def generate_clusters(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters = 5):
-
-  labels_list = generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters)
-
-  result_labels = kmeans.merge_n_clusters(labels_list, n_clusters, feature_list_1.shape)
-
-  return result_labels
-
-def generate_clusters_multiple(subject_num, feature_list_1, feature_list_2, feature_list_3, n_clusters = 5):
-
-  labels_1 = kmeans.perform_kMeans_clustering_analysis(feature_list_1, n_clusters)
-  labels_2 = kmeans.perform_kMeans_clustering_analysis(feature_list_2, n_clusters)
-  labels_3 = kmeans.perform_kMeans_clustering_analysis(feature_list_3, n_clusters)
-
-  return labels_1, labels_2, labels_3
-
-
-def plot_all(result_labels_1, result_labels_2, subject_num_1, subject_num_2, analysis_name, title):
-  fig = plt.figure()
-
-  ax1 = fig.add_subplot(321)
-  ax1.set_title("Subject%s, z = 15, %s" % (subject_num_1, title))
-  ax1.imshow(result_labels_1[...,15])
-  ax2 = fig.add_subplot(323)
-  ax2.set_title("Subject%s, z = 20, %s" % (subject_num_1, title))
-  ax2.imshow(result_labels_1[...,20])
-  ax3 = fig.add_subplot(325)
-  ax3.set_title("Subject%s, z = 25, %s" % (subject_num_1, title))
-  ax3.imshow(result_labels_1[...,25])
-
-  ax4 = fig.add_subplot(322)
-  ax4.set_title("Subject%s, z = 15, %s" % (subject_num_2, title))
-  ax4.imshow(result_labels_2[...,15])
-  ax5 = fig.add_subplot(324)
-  ax5.set_title("Subject%s, z = 20, %s" % (subject_num_2, title))
-  ax5.imshow(result_labels_2[...,20])
-  ax6 = fig.add_subplot(326)
-  ax6.set_title("Subject%s, z = 25, %s" % (subject_num_2, title))
-  ax6.imshow(result_labels_2[...,25])
-
-  plt.savefig(output_filename + "subject%s_%s_%s_%s" % (subject_num_1, subject_num_2, analysis_name, title))
-
-  plt.show()
 
 def preprocessing_pipeline(subject_num, task_num, standard_source_prefix):
 

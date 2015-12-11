@@ -1,3 +1,8 @@
+"""
+Convenient way to expose filepaths to scripts. Also, important
+constants are centralized here to avoid multiple copies.
+"""
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(os.path.join(os.path.dirname(__file__)))
