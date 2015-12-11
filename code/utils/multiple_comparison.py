@@ -1,3 +1,8 @@
+"""
+This module compare four different methods in testing normality of the residuals: alpha-level test, 
+Bonferroni procedure, Hochberg procedure, and Benjamini-Hochberg procedure respectively. 
+The later three adjusts the multiple comparison problems and gives more accurate results.
+"""
 from scipy import stats
 import numpy as np
 import pdb

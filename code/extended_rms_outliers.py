@@ -1,4 +1,10 @@
-"""sub011, task001_run_001"""
+"""
+EDA:
+
+This module detects the exteded RMS outliers and generates the plot for those outliers.
+We detect the outliers on "sub011, task001_run_001"
+
+"""
 
 import project_config
 import nibabel as nib
