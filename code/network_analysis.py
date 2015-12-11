@@ -16,6 +16,8 @@ import itertools
 import json
 from ggplot import *
 import pandas as pd
+import itertools 
+import random
 
 import pdb
 
@@ -267,6 +269,30 @@ def group_z_values(standard_group_source_prefix, cond_filepath_prefix, dist_from
 						z_values_store[tn][group_name][network_pair_name].append(z_value)
 	return z_values_store
 
+def permute (r1,r2):
+# """
+# This function performs the permuation test to two lists of r-values (r1:scz; r2:con).
+# Ho: mu_r1 = mu_r2
+# H1: muri < mu_r2
+# input:
+# 1.r1 and r2 are two arrays containing the r-values
+# output:
+# 1. one sided p-values
+
+# """
+  n1 = len(r1)
+  n2 = len(r2)
+  t_obs = np.mean(r1)-np.mean(r2)
+  pool = r1+r2
+  diff = []
+  for i in range(0,100000):
+    sample = random.sample(pool,n1)
+    diff.append(np.mean(sample)-(sum(pool)-sum(sample))/n2)
+  print(sum(list(i <= t_obs for i in diff)))
+  p_value = sum(list(i <= t_obs for i in diff))/len(diff)
+  return p_value
+
+
 if __name__ == "__main__":
 
   dic = roi_extraction.dic
@@ -287,3 +313,32 @@ if __name__ == "__main__":
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   generate_connectivity_results(z_values_store, output_filename)
+
+##perform permutation test
+# target r-values into list
+con_dmn_cer = np.ravel(z_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
+scz_dmn_cer = np.ravel(z_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
+
+con_cer_co = np.ravel(z_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
+scz_cer_co = np.ravel(z_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
+
+con_dmn_co = np.ravel(z_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
+scz_dmn_co = np.ravel(z_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
+
+con_fp_cer = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
+scz_fp_cer = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
+
+con_dmn_fp = np.ravel(z_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
+scz_dmn_fp = np.ravel(z_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
+
+con_fp_co = np.ravel(z_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+scz_fp_co = np.ravel(z_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+
+#actual test
+permute(scz_dmn_cer,con_dmn_cer)
+permute(scz_cer_co,con_cer_co)
+permute(scz_dmn_co,con_dmn_co)
+permute(scz_fp_cer,con_fp_cer)
+permute(scz_dmn_fp,con_dmn_fp)
+permute(scz_fp_co,con_fp_co)
+
