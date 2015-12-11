@@ -3,6 +3,8 @@ Helper functions for connectivity analysis including separating network regions 
 """
 
 from __future__ import division
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import project_config
 import numpy as np
 
