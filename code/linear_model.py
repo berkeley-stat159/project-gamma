@@ -162,7 +162,7 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   plt.colorbar()
   plt.tight_layout()
 
-  plt.savefig(os.path.join(output_filename, "sub001_noise_regressors_betas_map.png"), format='png', dpi=500)  
+  plt.savefig(os.path.join(output_filename, "sub011_0_back_noise_regressors_betas_map.png"), format='png', dpi=500)  
 
 
 def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, subject_num, task_num, output_filename):
@@ -235,7 +235,7 @@ def single_subject_linear_model(standard_source_prefix, cond_filepath_prefix, su
 
   normality_test_pd = pd.DataFrame(normality_test_results, index=["Failure Rate"])
 
-  normality_test_pd.to_csv(os.path.join(output_filename, "sub%s_linear_model_normality_tests_failure_rates.csv" % subject_num))
+  normality_test_pd.to_csv(os.path.join(output_filename, "sub%s_task%s_linear_model_normality_tests_failure_rates.csv" % (subject_num, task_num)))
 
   rs_squared = []
   for i in range(Y.shape[-1]):

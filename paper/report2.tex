@@ -48,7 +48,7 @@ activities of these regions may differ across health states \cite{repovs2011,rep
 
 \subsection{Generalized Linearl Model}
 
-The goal of GLM with respect to our dataset is to detect the activation clusters of target and non-target events in one subject in the control (healthy) group. An activation cluster refers to a group of neighboring voxels activated beyond certain statistical thresholds (e.g., t-test, p-values) by defined events. We did not set up a quantifiable criterion -- for example, to definitively separate one cluster from a neighboring cluster, but provide qualitative evidence in terms of coefficient and p-value maps. Please see the methods section that follows for the target and non-target events definitions. 
+The goal of GLM with respect to our dataset is to detect the activation clusters of target and non-target events in one subject in the control (healthy) group. An activation cluster refers to a group of neighboring voxels activated beyond certain statistical thresholds (e.g., t-test, t-values) by defined events. We did not set up a quantifiable criterion -- for example, to definitively separate one cluster from a neighboring cluster, but provide qualitative evidence in terms of coefficient and t-value maps. Please see the methods section that follows for the target and non-target events definitions. 
 
 GLM is performed for both 0-back and 2-back tasks for the subject so that we can assess the effect of different memory loads on activation clusters. Through the GLM, we are better able to access the noise structure of the data, so that we can remove the noise regressors as a step towards a connectivity analysis.
 
@@ -83,7 +83,7 @@ of exploratory examinations into the structure of this imaging data.
 
 \subsection{Data Preprocessing}
 
-The standard preprocessed BOLD images were used. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This further justified the need for temporary smoothing. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain were smoothed with measurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain. However, this was not applied to connectivity portion of the analysis because the implementation was very slow and would take several hours on 20 subjects.
+Except for Extended RMS in EDA, the standard preprocessed BOLD images were used. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This further justified the need for temporary smoothing. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain were smoothed with measurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain. However, this was not applied to connectivity portion of the analysis because the implementation was very slow and would take several hours on 20 subjects.
 
 \subsection{Data Analysis}
 
@@ -132,52 +132,53 @@ different in the levels of activitities.
 
 \item reg002: Convolution of non-target events from cond003.
 
-\item reg003: On-off time course from cond005. This regressor is included to account
+\item reg003: Convolution of error events from cond007.
+
+\item reg004: On-off time course from cond005. This regressor is included to account
 for mean differences in the two blocks of the same run.
 
-\item reg004: Convolution of start cues from cond001. This is separated from the
+\item reg005: Convolution of start cues from cond001. This is separated from the
 target and non-target regressors in that it is not part of tasks and that it is
 not likely to involve heavy working memory load as tasks.
 
-\item reg005: Convolution of done cues from cond004. It has the same purpose as
-reg004.
+\item reg006: Convolution of done cues from cond004. It has the same purpose as
+reg005.
 
-\item reg006 and reg007: A linear drift term and a quadratic drift term included as
+\item reg007 and reg008: A linear drift term and a quadratic drift term included as
 potential nuisansance regressors. Their significance is investigated below.
 
-\item reg007: A quadratic drift term includede as a potential nuisansance regressors. 
-
-\item reg008 and reg009: The first two principal components of the data. Based on the
+\item reg009 and reg010: The first two principal components of the data. Based on the
 projections shown below, we decide that the first two are not functional
 features.
 
-\item reg010: Intercept term.
+\item reg011: Intercept term.
 
 \end{itemize}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{../results/sub011_task001_first_four_pcs.png}
-\caption{The first four principal components for subject 011, 0-back}
+\caption{The first four Principal Components (pc) for sub011, 0-back.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{../results/sub011_task003_design_matrix.png}
-\caption{The design matrix for subject 011, 2-back}
+\caption{The design matrix for subject 011, 2-back. The indices correspond to the regressors
+from reg001 to reg011. Index 4 and 5 are almost unidentifiable from the graph because they
+are convolved from only a few single neural prediction values and hence are very small.}
 \end{figure}
-
 
 For each $\beta$ on each voxel time course, a linear regression two-tailed
 t-test is conducted to access whether there is a significant linear relationship
 between the dependent variable Y and the regressor associated with the $\beta$,
 with significance levels of 0.05 for each test. \\
  
-Null Hypothesis: $ \beta = 0$ \\
+\textit{Null Hypothesis}: $ \beta = 0$ \\
 
-Alternative Hypothesis: $\beta \neq 0$ \\
+\textit{Alternative Hypothesis}: $\beta \neq 0$ \\
 
-Instead of plotting out the regions of siginificant p-values, the p-value map of
+Instead of plotting out the regions of siginificant p-values, the t-value map of
 the entire brain is presented within the results section that follows. 
 
 Before performing t-tests, we assess the validity of t-tests by examining its
@@ -186,11 +187,13 @@ are independent and identically distributed (i.i.d), and (2) residuals for the m
 are normally distributed. The Shapiro-Wilk test is performed on the residuals of
 each voxel time course in the linear model. 37703 out of 207766 voxels fail this
 test; however, when performing a large number of statistical tests, some will have
-p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), are performed, and results are shown below:
+p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), are performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task003\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
 
-Bonferroni: normality assumption is violated in 6 voxels.
-Hochberg: normality assumption is violated in 262 voxels.
-Benjamini-Hochberg: all of voxels pass the normality test.
+\textit{Bonferroni}: normality assumption is violated in 6 voxels. \\
+
+\textit{Hochberg}: normality assumption is violated in 262 voxels. \\
+
+\textit{Benjamini-Hochberg}: all of voxels pass the normality test. \\
 
 In summary, we can conclude that our assumption of normality in the residuals is
 generally valid.
@@ -212,38 +215,35 @@ follows:
     ROIs in the full set, and (2) ROIs are represented as spheres instead of cubes in
     order to better approximate the underlying neurobiology and to make easier the
     trouble associated with computing minimum distances between the ROIs in the set.
-  \item In order to compute the ROI-ROI correlation, several steps were
-    followed: (1) for each ROI in a given network, the corresponding voxels were
-    extracted and their time series averaged to obtain a single average time
-    series, (2) the ROI-ROI correlation is computed using the average time
-    series, (3) for any two networks, which are composed with independent ROIs,
-    we obtained the correlation matrix containing the correlation r-value of any
-    two ROIs for the two networks, and (4) For each subject, we established the
-    correlation matrix in (3) and group the r-values into two groups: CON and
-    SCZ, according to the category of the subjects.  We decided to keep the
-    original correlations to perform further analysis instead of 1) taking the
-    mean of ROI-ROI r values per subject and 2) using Fisher's z
-    transformation. Fisher's z transformation is a function of correlation r
-    aimed at constructing a statistic asymptotically normal so that a variety of
-    analysis and tests, such as computing confidence intervals, can be
-    performed. Two requirements need to be met for z to be approximately normal:
-    1) r is between variables from a bivariate normal distribution; 2) Sample
-    size should be $n \geq 10$. Although some of the some samples shows a normal
-    pattern based on the Gaussian quantil-quantile plot, many others have heavy-tailed density,
-    violating the first requirement to arrive at a normal z value. Further more,
-    in each ROI and network, more then 100 r's can be obtained, which means
-    the distribution of r can be easily plotted. Also, abnormally high z values
-    were present in our results because Fisher's z transformation has
-    asymptotic behavior at r close to $ \pm 1$, causing the analysis to be
+  \item In order to compute the ROI-ROI correlations, several steps were
+    taken: (1) for each ROI in a given network, the corresponding voxels were
+    extracted and their time series were averaged to obtain a single average time
+    series, (2) the ROI-ROI correlations between ROIs of each network-network pair 
+    were computed using the average time series, (3) for any two networks, which are 
+    composed with independent ROIs, we obtained the correlation matrix containing 
+    the correlation r-value of any two ROIs for the two networks, and (4) For each 
+    subject, we established the correlation matrix in (3) and group the r-values into 
+    two groups: CON and SCZ, according to the category of the subjects.  
+  \item Unlike the paper, we decided to keep the original correlations to perform 
+    further analysis instead of taking Fisher's z transformation of the correlations. 
+    Fisher's z transformation is a function of correlation r aimed at constructing a 
+    statistic asymptotically normal so that a variety of analysis and tests, such 
+    as computing confidence intervals, can be performed. Two requirements need to be 
+    met for z to be approximately normal: 1) r is between variables from a bivariate 
+    normal distribution; 2) Sample size should be $n \geq 10$. Although some of the some 
+    samples shows a normal pattern based on the Gaussian quantil-quantile plot, many others 
+    have heavy-tailed density, violating the first requirement to arrive at a normal z 
+    value. Also, abnormally high z values were present in our results because Fisher's z
+    transformation has asymptotic behavior at r close to $ \pm 1$, causing the analysis to be
     extremely inaccurate had we chosen to z-transform the r values.
 \end{enumerate}
 
-Permutation Tests
+\subsubsection{Permutation Tests}
 
 To statistically confirm existing difference shown on the graph in the previous section, permutation test on correlation data has been performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
 The method of implementing the permutation test under our framework was described below:
 
-For each pair of networks i (i.e. bFP-CO), 
+For each pair of networks i (namely, bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CERT, bDMN-FP), 
 \begin{itemize}
 \item Calculate the difference between mean values of two groups:
 \begin{equation}
@@ -268,34 +268,34 @@ pool_{i} = (r_{con}^i, r_{scz}^i) \textit{  i is different pair of networks. }
 \centering
 \includegraphics[scale=0.7]{../results/sub011_target_betas_0_back.png}
 \includegraphics[scale=0.7]{../results/sub011_nontarget_betas_0_back.png}
-\caption{Above: 0-back target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$}
+\caption{Above: 0-back target beta values and t values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and t values from two-tailed t tests against the null hypothesis of $\beta = 0$. Both are based on linear model for sub011 / 0-back, as discussed in the method section. The colors are plotted on the same scale for graphs in the same column.}
 \end{figure}
 
-As the 0-back task serves primarily as an object recognition task with respect to the activation it induces in the central nervous system, it would be expected that visual processing centers of the brain would be found to be most activated. As seen in both the beta maps and the associated p-value maps, there is considerable (and significant) activation of occipital cortex as well as various regions of the frontal cortex. In contrast to the responses observed with respect to the 2-back task presented below, the coefficient maps for the 0-back task for target images indicates fair amounts of activity across many regions of the brain, as would be expected of a general recognition test, whereas, in the 2-back task for target images, there is noticeably increased magnitudes in the activation of regions in the occipital cortex and in the frontal lobes, as would be expected of a task that involves working memory. It is worth noting that there is considerably less difference between the 0-back target vs. non-target activation patterns than between the 2-back target vs. non-target activation patterns, agreeing with the expectations based on psychological constructs such as working memory.
+As the 0-back task serves primarily as an object recognition task with respect to the activation it induces in the central nervous system, it would be expected that visual processing centers of the brain would be found to be most activated. As seen in both the beta maps and the associated t-value maps, there is considerable (and significant) activation of occipital cortex as well as various regions of the frontal cortex. In contrast to the responses observed with respect to the 2-back task presented below, the coefficient maps for the 0-back task for target images indicates fair amounts of activity across many regions of the brain, as would be expected of a general recognition test, whereas, in the 2-back task for target images, there is noticeably increased magnitudes in the activation of regions in the occipital cortex and in the frontal lobes, as would be expected of a task that involves working memory. It is worth noting that there is considerably less difference between the 0-back target vs. non-target activation patterns than between the 2-back target vs. non-target activation patterns, agreeing with the expectations based on psychological constructs such as working memory.
 
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{../results/sub011_target_betas_2_back.png}
 \includegraphics[scale=0.7]{../results/sub011_nontarget_betas_2_back.png}
-\caption{Above: 2-back target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$}
+\caption{Above: 2-back target beta values and t values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and t values from two-tailed t tests against the null hypothesis of $\beta = 0$. Both are based on linear model for sub011 / 2-back, as discussed in the method section.}
 \end{figure}
 
 The two figures above display the observed activation patterns present in the 2-back task, which would be expected to activate regions of the prefrontal cortex more significantly than the 0-back task, on the basis that subjects must hold specific representations in memory in order to successfully complete this task. Furthermore, differences in the activation patterns between the target and non-target 2-back tests shows that the activation during the target task is less distributed, activating more specific regions, as opposed to the generalized activity created by undergoing the non-target 2-back task.
 
-The non-target 2-back task activation patterns and associated p-value maps for the coefficients estimated from the linear model indicate that the non-target task generates activity across many regions of the central nervous system, in particular subregions in the frontal lobes (as seen in slice z=60) as well as numerous occipital and midbrain region activations (as seen in the slices z=50 and z=40). The many regions activated in the non-target 2-back analyses contrast sharply with the 2-back activations in the target group, as activations induced in the slices shown for that category are noticeably more focused in the occipital and frontal lobes.
+The non-target 2-back task activation patterns and associated t-value maps for the coefficients estimated from the linear model indicate that the non-target task generates activity across many regions of the central nervous system, in particular subregions in the frontal lobes (as seen in slice z=60) as well as numerous occipital and midbrain region activations (as seen in the slices z=50 and z=40). The many regions activated in the non-target 2-back analyses contrast sharply with the 2-back activations in the target group, as activations induced in the slices shown for that category are noticeably more focused in the occipital and frontal lobes.
 
-The p-values associated with the coefficient estimates of the activation patterns in the 2-back target task show rather significant activation of frontal and midbrain regions, with these neural activations matching the more focused activation expected of a task more associated with inducing higher cognitive load. What is more, the differences in activation displayed by the two horizontal slices shown above illustrates how activation is distributed across the depths of the whole brain, in general activating frontal lobe regions associated with cognitive activity as well as occipital regions associated with visual task performance. With respect to the non-target activation patterns displayed in the slices shown below, the map of p-values indicate that activation is much more generally distributed across the brain in the non-target 2-back task, as would be expected of an error-based neural process.
+The t-values associated with the coefficient estimates of the activation patterns in the 2-back target task show rather significant activation of frontal and midbrain regions, with these neural activations matching the more focused activation expected of a task more associated with inducing higher cognitive load. What is more, the differences in activation displayed by the two horizontal slices shown above illustrates how activation is distributed across the depths of the whole brain, in general activating frontal lobe regions associated with cognitive activity as well as occipital regions associated with visual task performance. With respect to the non-target activation patterns displayed in the slices shown below, the map of t-values indicate that activation is much more generally distributed across the brain in the non-target 2-back task, as would be expected of an error-based neural process.
 
 \subsection{Connectivity Analysis}
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/inter_network_connectivity_plot.png}
-\caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks}
+\caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks. For visual comparison, the CON group and SCZ group are interleaved in order to show results for the same network-nework pair side by side.}
 \end{figure}
 
 We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Previous studies concluded that there is reduced distal connectivity for individuals with schizophrenia, especially between the FP and CER networks and the CO and CER networks \cite{repovs2011, repovs2012}. However, the two results are not comparable in the following ways: (1) we use a smaller dataset of 20 subjects versus 102 subjects used in the reference paper, and (2) in the reference papers, many more nuisance regressors were removed from the BOLD time series. We only removed a few common noise regressors outlined in the methods section above. We obtained results similar to the previous work and provided similar evidence that schizophrenia reflects a disconnection syndrome.
-We also performed the permutation test in different pairs of networks, and found all of the test had rejected the null hypothesis.  Therefore, we can conclude that the mean value of CON groups are significantly less than that of SCZ group. \footnote{The results were generated from our analysis scripts, and can be found in the result folder at \textit{connectivity\_permutation\_result.csv}}
+We also performed the permutation test in different pairs of networks, and found all of the test had rejected the null hypothesis.  Therefore, we can conclude that the mean value of CON groups are significantly less than that of SCZ group. \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}
 
 
 Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations is included in the appendix.
@@ -312,8 +312,8 @@ Within-network correlations are not within the scope of our analysis, but a grap
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../results/within_network_connectivity_plot.png}
-\caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) within networks}
+\includegraphics[scale=0.7]{../results/within_network_connectivity_plot.png}
+\caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) within networks. For visual comparison, the CON group and SCZ group are interleaved in order to show results for the same network side by side.}
 \end{figure}
 
 \section{APPENDIX II - Exploratory Data Analysis}
@@ -369,7 +369,7 @@ more reasonable and detailed results.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/sub011_voxel_wise_correlation_across_methods.png}
-\caption{Voxel-wise correlations for square-wave and gamma baseline functions, sub011, 0-back, cond003}
+\caption{Voxel-wise correlations for square-wave and gamma baseline functions, sub011, 0-back, cond003.}
 \end{figure} 
 
 \subsection{Clustering with K-Means}
@@ -393,7 +393,7 @@ patterns of the time courses between regions.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
-\caption{K-means result for $k=6$ on smoothed standard fMRI data, sub011, 0-back}
+\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back.}
 \end{figure} 
 
 \end{document}
