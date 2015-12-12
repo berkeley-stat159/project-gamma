@@ -30,32 +30,38 @@ verbose:
 
 conditionfiles:
 
+	mkdir -p ./data/condition_files
+
 	# condition files for the 20 subjects in the data section. The condition files are bundled
 	# together with entire data packages on https://openfmri.org/dataset/ds000115.
 
-	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub010-014.tgz
-	tar -xvzf ./data/ds115_sub010-014.tgz
-
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub015-019.tgz
-	tar -xvzf ./data/ds115_sub015-019.tgz
+	tar -xvzf ./data/ds115_sub015-019.tgz -C ./data/condition_files
 
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub006-009.tgz
-	tar -xvzf ./data/ds115_sub006-009.tgz
+	tar -xvzf ./data/ds115_sub006-009.tgz -C ./data/condition_files
 
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub020-024.tgz
-	tar -xvzf ./data/ds115_sub020-024.tgz
+	tar -xvzf ./data/ds115_sub020-024.tgz -C ./data/condition_files
 
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub030-034.tgz
-	tar -xvzf ./data/ds115_sub030-034.tgz
+	tar -xvzf ./data/ds115_sub030-034.tgz -C ./data/condition_files
 
 	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub035-039.tgz
-	tar -xvzf ./data/ds115_sub035-039.tgz
+	tar -xvzf ./data/ds115_sub035-039.tgz -C ./data/condition_files
 
 data:
 
+	mkdir -p ./data/preprocessed
+
+	# raw data
+
+	wget -P ./data http://openfmri.s3.amazonaws.com/tarballs/ds115_sub010-014.tgz
+	tar -xvzf ./data/ds115_sub010-014.tgz -C ./data
+
 	# color map for plotting nice map
 
-	wget -P ./data http://www.jarrodmillman.com/rcsds/_downloads/actc.txt
+	wget -nc -P ./data http://www.jarrodmillman.com/rcsds/_downloads/actc.txt
 
 	# structural image of the brain
 
