@@ -63,8 +63,8 @@ def network_cor(data, net1, net2, is_same):
   A list of correlations
   """
 
-  roi_names_1 = net1.keys()
-  roi_names_2 = net2.keys()
+  roi_names_1 = list(net1.keys())
+  roi_names_2 = list(net2.keys())
 
   if is_same:
     z_values_list = []
@@ -108,7 +108,7 @@ def c_between (data,dic):
   """
 
   z_bet = {}
-  networks = dic.keys()
+  networks = list(dic.keys())
   for i in range(0,len(networks)):
     for j in range(i+1,len(networks)):
       network_name_1 = networks[i]

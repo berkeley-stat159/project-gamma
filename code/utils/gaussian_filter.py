@@ -35,6 +35,5 @@ def spatial_smooth(data_4d, brain_mask, pad_thickness, sigma, should_pad):
   copy_data = np.array(data_4d)
   if should_pad:
     for i in range(data_4d.shape[-1]):
-      print "padded volumn " + str(i)
       pad_boundary_per_image(data_4d[..., i], brain_mask, pad_thickness)
   return gaussian_filter(copy_data, [sigma, sigma, sigma, 0])
