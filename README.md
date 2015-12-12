@@ -10,19 +10,19 @@ _**Topic:**_ [Working Memory in Healthy and Schizophrenic Individuals] (https://
 
 ### Codebase 
 
-Utils methods are in the subdirectory code/utils. Analysis scripts are in code/ directory. 
+Utility (utils) methods may be found in the subdirectory code/utils. Analysis scripts are in the code/ directory. 
 
 ### Tests and Coverage
 
-'make test' runs all the tests for the repository. Methods were extracted into individual modules inside the utils/ subdirectory under code/. Plotting helper functions remained inside the analysis scripts and are not tested.
+'make test' runs all the tests for this project repository. Methods were extracted into individual modules inside the utils/ subdirectory under code/. Plotting helper functions remain inside the analysis scripts and are _not tested_.
 
 'make coverage' runs the coverage tests and generates the coverage report.
 
 ### Data
 
-'make data' downloads all the data except the condition files. Running this takes around 2 hours. 
+'make data' downloads all the data except for the condition files. Running this takes around 2 hours on average. 
 
-Directory data/ is initially empty, except for 'net_roi.txt', which is from the supplemental material of the reference paper and may be found [at the link] (http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3081915/bin/NIHMS253634-supplement-01.pdf). We manually extracted the information from Table S1 and make it available here as 'net_roi.txt'.
+Directory data/ is initially empty, except for 'net_roi.txt', which is from the supplemental material of the reference paper and may be found [at this link] (http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3081915/bin/NIHMS253634-supplement-01.pdf). We manually extracted the information from Table S1 and make it available here as 'net_roi.txt'.
 
 'make conditionfiles' downloads all of the necessary condition files for the analysis.
 
