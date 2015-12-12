@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from pca_utils import first_pcs_removed
 from gaussian_filter import spatial_smooth
 from matplotlib import colors
-from general_utils import prepare_standard_data, prepare_mask, form_cond_filepath
+from general_utils import prepare_standard_data, prepare_mask
 from sklearn.decomposition import PCA
 
 def preprocessing_pipeline(subject_num, task_num, standard_source_prefix):
@@ -49,7 +49,7 @@ def plot_single(labels, subject_num, output_filename, nice_cmap, brain_structure
   plt.savefig(os.path.join(output_filename, "sub011_kmeans_6_groups_smoothed.png"), format='png', dpi=500)
 
 
-def single_subject_kmeans(standard_source_prefix, cond_filepath, subject_num, task_num):
+def single_subject_kmeans(standard_source_prefix, subject_num, task_num):
 
   residuals, in_brain_mask = preprocessing_pipeline(subject_num, task_num, standard_source_prefix)
 
@@ -68,12 +68,10 @@ if __name__ == "__main__":
   brain_structure_path = os.path.join(data_dir_path, "mni_icbm152_csf_tal_nlin_asym_09c_2mm.nii")
 
   standard_source_prefix = os.path.join(data_dir_path, "preprocessed")
-  cond_filepath_011 = form_cond_filepath("011", "001", "003", data_dir_path)
   output_filename = os.path.join(os.path.dirname(__file__), "..", "results")
 
   subject_num = "011"
   task_num = "001"
-  cond_num = "002"
 
   plt.rcParams['image.cmap'] = 'gray'
   plt.rcParams['image.interpolation'] = 'nearest'
@@ -85,5 +83,5 @@ if __name__ == "__main__":
   nice_cmap_values = np.loadtxt(os.path.join(data_dir_path, "actc.txt"))
   nice_cmap = colors.ListedColormap(nice_cmap_values, 'actc')
 
-  labeled_b_vols = single_subject_kmeans(standard_source_prefix, cond_filepath_011, subject_num, task_num)
+  labeled_b_vols = single_subject_kmeans(standard_source_prefix, subject_num, task_num)
   plot_single(labeled_b_vols, subject_num, output_filename, nice_cmap, brain_structure)

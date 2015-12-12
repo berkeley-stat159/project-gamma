@@ -120,9 +120,10 @@ letter.
 \end{itemize}
 
 We now proceed to describing the regressors in the GLM on each voxel time
-course. For all convolutions below, we convolve a specified condition file
-on-off time course at a time unit of 0.01 TR with a gamma function and take the
-convolved values at the start of each TR.
+course. For all convolutions below, a specified condition on-off time course 
+file was convolved at a time unit of 0.01 TR with a gamma function and take the
+convolved values at the start of each TR. After outlineing the regressors, one 
+of the design matrix is shown as a figure below.
 
 \begin{itemize}
 \item reg001: Convolution of target events from cond003. Essentially, we split cond003
@@ -154,16 +155,16 @@ features.
 
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{../results/sub011_task001_first_four_pcs.png}
-\caption{The first four principal components for subject 011, task001}
+\includegraphics[scale=0.4]{../results/sub011_task001_first_four_pcs.png}
+\caption{The first four principal components for subject 011, 0-back}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
 \centering
-\includegraphics[scale=0.3]{../results/sub011_task003_design_matrix.png}
-\caption{The design matrix for subject 011, task003}
+\includegraphics[scale=0.4]{../results/sub011_task003_design_matrix.png}
+\caption{The design matrix for subject 011, 2-back}
 \end{figure}
 
 
@@ -265,8 +266,8 @@ pool_{i} = (r_{con}^i, r_{scz}^i) \textit{  i is different pair of networks. }
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.7]{figs/glm_graphs/sub011_target_betas_0_back.png}
-\includegraphics[scale=0.7]{figs/glm_graphs/sub011_nontarget_betas_0_back.png}
+\includegraphics[scale=0.7]{../results/sub011_target_betas_0_back.png}
+\includegraphics[scale=0.7]{../results/sub011_nontarget_betas_0_back.png}
 \caption{Above: 0-back target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$; Below: non-target beta values and p values from two-tailed t tests against the null hypothesis of $\beta = 0$}
 \end{figure}
 
@@ -315,7 +316,7 @@ Within-network correlations are not within the scope of our analysis, but a grap
 \caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) within networks}
 \end{figure}
 
-\section{APPENDIX II - Exploratory Analysis}
+\section{APPENDIX II - Exploratory Data Analysis}
 
 \subsection{Data Fetching and Preprocessing}
 
@@ -337,83 +338,63 @@ sets for k-means clustering.
 
 \subsection{Correlations with Baseline Functions}
 
-This set of methods aim to produce an image identifying the regions which show
-significant signal change in response to the task by calculating correlation
-coefficients (r) between the bold signal along the time course and a reference
-waveform, for each voxel. A high value of the correlation coefficient means that
-fluctuation of the signal in the locale of the brain is task-dependent, hence
-activated by the task.
+This set of methods aimed to produce an image identifying the regions which showed
+significant signal change in response to the task. The analysis was done by calculating 
+correlation coefficients (r) between the bold signal along the time course and a reference
+waveform, for each voxel. The reference waveform was extracted from a condition file.
+Condition file 003 was chosen because while it did not contain all stimuli presented to the
+subject, such as start and done cues, it included all target and non-target events and this
+thought to be sufficient to elicit functional differences of the brain during the run. 
+A high value of the correlation coefficient indicated that fluctuation of the signal in 
+the locale of the brain was task-dependent, hence activated by the task. 
 
 For a bold signal X, and a reference waveform Y, the correlation coefficient is
-calculated as bl
+calculated as below.
+
 \begin{equation}
 r = \frac{\Sigma_{i=1}^{n}  ( X-\bar{X}) ( Y-\bar{Y})}{\sqrt{ \Sigma_{i=1}^{n} (
     X-\bar{X} ) ^2 \Sigma_{i=1}^{n} ( Y-\bar{Y})  ^2 }}
 \end{equation}
 
-The two methods we are testing here are differentiated by two types of reference
+The two methods were differentiated by two types of reference
 waveforms: (1) square wave using on-off neural prediction from condition file
-(SW method), and (2) a convolved function on neural predictions and a gamma
-haemodynamic response function (HRF) (CF method). 
+(SW method), and (2) a convolved function on neural predictions with a gamma
+haemodynamic response function (HRF) (CF method).
+
+Here, the two types of analysis were compared. By comparing
+the activated regions under square wave time course (left) and convolved time
+course (right), we could see that compared to SW method, the CR method gives 
+more reasonable and detailed results.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../results/sub011_voxel_wise_correlation_across_methods.png}
-\caption{Voxel-wise Correlations for square-wave and gamma baseline functions}
+\includegraphics[scale=0.7]{../results/sub011_voxel_wise_correlation_across_methods.png}
+\caption{Voxel-wise correlations for square-wave and gamma baseline functions, sub011, 0-back, cond003}
 \end{figure} 
-
-Here, we want to compare the two types of analysis and decide on the better way
-to find the activation regions. After calculating the correlations using both
-square wave time course (SW method) and the convolved reference time course (CF
-method), we plot the histogram of r-values to understand the range and
-the distribution of the correlation. With that information, we decided on
-the threshold 0.20 to say whether a voxel is active or not active. We plot the
-voxels which correlate to the reference waveform with $r > 0.20$ in red, so that
-we can visually examine the activation level of the voxels in the brain. By comparing
-the activated regions under square wave time course (left) and convolved time
-course (right), we can clearly see that it is hard for SW method to detect the
-activation while the CR method gives more reasonable and detailed
-results.
-
-(need to be changed)
-\begin{center}
-\includegraphics[width=12cm, height=12cm]{compare_correlations.png}
-\end{center}
 
 \subsection{Clustering with K-Means}
 
 K-means clustering is an unsupervised technique which aims to partition n
 observations into k clusters based on a feature set of n features. Each
-observation is classified into the cluster with the nearest mean. In our case, n
-is the number of voxels. k is chosen to be 5 although ideally, we should run
-K-means with multiple k values \cite{venkataraman2009}. Clustering results
-across the three runs of the same subject are merged together using a voting
-algorithm \cite{dimitriadou2002}. We used three sets of features as described
-below to obtain three sets of clustering results: (1) mean of BOLD signals over
-time course for every voxel, (2) all signals in the time course for every voxel,
-(3) all signals in the time course for every voxel, centered and normalized over
-all signals in the corresponding time step. 
+observation is classified into the cluster with the nearest mean. In our case,k was
+chosen to be 6. Input to k-means clustering followed the same treatment as discussed
+in the Linear Model section of the paper. Standard fMRI data was and the first two 
+Principal Components were removed following the analysis in the Linear Model section 
+of the paper. After that, it was spatially smoothed with gaussian kernel
+of $sigma=2$. The rationale of removing the first two Principal Components was to
+remove differences caused by anatomical or other noise features as much as possible, in
+the hope that k-means can cluster the brain to functional regions.
 
-We do not involve the conditional file in the clustering. This is because the
-underlying time courses are the same across methods as we compare across the
-same subjects. Since Feature Set (1) only uses mean as a single feature, it
-determines the clusters only based on intensity of the BOLD signals and can be
-used a naive set of non-functional clusters (i.e. the other two or future
-methods should deviate from this to reveal functional clusters). A comparison of
-results across the three input feature sets is shown.
+We did not involve the condition files in the clustering. This was because during
+the same run, the time courses in the same region of the brain were subjected to the
+same functional influences. Hence, k-means should be able to detect differences in
+patterns of the time courses between regions.
 
-\begin{center}
-\includegraphics[width=12cm, height=12cm]{subject_across_methods.jpg}
-\end{center}
-
-Overall, basic and anatomical rather than functional clusters are revealed. For
-example, the cerebral cortex is clustered together as well as the distinct
-Thalamus-related region in the center of the brain.  Although there are visible
-differences across subjects and runs, the differences across methods are almost
-negligible. A scaled feature set has eliminated the intensity but does not
-deviate from the naive clustering. The reason could be that there is too much
-noise in the data. As an example, a drift term might be alone in determining the
-clustering results. 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
+\caption{K-means result for $k=6$ on smoothed standard fMRI data, sub011, 0-back}
+\end{figure} 
 
 \end{document}
 
