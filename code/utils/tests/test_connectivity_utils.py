@@ -49,11 +49,16 @@ def test_c_within_and_c_between():
 def test_permute():
   r1 = np.linspace(0,1,num=30).tolist()
   r2 = np.linspace(0,1,num=20).tolist()
-  # this is to specifically deal with python 3 & 2 compatibility
-  if sys.version_info[0] < 3:
-    random.seed(0)
-  else:
-    random.seed(0, version=1)
+  
+  random.seed(0)
   actual = connectivity_utils.permute(r1,r2)
-  expected = 0.496
+
+  # this is to specifically deal with python 3 & 2 compatibility because
+  # random.seed implements different seeding algorithm. A potential
+  # workaround is to subclass and implement our own random module, but
+  # this is not done for the project.
+  if sys.version_info[0] < 3:
+    expected = 0.496
+  else:
+    expected = 0.502
   assert_almost_equal(actual,expected)
