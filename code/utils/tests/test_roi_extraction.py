@@ -5,6 +5,7 @@ Run with::
 
     nosetests test_roi_extraction.py
 """
+from __future__ import division
 import numpy as np
 import nibabel as nib
 import numpy.linalg as npl
@@ -64,7 +65,7 @@ def test_ROI_region():
     x_range = range(41,49)
     y_range = range(51,59)
     z_range  = range(41,49)
-    center = [(41+49)/2,(51+59)/2,(41+49)/2]
+    center = [(41+49)//2,(51+59)//2,(41+49)//2]
     tmp = [x_range,y_range,z_range]
     actual = list(itt.product(*tmp))
     expected = roi_extraction.ROI_region(center)
