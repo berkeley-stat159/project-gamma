@@ -43,19 +43,19 @@ def create_f (task, dic, namelist, find_nw):
 def generate_connectivity_results(connectivity_results, output_filename):
   
   find_nw = {}
-  find_nw['Default-Cerebellar']='bDMN-CER'
+  find_nw['Cerebellar-Default']='bDMN-CER'
   find_nw['Cerebellar-Cingulo-Opercular']='bCO-CER'
-  find_nw['Default-Cingulo-Opercular']='bDMN-CO'
+  find_nw['Cingulo-Opercular-Default']='bDMN-CO'
   find_nw['Default']='wDMN'
-  find_nw['Fronto-Parietal-Cerebellar']='bFP-CER'
+  find_nw['Cerebellar-Fronto-Parietal']='bFP-CER'
   find_nw['Cingulo-Opercular']='wCO'
   find_nw['Default-Fronto-Parietal']='bDMN-FP'
   find_nw['Fronto-Parietal']='wFP'
   find_nw['Cerebellar']='wCER'
-  find_nw['Fronto-Parietal-Cingulo-Opercular']='bFP-CO'
+  find_nw['Cingulo-Opercular-Fronto-Parietal']='bFP-CO'
   
-  between_namelist = ['Default-Cerebellar','Cerebellar-Cingulo-Opercular','Default-Cingulo-Opercular'
-  ,'Fronto-Parietal-Cerebellar','Default-Fronto-Parietal','Fronto-Parietal-Cingulo-Opercular']
+  between_namelist = ['Cerebellar-Default','Cerebellar-Cingulo-Opercular','Cingulo-Opercular-Default'
+  ,'Cerebellar-Fronto-Parietal','Default-Fronto-Parietal','Cingulo-Opercular-Fronto-Parietal']
 
   within_namelist = ['Default','Fronto-Parietal','Cerebellar','Cingulo-Opercular']
   
@@ -70,9 +70,6 @@ def generate_connectivity_results(connectivity_results, output_filename):
 
   ggsave(plt1, os.path.join(output_filename, "within_network_connectivity_plot.png"))
 
-  between_namelist = ['Default-Cerebellar','Cerebellar-Cingulo-Opercular','Default-Cingulo-Opercular'
-  ,'Fronto-Parietal-Cerebellar','Default-Fronto-Parietal','Fronto-Parietal-Cingulo-Opercular']
-  
   f_between = create_f('003', connectivity_results, between_namelist, find_nw)
   
   plt2 = ggplot(f_between, aes(x='corrs', y='networks')) +\
@@ -216,26 +213,28 @@ if __name__ == "__main__":
 
   c_values_store = group_c_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
 
+  print(list(c_values_store['003']['con'].keys()))
+
   generate_connectivity_results(c_values_store, output_filename)
 
   # change target r-values into list format
-  con_dmn_cer = np.ravel(c_values_store["003"]["con"]["Default-Cerebellar"]).tolist()
-  scz_dmn_cer = np.ravel(c_values_store["003"]["scz"]["Default-Cerebellar"]).tolist()
+  con_dmn_cer = np.ravel(c_values_store["003"]["con"]["Cerebellar-Default"]).tolist()
+  scz_dmn_cer = np.ravel(c_values_store["003"]["scz"]["Cerebellar-Default"]).tolist()
 
   con_cer_co = np.ravel(c_values_store["003"]["con"]["Cerebellar-Cingulo-Opercular"]).tolist()
   scz_cer_co = np.ravel(c_values_store["003"]["scz"]["Cerebellar-Cingulo-Opercular"]).tolist()
 
-  con_dmn_co = np.ravel(c_values_store["003"]["con"]["Default-Cingulo-Opercular"]).tolist()
-  scz_dmn_co = np.ravel(c_values_store["003"]["scz"]["Default-Cingulo-Opercular"]).tolist()
+  con_dmn_co = np.ravel(c_values_store["003"]["con"]["Cingulo-Opercular-Default"]).tolist()
+  scz_dmn_co = np.ravel(c_values_store["003"]["scz"]["Cingulo-Opercular-Default"]).tolist()
 
-  con_fp_cer = np.ravel(c_values_store["003"]["con"]["Fronto-Parietal-Cerebellar"]).tolist()
-  scz_fp_cer = np.ravel(c_values_store["003"]["scz"]["Fronto-Parietal-Cerebellar"]).tolist()
+  con_fp_cer = np.ravel(c_values_store["003"]["con"]["Cerebellar-Fronto-Parietal"]).tolist()
+  scz_fp_cer = np.ravel(c_values_store["003"]["scz"]["Cerebellar-Fronto-Parietal"]).tolist()
 
   con_dmn_fp = np.ravel(c_values_store["003"]["con"]["Default-Fronto-Parietal"]).tolist()
   scz_dmn_fp = np.ravel(c_values_store["003"]["scz"]["Default-Fronto-Parietal"]).tolist()
 
-  con_fp_co = np.ravel(c_values_store["003"]["con"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
-  scz_fp_co = np.ravel(c_values_store["003"]["scz"]["Fronto-Parietal-Cingulo-Opercular"]).tolist()
+  con_fp_co = np.ravel(c_values_store["003"]["con"]["Cingulo-Opercular-Fronto-Parietal"]).tolist()
+  scz_fp_co = np.ravel(c_values_store["003"]["scz"]["Cingulo-Opercular-Fronto-Parietal"]).tolist()
 
   # perform permutation test
   dmn_cer_p_value = permute(scz_dmn_cer,con_dmn_cer)  

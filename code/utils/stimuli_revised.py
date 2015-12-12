@@ -10,7 +10,7 @@ the convolved time course at different resolution.
 from __future__ import division
 import numpy as np
 import math
-
+import warnings
 import pdb
 
 def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR = 2.5):
@@ -26,8 +26,11 @@ def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR 
     nontarget_task = task[task[:,2] == nontarget_intensity]
     nontarget_task[:,2] = 1.0
 
-    # if there are any errors, treat them as targets
-    task_errors = np.loadtxt(error_fname)
+    # if there are any errors, treat them as targets. It is expected that some error
+    # files are empty. Hence, we can suppress warnings.
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        task_errors = np.loadtxt(error_fname)
 
     task_errors = task_errors.reshape((-1, 3))
     task_errors[:,2] = 1.0

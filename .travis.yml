@@ -8,6 +8,7 @@ env:
 
 python:
   - 2.7
+  - 3.4
 
 install:
   - source tools/travis_tools.sh
