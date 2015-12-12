@@ -8,6 +8,21 @@ _**Topic:**_ [Working Memory in Healthy and Schizophrenic Individuals] (https://
 [![Build Status](https://travis-ci.org/berkeley-stat159/project-gamma.svg?branch=master)](https://travis-ci.org/berkeley-stat159/project-gamma?branch=master)
 [![Coverage Status](https://coveralls.io/repos/berkeley-stat159/project-gamma/badge.svg?branch=master)](https://coveralls.io/r/berkeley-stat159/project-gamma?branch=master)
 
+### Directions/Roadmap
+#### Recommended Steps
+1. make test - runs all of the tests for scripts used in this analytic project
+2. make coverage - runs coverage tests and generates the Travis coverage report
+3. make conditionfiles - downloads the condition files necessary for analysis
+4. make analysis - generates results and figures referenced in the report
+5. make report - compiles the (final) full report describing our findings
+
+#### Alternative Steps
+1. make test - runs all of the tests for scripts used in this analytic project
+2. make coverage - runs coverage tests and generates the Travis coverage report
+3. make data - downloads all data for analysis (__up to 2 hours due to size__)
+4. make analysis - generates results and figures referenced in the report
+5. make report - compiles the (final) full report describing our findings
+
 ### Codebase 
 
 Utility (utils) methods may be found in the subdirectory code/utils. Analysis scripts are in the code/ directory. 
