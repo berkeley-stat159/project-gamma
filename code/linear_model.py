@@ -18,8 +18,6 @@ from gaussian_filter import spatial_smooth
 from matplotlib import colors
 from hypothesis import compute_t_values
 
-import pdb
-
 def plot_first_four_pcs(U, Y, depth, output_filename):
   
   Y_demeaned = Y - np.mean(Y, axis=1).reshape([-1, 1])

@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from scipy.stats import gamma
 from stimuli_revised import events2neural, events2neural_target_non_target, events2neural_std
 
-import pdb
 
 TIME_UNIT = 0.1
 HRF_TIME_LENGTH = 24

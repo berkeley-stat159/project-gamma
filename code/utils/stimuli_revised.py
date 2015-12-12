@@ -11,8 +11,6 @@ from __future__ import division
 import numpy as np
 import math
 
-import pdb
-
 def events2neural_target_non_target(task_fname, error_fname, n_trs, tr_divs, TR = 2.5):
     task = np.loadtxt(task_fname)
     # Check that the file is plausibly a task file
