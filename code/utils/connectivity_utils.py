@@ -67,14 +67,14 @@ def network_cor(data, net1, net2, is_same):
   roi_names_2 = list(net2.keys())
 
   if is_same:
-    z_values_list = []
+    c_values_list = []
     for i in range(0,len(roi_names_1)):
       for j in range(i + 1,len(roi_names_2)):
         roi_name_1 = roi_names_1[i]
         roi_name_2 = roi_names_2[j]
         val = roi_cor(data,net1[roi_name_1],net2[roi_name_2])
-        z_values_list.append(val)
-    return z_values_list
+        c_values_list.append(val)
+    return c_values_list
 
   else:
     return [roi_cor(data,voxels_1, voxels_2) for roi_name_1, voxels_1 in net1.items() for roi_name_2, voxels_2 in net2.items()]
@@ -107,11 +107,12 @@ def c_between (data,dic):
   investigating inter-network connectivity
   """
 
-  z_bet = {}
+  c_bet = {}
   networks = list(dic.keys())
   for i in range(0,len(networks)):
     for j in range(i+1,len(networks)):
       network_name_1 = networks[i]
       network_name_2 = networks[j]
-      z_bet[network_name_1+"-"+network_name_2] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
-  return z_bet
+      sorted_names = sorted(network_name_1, network_name_2)
+      c_bet[sorted_names[0]+"-"+sorted_names[1]] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
+  return c_bet
