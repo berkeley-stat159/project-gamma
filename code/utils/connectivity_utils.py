@@ -113,6 +113,6 @@ def c_between (data,dic):
     for j in range(i+1,len(networks)):
       network_name_1 = networks[i]
       network_name_2 = networks[j]
-      sorted_names = sorted(network_name_1, network_name_2)
+      sorted_names = sorted([network_name_1, network_name_2])
       c_bet[sorted_names[0]+"-"+sorted_names[1]] = network_cor(data,dic[network_name_1],dic[network_name_2], False)
   return c_bet
