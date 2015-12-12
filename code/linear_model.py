@@ -107,14 +107,11 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
 
   plt.figure()
 
-  min_val = np.nanmin(b_vols_smooth[...,40,(6,7,9)])
-  max_val = np.nanmax(b_vols_smooth[...,40,(6,7,9)])
-
   plt.subplot(3,2,1)
   plt.title("z=%d,%s" % (40, "linear drift,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,6], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.imshow(b_vols_smooth[...,40,6], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 
@@ -122,7 +119,7 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   plt.title("z=%d,%s" % (40, "quadratic drift,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,7], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.imshow(b_vols_smooth[...,40,7], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 
@@ -130,7 +127,7 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   plt.title("z=%d,%s" % (40, "second PC,betas"))
   b_vols_smooth[~in_brain_mask] = np.nan
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(b_vols_smooth[...,40,9], cmap=nice_cmap, alpha=0.5, vmin=min_val, vmax=max_val)
+  plt.imshow(b_vols_smooth[...,40,9], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 
@@ -138,27 +135,24 @@ def plot_noise_regressor_betas(b_vols_smooth, t_vols_beta_6_to_9, brain_structur
   t_vols_beta_6_to_9[1][~in_brain_mask] = np.nan
   t_vols_beta_6_to_9[3][~in_brain_mask] = np.nan
 
-  t_min_val = np.nanmin([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
-  t_max_val = np.nanmax([t_vols_beta_6_to_9[0][...,40], t_vols_beta_6_to_9[1][...,40], t_vols_beta_6_to_9[3][...,40]])
-
   plt.subplot(3,2,2)
   plt.title("z=%d,%s" % (40, "linear drift,t values"))
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.imshow(t_vols_beta_6_to_9[0][...,40], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 
   plt.subplot(3,2,4)
   plt.title("z=%d,%s" % (40, "quadratic drift,t values"))
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.imshow(t_vols_beta_6_to_9[1][...,40], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 
   plt.subplot(3,2,6)
   plt.title("z=%d,%s" % (40, "second PC,t values"))
   plt.imshow(brain_structure[...,40], alpha=0.5)
-  plt.imshow(t_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5, vmin=t_min_val, vmax=t_max_val)
+  plt.imshow(t_vols_beta_6_to_9[3][...,40], cmap=nice_cmap, alpha=0.5)
   plt.colorbar()
   plt.tight_layout()
 

@@ -123,7 +123,9 @@ We now proceed to describing the regressors in the GLM on each voxel time
 course. For all convolutions below, a specified condition on-off time course 
 file was convolved at a time unit of 0.01 TR with a gamma function and take the
 convolved values at the start of each TR. After outlineing the regressors, one 
-of the design matrix is shown as a figure below.
+of the design matrix is shown as a figure below. Additionally, in order to show
+that the noise regresosrs are not trivial, a graph displaying fit for thses regressors 
+are included in the appendix. 
 
 \begin{itemize}
 \item reg001: Convolution of target events from cond003. Essentially, we split cond003
@@ -394,6 +396,14 @@ patterns of the time courses between regions.
 \centering
 \includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
 \caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back.}
+\end{figure} 
+
+\section{APPENDIX III - Linear Model Noise Regressors}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{../results/sub011_0_back_noise_regressors_betas_map.png}
+\caption{Beta and t values for some of the noise regressors included in the linear model for sub011, 0-back.}
 \end{figure} 
 
 \end{document}
