@@ -189,7 +189,7 @@ are independent and identically distributed (i.i.d), and (2) residuals for the m
 are normally distributed. The Shapiro-Wilk test is performed on the residuals of
 each voxel time course in the linear model. 37703 out of 207766 voxels fail this
 test; however, when performing a large number of statistical tests, some will have
-p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), are performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task003\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
+p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), were performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task003\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
 
 \textit{Bonferroni}: normality assumption is violated in 6 voxels. \\
 
@@ -206,44 +206,45 @@ The roadmap for the analytic steps followed to examine connectivity is as
 follows:
 
 \begin{enumerate}
-  \item Removal of noise regressors from the voxel time series. Linear model as
-    defined in the GLM section was fitted to each of the BOLD dataset. The
-    residuals after removal of the noise regressors (i.e. reg003 to reg010
-    listed in the GLM section).
+  \item Removal of noise regressors from the voxel time series: Linear model as
+    defined in the GLM section was fitted to all three BOLD runs across 20 subjects.
+    The residuals  after removal of the noise regressors (i.e. reg004 to reg011 
+    listed in the GLM section) were the input time series to the steps that follows.
   \item Extraction of voxels per region of interest (ROI): ROIs of the four
     networks respectively are defined by a center and a diameter as 15mm \cite{repovs2012}. Two 
-    validations are made before the analysis: (1) it is ensured that the ROIs are non-overlapping by 
-    setting the diameters for each ROI sphere as less than the minimum distance between any two given 
-    ROIs in the full set, and (2) ROIs are represented as spheres instead of cubes in
-    order to better approximate the underlying neurobiology and to make easier the
-    trouble associated with computing minimum distances between the ROIs in the set.
+    validations are made before the analysis: (1) it is ensured that the ROIs are 
+    non-overlapping by setting the diameters for each ROI sphere as less than 
+    the minimum distance between any two given ROIs in the full set, and 
+    (2) ROIs are represented as spheres instead of cubes in order to better 
+    approximate the underlying neurobiology and to make easier the trouble 
+    associated with computing minimum distances between the ROIs in the set.
   \item In order to compute the ROI-ROI correlations, several steps were
-    taken: (1) for each ROI in a given network, the corresponding voxels were
-    extracted and their time series were averaged to obtain a single average time
-    series, (2) the ROI-ROI correlations between ROIs of each network-network pair 
-    were computed using the average time series, (3) for any two networks, which are 
-    composed with independent ROIs, we obtained the correlation matrix containing 
-    the correlation r-value of any two ROIs for the two networks, and (4) For each 
-    subject, we established the correlation matrix in (3) and group the r-values into 
-    two groups: CON and SCZ, according to the category of the subjects.  
+    taken: (1) for each ROI in a given network, the corresponding voxels in the defined
+    sphere were extracted and their time series were averaged to obtain a single average 
+    time series, (2) the ROI-ROI correlations between ROIs of each network-network pair 
+    were computed using the average time series. (3) This produced a ROI-ROI matrix
+    with rows named by ROIs in Netowrk A, and columns named by ROIs in Netowrk B. 
+    Each cell $c_{i,j}$ in this matrix was filled with the correlation r-value between 
+    $ROI_{i, A}$ and $ROI_{j, B}$. (4) the r-values for each network-network pair were
+    group into two groups: CON and SCZ, the group the subject was assigned to.
   \item Unlike the paper, we decided to keep the original correlations to perform 
     further analysis instead of taking Fisher's z transformation of the correlations. 
-    Fisher's z transformation is a function of correlation r aimed at constructing a 
-    statistic asymptotically normal so that a variety of analysis and tests, such 
+    Fisher's z transformation is a function of correlation r aimed to construct a 
+    statistic asymptotically normal value so that a variety of analysis and tests, such 
     as computing confidence intervals, can be performed. Two requirements need to be 
     met for z to be approximately normal: 1) r is between variables from a bivariate 
     normal distribution; 2) Sample size should be $n \geq 10$. Although some of the some 
-    samples shows a normal pattern based on the Gaussian quantil-quantile plot, many others 
-    have heavy-tailed density, violating the first requirement to arrive at a normal z 
-    value. Also, abnormally high z values were present in our results because Fisher's z
+    samples showed a normal pattern based on the Gaussian quantile-quantile plot, many others 
+    had heavy-tailed distribution, violating the first requirement needed for the z value. 
+    Also, abnormally high z values were present in our results because Fisher's z
     transformation has asymptotic behavior at r close to $ \pm 1$, causing the analysis to be
     extremely inaccurate had we chosen to z-transform the r values.
 \end{enumerate}
 
 \subsubsection{Permutation Tests}
 
-To statistically confirm existing difference shown on the graph in the previous section, permutation test on correlation data has been performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
-The method of implementing the permutation test under our framework was described below:
+To statistically confirm the differences of network-network correlations, permutation tests were performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
+The method of implementing the permutation test under our framework is described below:
 
 For each pair of networks i (namely, bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CERT, bDMN-FP), 
 \begin{itemize}
@@ -251,7 +252,7 @@ For each pair of networks i (namely, bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CER
 \begin{equation}
 diff^i =  r_{con}^i- r_{scz}^i
 \end{equation}
-\item  Create a data pool using two vector of correlations for different groups ($r_{con}^i, r_{scz}^i$). Permutation of the pool of data is applied, and treat first bunch of data in the vector to form a permutated$ r_{con}^i$, saying,$ r_{con}^i(p_k)$, and the data left is $r_{con}^i(p_k)$. Also notice that the length of vector in corresponding group should be kept. Take the difference between $ r_{con}^i(p_k)$ and  $r_{con}^i(p_k)$ and store the value as $diff^i(p_k)$(k is the index of permutation). Repeat previous step for 50,000 times, creating a difference permutation vector.
+\item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutation on the data pool is applied. A subset of the data is sampled from the vector to form a permutated$ r_{con}^i$, saying,$ r_{con}^i(p_k)$, and the data remaining in the data pool is $r_{con}^i(p_k)$. Take the difference between $ r_{con}^i(p_k)$ and  $r_{con}^i(p_k)$ and store the value as $diff^i(p_k)$(k is the index of permutation). Repeat previous step for 50,000 times, creating a permutation vector consisting of mean differences.
 \begin{align*}
 pool_{i} = (r_{con}^i, r_{scz}^i) \textit{  i is different pair of networks. }
   diff^i(p_k) = r_con^i(p_k) - r_scz^i(p_k) 
@@ -296,13 +297,14 @@ The t-values associated with the coefficient estimates of the activation pattern
 \caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks. For visual comparison, the CON group and SCZ group are interleaved in order to show results for the same network-nework pair side by side.}
 \end{figure}
 
-We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Previous studies concluded that there is reduced distal connectivity for individuals with schizophrenia, especially between the FP and CER networks and the CO and CER networks \cite{repovs2011, repovs2012}. However, the two results are not comparable in the following ways: (1) we use a smaller dataset of 20 subjects versus 102 subjects used in the reference paper, and (2) in the reference papers, many more nuisance regressors were removed from the BOLD time series. We only removed a few common noise regressors outlined in the methods section above. We obtained results similar to the previous work and provided similar evidence that schizophrenia reflects a disconnection syndrome.
-We also performed the permutation test in different pairs of networks, and found all of the test had rejected the null hypothesis.  Therefore, we can conclude that the mean value of CON groups are significantly less than that of SCZ group. \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}
+We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Because of the various confounding factors typical in experiments involving schizophrenia patients, a more detailed discussion of the results can be found in the discussion section.  
+To statistically quantify the group-level differences, permutation tests were conducted in different pairs of networks as outlined in the method section. We found that all of the test rejected the null hypothesis, suggesting that the mean network-network correlation values of CON groups are significantly less than those of SCZ group \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}.
 
-
-Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations is included in the appendix.
+Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations, included in the appendix, showed similar reductions.
 
 \section{Discussion}
+
+Previous studies concluded that there is reduced distal connectivity for individuals with schizophrenia, especially between the FP and CER networks and the CO and CER networks \cite{repovs2011, repovs2012}. However, the two results are not comparable in the following ways: (1) we use a smaller dataset of 20 subjects versus 102 subjects used in the reference paper, and (2) in the reference papers, many more nuisance regressors were removed from the BOLD time series. We only removed a few common noise regressors outlined in the methods section above. We obtained results similar to the previous work and provided similar evidence that schizophrenia reflects a disconnection syndrome.
 
 
 \bibliography{report}
