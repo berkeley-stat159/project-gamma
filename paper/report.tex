@@ -36,7 +36,9 @@
 on the manner in which brain network connectivity is related to schizophrenia
 \cite{repovs2011,repovs2012}. A host of exploratory techniques, as well as
 linear modeling and brain network connectivity analyses across 20 subjects, were 
-used in order to gain further insights into the fMRI data examined.}
+used in order to gain further insights into the fMRI data examined. In this report,
+we show that differences between schizophrenics and controls can be isolated in
+terms of neural connectivity.}
 
 \section{Introduction}
 
@@ -45,22 +47,22 @@ numerous functional regions that coordinate everything from simple reflexes to
 complicated thoughts. In an effort to better understand the manner in which
 functional changes contribute to the symptoms of schizophrenia, Repovs \textit{et
 al.} conducted neuroimaging studies, including both functional connectivity
-magnetic resonance imaging (fcMRI) and diffusion tensor imaging (DTI), on many
-subjects, with their goal being to characterize the activity of several brain
-regions chosen \textit{a priori}, and to develop an understanding of how the functional 
-activities of these regions may differ across health states \cite{repovs2011,repovs2012}.
+magnetic resonance imaging (fcMRI) and diffusion tensor imaging (DTI), on 102
+subjects. The goal was to characterize the activity of several brain
+regions that were chosen \textit{a priori}, and to develop an understanding of how 
+the functional activities of these regions may differ across health states \cite{repovs2011,repovs2012}.
 
-\subsection{Generalized Linearl Model}
+For the main analysis, we focused on Generalized Linear Model and Connectivity analysis as outlined below. Besides these main analyses, we performed various exploratory data analyses (EDA), such as finding root mean square (RMS) outliers, K-Means clustering, correlations with different baseline functions that helped us understand the data. The details of the EDA and relevant discussion of the results can be found in the appendix. 
+
+\subsection{Generalized Linear Model}
 
 The goal of GLM with respect to our dataset is to detect the activation clusters of target and non-target events in one subject in the control (healthy) group. An activation cluster refers to a group of neighboring voxels activated beyond certain statistical thresholds (e.g., t-test, t-values) by defined events. We did not set up a quantifiable criterion -- for example, to definitively separate one cluster from a neighboring cluster, but provide qualitative evidence in terms of coefficient and t-value maps. Please see the methods section that follows for the target and non-target events definitions. 
 
-GLM is performed for both 0-back and 2-back tasks for the subject so that we can assess the effect of different memory loads on activation clusters. Through the GLM, we are better able to access the noise structure of the data, so that we can remove the noise regressors as a step towards a connectivity analysis.
-
-Besides analyses pertaining to the goals enumerated above, we performed various exploratory data analyses (EDA), such as K-Means clustering, correlations with different baseline functions that helped in understanding the data, and detection of root mean square (RMS) outliers, and more. The details of the EDA and relevant discussion of the results can be found in the appendix. 
+GLM is performed for both 0-back and 2-back tasks for the subject so that we can assess the effect of different memory loads on activation clusters. Through the GLM, we are better able to access the noise structure of the data, so that we can remove the noise regressors as a step towards a connectivity analysis. 
 
 \subsection{Connectivity Analysis}
 
-We are interested in the neural responses of the schizophrenic patients in a memory-related task, compared to the healthy controls. The goal of connectivity analysis is to compare the functional brain connectivity, measured by ROI-ROI correlations of 2-back task data between the four networks of the brain (DMN, FP, CO, CER), across controls (referred to as CON and composed of members of the control group and their siblings) and schizophrenics (referred to as SCZ and composed of patients with schizophrenia and their siblings). The task data was pre-precessed by removing the noise regressors after fitting the GLM described above. The four aforementioned networks are thought to be critical for cognitive function, as defined in the paper: (1) default mode network (DMN); (2) dorsal fronto-parietal network (FP); (3) cingula-opercular network (CO); (4) cerebellar network (CER) \cite{repovs2012}. We restrict our focus to the 2-back task because it is the most cognitively difficult to perform amongst the three levels of the n-back tasks and requires the highest memory load, thus making it more likely to reveal the differences of the response of the brains of the patients versus those of the controls. 
+We are interested in the neural responses of the schizophrenic patients in a memory-related task, compared to the healthy controls. The goal of connectivity analysis is to compare the functional brain connectivity, measured by ROI-ROI correlations of 2-back task data between the four networks of the brain (DMN, FP, CO, CER), across controls (referred to as CON and composed of members of the control group and their siblings) and schizophrenics (referred to as SCZ and composed of patients with schizophrenia and their siblings) \footnote{The consideration behind such grouping is that in general, participants share similar brain structure and functions with their siblings, regardless of whether they have developed schizophrenia.}. The task data was pre-precessed by removing the noise regressors after fitting the GLM described above. The four aforementioned networks are thought to be critical for cognitive function, as defined in the paper: (1) default mode network (DMN); (2) dorsal fronto-parietal network (FP); (3) cingula-opercular network (CO); (4) cerebellar network (CER) \cite{repovs2012}. We restrict our focus to the 2-back task because it is the most cognitively difficult to perform amongst the three levels of the n-back tasks and requires the highest memory load, thus making it more likely to reveal the differences of the response of the brains of the patients versus those of the controls.
 
 \section{Data}
 
@@ -76,18 +78,19 @@ data were acquired from the OpenfMRI project (\url{https://openfmri.org/}), wher
 are listed with accession number ds115. The data is available for groups of
 subjects, with each subject-specific data directory containing anatomical MR
 imaging data, functional MR imaging (using the BOLD contrast) data, and
-diffusion tensor imaging (DTI) data. In this preliminary report, the analyses
-are restricted to the BOLD functional MR imaging data, for 8 subjects among
-the pool of 102 subjects for which data are available, with most analyses
-(ranging from linear modeling to machine learning with K-Means) taking the form
-of exploratory examinations into the structure of this imaging data.
+diffusion tensor imaging (DTI) data. A n-back task was conducted during which the
+subject was asked to identify whether the current letter is the same as the 
+nth preceeding letter. Note that for 0-back, the 0th preceeding letter is 
+pre-specificed before the run instead of being presented continuously throughout the run. 
 
 
 \section{Methods}
 
 \subsection{Data Preprocessing}
 
-Except for Extended RMS in EDA, the standard preprocessed BOLD images were used. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This further justified the need for temporary smoothing. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain were smoothed with measurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain. However, this was not applied to connectivity portion of the analysis because the implementation was very slow and would take several hours on 20 subjects.
+The standard preprocessed BOLD images were used for all analyses. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the raw BOLD datasets. This justified the need for temporary smoothing as one of the reasons to use the standard preprocessed data. 
+
+For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions. To address the fact that boundary voxels of the brain were smoothed with measurements outside the brain, we implemented substitution of voxels near but outside the boundaries of brain with neighboring measurements within the boundary of the brain. However, this was not applied to connectivity portion of the analysis because the implementation was very slow and would take several hours on 20 subjects.
 
 \subsection{Data Analysis}
 
@@ -100,12 +103,10 @@ Before proceeding to discussions of the specifics of our GLM approach, we believ
 \item cond001: Start cues for both blocks of the run.
 
 \item cond002: The visual stimuli (i.e. letters) presenteed to the subject. The
-intensities are all one becasue there is only one homogeneous event type.
+intensities are all one because there is only one homogeneous event type.
 
 \item cond003: The target and non-target events during the run. A target is the event
-that the current letter that is the same as the nth preceeding letter. Note that
-for 0-back, the 0th preceeding letter is pre-specificed before the run instead
-of being presented continuously throughout the run. A non-target is the opposite
+that the current letter that is the same as the nth preceeding letter. A non-target is the opposite
 of a target, in which the current letter is not the same. 
 
 \item cond004: Done cues for both blocks of the run.
@@ -127,8 +128,8 @@ We now proceed to describing the regressors in the GLM on each voxel time
 course. For all convolutions below, a specified condition on-off time course 
 file was convolved at a time unit of 0.01 TR with a gamma function and take the
 convolved values at the start of each TR. After outlineing the regressors, one 
-of the design matrix is shown as a figure below. Additionally, in order to show
-that the noise regresosrs are not trivial, a graph displaying fit for thses regressors 
+of the design matrix is shown in Figure 2 below. Additionally, in order to show
+that the noise regressors are not trivial, a graph displaying fit for thses regressors 
 are included in the appendix. 
 
 \begin{itemize}
@@ -154,7 +155,7 @@ reg005.
 potential nuisansance regressors. Their significance is investigated below.
 
 \item reg009 and reg010: The first two Principal Components of the data. Based on the
-projections shown below, we decide that the first two are not functional
+projections shown in Figure 1 below, we decide that the first two are not functional
 features.
 
 \item reg011: Intercept term.
@@ -175,7 +176,7 @@ from reg001 to reg011. Index 4 and 5 are almost unidentifiable from the graph be
 are convolved from only a few single neural prediction values and hence are very small.}
 \end{figure}
 
-For each $\beta$ on each voxel time course, a linear regression two-tailed
+For each $\beta$ on each voxel time course, a linear regression of two-tailed
 t-test is conducted to access whether there is a significant linear relationship
 between the dependent variable Y and the regressor associated with the $\beta$,
 with significance levels of 0.05 for each test. \\
@@ -192,17 +193,17 @@ assumptions. The two main assumptions are (1) the residuals of each linear model
 are independent and identically distributed (i.i.d), and (2) residuals for the model
 are normally distributed. The Shapiro-Wilk test is performed on the residuals of
 each voxel time course in the linear model. 37703 out of 207766 voxels fail this
-test; however, when performing a large number of statistical tests, some will have
-p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), were performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task003\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
+test; however, when performing a large number of statistical tests, some may have
+p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), were performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task001\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
 
-\textit{Bonferroni}: normality assumption is violated in 6 voxels. \\
+\textit{Bonferroni}: normality assumption is violated in 260 voxels. \\
 
-\textit{Hochberg}: normality assumption is violated in 262 voxels. \\
+\textit{Hochberg}: normality assumption is violated in 261 voxels. \\
 
 \textit{Benjamini-Hochberg}: all of voxels pass the normality test. \\
 
 In summary, we can conclude that our assumption of normality in the residuals is
-generally valid.
+generally valid and hence can proceeed to perform t-test.
 
 \subsubsection{Connectivity Analysis}
 
@@ -211,7 +212,7 @@ follows:
 
 \begin{enumerate}
   \item Removal of noise regressors from the voxel time series: Linear model as
-    defined in the GLM section was fitted to all three BOLD runs across 20 subjects.
+    defined in the GLM section was fitted to two BOLD runs (0-back and 2-back) across 20 subjects.
     The residuals  after removal of the noise regressors (i.e. reg004 to reg011 
     listed in the GLM section) were the input time series to the steps that follows.
   \item Extraction of voxels per region of interest (ROI): ROIs of the four
@@ -220,8 +221,8 @@ follows:
     non-overlapping by setting the diameters for each ROI sphere as less than 
     the minimum distance between any two given ROIs in the full set, and 
     (2) ROIs are represented as spheres instead of cubes in order to better 
-    approximate the underlying neurobiology and to make easier the trouble 
-    associated with computing minimum distances between the ROIs in the set.
+    approximate the underlying neurobiology and to make computing minimum distances 
+    between the ROIs straitforward.
   \item In order to compute the ROI-ROI correlations, several steps were
     taken: (1) for each ROI in a given network, the corresponding voxels in the defined
     sphere were extracted and their time series were averaged to obtain a single average 
@@ -247,7 +248,7 @@ follows:
 
 \subsubsection{Permutation Tests}
 
-To statistically confirm the differences of network-network correlations, permutation tests were performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
+To statistically confirm the differences of network-network correlations between CON and SCZ groups, permutation tests were performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
 The method of implementing the permutation test under our framework is described below:
 
 For each pair of networks, $$i \in \{ bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CERT, bDMN-FP \}$$ 
@@ -256,16 +257,15 @@ For each pair of networks, $$i \in \{ bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CE
 
 $$ \Delta r^i =  r_{con}^i - r_{scz}^i $$ 
 
-\item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutation on the data pool is applied. A subset of the data is sampled from the vector to form a permutated$ r_{con}^i$, saying,$ r_{con}^i(p_k)$, and the data remaining in the data pool is $r_{con}^i(p_k)$. Take the difference between $ r_{con}^i(p_k)$ and  $r_{con}^i(p_k)$ and store the value as $diff^i(p_k)$(k is the index of permutation). Repeat previous step for 50,000 times, creating a permutation vector consisting of mean differences.
+\item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutations on the data pool are applied. k is the index of permutations. A subset of the data is sampled from the data pool as $ r_{con, k}^i$, and the data remaining in the data pool is $r_{scz, k}^i$. Take the difference between $ r_{con, k}^i$ and  $r_{scz, k}^i$ and store the value as $\Delta r_{k}^i$. Repeat previous step for 10,000 times, creating a permutation vector consisting of mean differences.
 
-$$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{ i is different pairs of networks.}
-$$ \Delta r^i(p_k) = r_con^i(p_k) - r_scz^i(p_k) $$ 
-$$ \Delta r^i = (\Delta r^i(p_1), \Delta r^i(p_2), \dots, \Delta r^i(p_n) $$
+$$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{i is different pairs of networks.}
+$$ \Delta r_{k}^i = r_{con,k}^i - r_{scz,k}^i $$ 
+$$ \Delta r^i = (\Delta r_{1}^i, \Delta r_{2}^i, \dots, \Delta r_{n}^i) $$
 
-\item Calulate the proportion of data less than $\Delta r_i$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
+\item Calulate the proportion of data less than $\Delta r_{i}$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
 
 \end{itemize}
-
 
 \section{Results}
 
@@ -301,8 +301,8 @@ The t-values associated with the coefficient estimates of the activation pattern
 \caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks. For visual comparison, the CON group and SCZ group are interleaved in order to show results for the same network-nework pair side by side.}
 \end{figure}
 
-We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Because of the various confounding factors typical in experiments involving schizophrenia patients, a more detailed discussion of the results can be found in the discussion section.  
-To statistically quantify the group-level differences, permutation tests were conducted in different pairs of networks as outlined in the method section. We found that all of the test rejected the null hypothesis, suggesting that the mean network-network correlation values of CON groups are significantly less than those of SCZ group \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}.
+We performed the analysis on 20 subjects\footnote{Subject numbers listed on the OpenfMRI project: 011, 012, 015, 035, 036, 037, 010, 013, 014, 021, 022, 038, 007, 009, 017, 031, 006, 008, 018, 024}, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Because of the various confounding factors typical in experiments involving schizophrenia patients, a more detailed discussion of the results can be found in the discussion section.  
+To statistically quantify the group-level differences, permutation tests were conducted in different pairs of networks as outlined in the method section. We found that all of the test rejected the null hypothesis, suggesting that the mean network-network correlation values of SCZ groups are significantly less than those of CON group \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}.
 
 Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations, included in the appendix, showed similar reductions.
 
@@ -377,11 +377,12 @@ confounding provided in the diagram that follows. \\[5pt]
 
 \subsection{Data Fetching and Preprocessing}
 
-For all BOLD datasets, we removed the first five images to allow signals to
-achieve steady state. In addition, we prepared scripts to detect the root mean
-square (RMS) difference outliers using the inter-quartile range (IQR) to define
-outliers. This was done because these images could contain a sudden widespread
-shift in signals caused by hardware issues.
+Except for Extended RMS analysis, the standard preprocessed BOLD images were used for EDA. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This justified the need for temporary smoothing to produce the standard images. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions.
+
+\subsection{Extended Root Mean Square (RMS) Difference Outliers}
+
+BOLD images were known to contain a sudden widespread shift in signals caused by hardware issues. We
+wanted to confirm the hypothesis by finding RMS difference outliers using the inter-quartile range (IQR).
 
 \begin{figure}[H]
 \centering
@@ -389,23 +390,19 @@ shift in signals caused by hardware issues.
 \caption{The extended RMS outliers for the BOLD images for sub011, 0-back}
 \end{figure} 
 
-Some preprocessing tasks are analysis-specific. As will be discussed in a later
-section, we scaled BOLD signals per time step to use them as one of the feature
-sets for k-means clustering. 
-
 \subsection{Correlations with Baseline Functions}
 
-This set of methods aimed to produce an image identifying the regions which showed
+This set of methods aimed to produce images identifying the regions which showed
 significant signal change in response to the task. The analysis was done by calculating 
 correlation coefficients (r) between the bold signal along the time course and a reference
-waveform, for each voxel. The reference waveform was extracted from a condition file.
+waveform, for each voxel. The reference waveform was extracted from one condition file.
 Condition file 003 was chosen because while it did not contain all stimuli presented to the
 subject, such as start and done cues, it included all target and non-target events and this
-thought to be sufficient to elicit functional differences of the brain during the run. 
+was thought to be sufficient to elicit functional differences of the brain during the run. 
 A high value of the correlation coefficient indicated that fluctuation of the signal in 
 the locale of the brain was task-dependent, hence activated by the task. 
 
-For a bold signal X, and a reference waveform Y, the correlation coefficient is
+For a BOLD time series X, and a reference waveform Y, the correlation coefficient is
 calculated as below.
 
 \begin{equation}
@@ -416,7 +413,7 @@ r = \frac{\Sigma_{i=1}^{n}  ( X-\bar{X}) ( Y-\bar{Y})}{\sqrt{ \Sigma_{i=1}^{n} (
 The two methods were differentiated by two types of reference
 waveforms: (1) square wave using on-off neural prediction from condition file
 (SW method), and (2) a convolved function on neural predictions with a gamma
-haemodynamic response function (HRF) (CF method).
+haemodynamic response function (CF method).
 
 Here, the two types of analysis were compared. By comparing
 the activated regions under square wave time course (left) and convolved time
@@ -433,12 +430,9 @@ more reasonable and detailed results.
 
 K-means clustering is an unsupervised technique which aims to partition n
 observations into k clusters based on a feature set of n features. Each
-observation is classified into the cluster with the nearest mean. In our case,k was
-chosen to be 6. Input to k-means clustering followed the same treatment as discussed
-in the Linear Model section of the paper. Standard fMRI data was and the first two 
-Principal Components were removed following the analysis in the Linear Model section 
-of the paper. After that, it was spatially smoothed with gaussian kernel
-of $sigma=2$. The rationale of removing the first two Principal Components was to
+observation is classified into the cluster with the nearest mean. In our case, k was
+chosen to be 6. Input to k-means clustering was described in the Preprocessing steps
+above. The rationale of removing the first two Principal Components was to
 remove differences caused by anatomical or other noise features as much as possible, in
 the hope that k-means can cluster the brain to functional regions.
 
@@ -450,7 +444,7 @@ patterns of the time courses between regions.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
-\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back. Note that the clustering across different slices appears to match the underlying neurobiology rather well -- for example, the yellow cluster of voxels includes both frontal and occipital regions, both being regions activated in the visual working memory tasks considered in this analysis.}
+\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back. Note that the clustering across different slices appears to match the underlying neurobiology rather well -- for example, both frontal and occipital regions appear clustered, as would be expected since both are regions activated in the visual working memory tasks considered in this analysis.}
 \end{figure} 
 
 \section{APPENDIX III - Linear Model Noise Regressors}

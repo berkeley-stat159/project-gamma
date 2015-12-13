@@ -213,8 +213,6 @@ if __name__ == "__main__":
 
   c_values_store = group_c_values(standard_group_source_prefix, cond_filepath_prefix, dist_from_center, dic, small_group_info)
 
-  print(list(c_values_store['003']['con'].keys()))
-
   generate_connectivity_results(c_values_store, output_filename)
 
   # change target r-values into list format
