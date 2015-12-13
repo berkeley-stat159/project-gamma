@@ -12,16 +12,20 @@ _**Topic:**_ [Working Memory in Healthy and Schizophrenic Individuals] (https://
 #### Recommended Steps
 1. make test - runs all of the tests for scripts used in this analytic project
 2. make coverage - runs coverage tests and generates the Travis coverage report
-3. make conditionfiles - downloads the condition files necessary for analysis
-4. make analysis - generates results and figures referenced in the report
-5. make report - compiles the (final) full report describing our findings
+3. make data - downloads all data for analysis (__around 2 hours on a 25MBps internet due to size__)
+4. make validate - validate checksums of the data to ensure integrity
+5. make analysis - generates results and figures referenced in the report
+6. make report - compiles the (final) full report describing our findings
 
 #### Alternative Steps
+** Please read Data Section if you plan to use alternative steps
 1. make test - runs all of the tests for scripts used in this analytic project
 2. make coverage - runs coverage tests and generates the Travis coverage report
-3. make data - downloads all data for analysis (__up to 2 hours due to size__)
-4. make analysis - generates results and figures referenced in the report
-5. make report - compiles the (final) full report describing our findings
+3. make conditionfiles - downloads the condition files necessary for analysis (__take up to 8 hours__)
+4. make data - downloads the rest of the data for analysis (__around 2 hours on a 25MBps internet due to size__)
+5. make validate - validate checksums of the data to ensure integrity
+6. make analysis - generates results and figures referenced in the report
+7. make report - compiles the (final) full report describing our findings
 
 ### Codebase 
 
