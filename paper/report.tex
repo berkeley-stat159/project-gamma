@@ -255,16 +255,15 @@ For each pair of networks, $$i \in \{ bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CE
 
 $$ \Delta r^i =  r_{con}^i - r_{scz}^i $$ 
 
-\item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutation on the data pool is applied. A subset of the data is sampled from the vector to form a permutated$ r_{con}^i$, saying,$ r_{con}^i(p_k)$, and the data remaining in the data pool is $r_{con}^i(p_k)$. Take the difference between $ r_{con}^i(p_k)$ and  $r_{con}^i(p_k)$ and store the value as $diff^i(p_k)$(k is the index of permutation). Repeat previous step for 50,000 times, creating a permutation vector consisting of mean differences.
+\item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutations on the data pool are applied. k is the index of permutations. A subset of the data is sampled from the data pool as $ r_{con, k}^i$, and the data remaining in the data pool is $r_{scz, k}^i$. Take the difference between $ r_{con, k}^i$ and  $r_{scz, k}^i$ and store the value as $\Delta r_{k}^i$. Repeat previous step for 10,000 times, creating a permutation vector consisting of mean differences.
 
 $$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{ i is different pairs of networks.}
-$$ \Delta r^i(p_k) = r_con^i(p_k) - r_scz^i(p_k) $$ 
-$$ \Delta r^i = (\Delta r^i(p_1), \Delta r^i(p_2), \dots, \Delta r^i(p_n) $$
+$$ \Delta r_{k}^i = r_{con,k}^i - r_{scz,k}^i $$ 
+$$ \Delta r^i = (\Delta r_{1}^i, \Delta r_{2}^i, \dots, \Delta r_{n}^i $$
 
-\item Calulate the proportion of data less than $\Delta r_i$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
+\item Calulate the proportion of data less than $\Delta r_{i}$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
 
 \end{itemize}
-
 
 \section{Results}
 
@@ -300,8 +299,8 @@ The t-values associated with the coefficient estimates of the activation pattern
 \caption{The connectivity plot comparing schizophrenics (SCZ) and controls (CON) between networks. For visual comparison, the CON group and SCZ group are interleaved in order to show results for the same network-nework pair side by side.}
 \end{figure}
 
-We performed the analysis on 20 subjects, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Because of the various confounding factors typical in experiments involving schizophrenia patients, a more detailed discussion of the results can be found in the discussion section.  
-To statistically quantify the group-level differences, permutation tests were conducted in different pairs of networks as outlined in the method section. We found that all of the test rejected the null hypothesis, suggesting that the mean network-network correlation values of CON groups are significantly less than those of SCZ group \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}.
+We performed the analysis on 20 subjects\footnote{Subject numbers listed on the OpenfMRI project: 011, 012, 015, 035, 036, 037, 010, 013, 014, 021, 022, 038, 007, 009, 017, 031, 006, 008, 018, 024}, including 12 SCZ (6 schizophrenias and 6 schizophrenia siblings) and 8 CON (4 controls and 4 control siblings). As shown in the figure above, the individuals with schizophrenia and their siblings (SCZ) showed an overall reduction in connectivity between the cognitive control networks as compared to CON, as indicated in the box plots of the correlations between networks for CON and SCZ. Because of the various confounding factors typical in experiments involving schizophrenia patients, a more detailed discussion of the results can be found in the discussion section.  
+To statistically quantify the group-level differences, permutation tests were conducted in different pairs of networks as outlined in the method section. We found that all of the test rejected the null hypothesis, suggesting that the mean network-network correlation values of SCZ groups are significantly less than those of CON group \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{connectivity\_permutation\_result.csv}}.
 
 Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations, included in the appendix, showed similar reductions.
 
