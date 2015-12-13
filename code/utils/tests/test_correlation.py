@@ -7,7 +7,6 @@ Run with::
 """
 import numpy as np
 import os
-import nibabel as nib
 import numpy.linalg as npl
 import math
 from .. import correlation
