@@ -5,6 +5,10 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\PassOptionsToPackage{usenames,dvipsnames,svgnames}{xcolor}  
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,automata}
 \graphicspath{ {figs/} }
 
 \title{An Analysis of fcMRI data in Schizophrenia}
@@ -245,20 +249,19 @@ follows:
 To statistically confirm existing difference shown on the graph in the previous section, permutation test on correlation data has been performed. In this hypothesis testing, $H_{0}$: $r_{con} = r_{scz}$, $H_{i}$: $r_{con} \neq r_{scz}$.
 The method of implementing the permutation test under our framework was described below:
 
-For each pair of networks i (namely, bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CERT, bDMN-FP), 
+For each pair of networks $ i \in {bFP-CO, bDMN-CER, bCO-CER, bDMN-CO, bFP-CERT, bDMN-FP} $, 
 \begin{itemize}
 \item Calculate the difference between mean values of two groups:
-\begin{equation}
-diff^i =  r_{con}^i- r_{scz}^i
-\end{equation}
-\item  Create a data pool using two vector of correlations for different groups ($r_{con}^i, r_{scz}^i$). Permutation of the pool of data is applied, and treat first bunch of data in the vector to form a permutated$ r_{con}^i$, saying,$ r_{con}^i(p_k)$, and the data left is $r_{con}^i(p_k)$. Also notice that the length of vector in corresponding group should be kept. Take the difference between $ r_{con}^i(p_k)$ and  $r_{con}^i(p_k)$ and store the value as $diff^i(p_k)$(k is the index of permutation). Repeat previous step for 50,000 times, creating a difference permutation vector.
-\begin{align*}
-pool_{i} = (r_{con}^i, r_{scz}^i) \textit{  i is different pair of networks. }
-  diff^i(p_k) = r_con^i(p_k) - r_scz^i(p_k) 
-  diff^i = (diff^i(p_1),diff^i(p_2), \dots, diff^i(p_N)
-\end{align*}
 
-\item Calulate the proportion of data less than $diff_i$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
+$$ \Delta r^i =  r_{con}^i - r_{scz}^i $$ 
+
+\item  First, create a data pool using two vectors of correlations for different groups ($r_{con}^i, r_{scz}^i$). Permutation is applied to the pool of data, and the first bunch of data in the vector is used to form a permutated $ r_{con}^i$. That is, call $ r_{con}^i(p_k)$ the permuted vector and the let $r_{con}^i(p_k)$ be the remaining entries. Take the difference between $ r_{con}^i(p_k)$ and  $r_{scz}^i(p_k)$ and store the value as $\Delta r^i(p_k)$, where k is the index of permutation. Repeat the previous steps 50,000 times, creating a permutation vector of differences.
+
+$$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{ i is different pairs of networks.}
+$$ \Delta r^i(p_k) = r_con^i(p_k) - r_scz^i(p_k) $$ 
+$$ \Delta r^i = (\Delta r^i(p_1), \Delta r^i(p_2), \dots, \Delta r^i(p_n) $$
+
+\item Calulate the proportion of data less than $\Delta r_i$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
 \end{itemize}
 
 
@@ -302,8 +305,55 @@ We also performed the permutation test in different pairs of networks, and found
 
 Within-network correlations are not within the scope of our analysis, but a graph showing the results for within-network correlations is included in the appendix.
 
+
 \section{Discussion}
 
+As presented so far, the analyses presented show that connectivity differences
+between schizophrenics and biologically matched controls can be isolate. In the
+examination of the effects of schizophrenia on connectivity, the authors of the
+original paper used schizophrenics and (as a control group) healthy siblings so
+as to ensure that the experimental and control groups matched on physiological
+and genetic factors. This approach ensures that any observed differences in the
+fMRI connectivity analysis performed are not related to biological differences
+that may be irrelevant (e.g., genetic differences between individuals). Despite
+the added rigor provided by adopting this approach, more could have been done to
+ensure that any observed connectivity differences are not the direct results of
+behavioral or lifestyle differences between members of the two groups \cite{gur2010functional}. 
+
+Since the researchers did not denote such features as whether subjects were smokers or the
+degree to which subjects fidgeted while undergoing scanning, there are potential
+variations (possibly, though indirectly, attributable to schizophrenia) between
+members of the two groups, reducing the conclusions that may be drawn from the
+connectivity results that we present. In particular, the effects of lifestyle
+choices on neural connectivity as measured by fMRI have been documented in the
+case of schizophrenics -- that is, it has been found that schizophrenia promotes
+lifestyle choices, such as a tendency towards smoking, that can alter neural
+connectivity \cite{leyba2008smoking}. Thus, as we are only able to take into 
+account baseline features that were documented by the original researchers in 
+our analyses, there are a number of limitations caused by missing information. 
+We believe that the issues in interpretability of the conclusions we present 
+are most clearly captured in the simplified directed acyclic graph of potential 
+confounding provided in the diagram that follows. \\[14pt]
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[>=stealth',shorten >=1pt,node distance=4cm,on grid,initial/.style    ={}]
+  \node[state]          (Connectivity)                        {$Connectivity$};
+  \node[state]          (Lifestyle) [above right =of Connectivity]    {$Lifestyle$};
+  \node[state]          (Schizophrenia) [above right =of Lifestyle]    {$Schizophrenia$};
+  \node[state]          (Physiology) [below right =of Lifestyle]    {$Physiology$};
+\tikzset{mystyle/.style={->,relative=false,double=orange}} 
+\tikzset{every node/.style={fill=white}} 
+\path (Schizophrenia)     edge [mystyle]    (Lifestyle)
+      (Lifestyle)	edge [mystyle]	  (Connectivity)
+      (Physiology)	edge [mystyle]	 (Connectivity);
+\tikzset{mystyle/.style={<->,double=orange}}   
+\path (Lifestyle)     edge [mystyle]    (Physiology);
+\tikzset{mystyle/.style={<->,relative=false,in=0,out=60,double=orange}}
+\path (Physiology)     edge [mystyle]   (Schizophrenia); 
+\end{tikzpicture}
+\caption{Directed acyclic graph illustrating potential for confounding}
+\end{figure}
 
 \bibliography{report}
 
