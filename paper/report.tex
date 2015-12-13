@@ -336,11 +336,11 @@ account baseline features that were documented by the original researchers in
 our analyses, there are a number of limitations caused by missing information. 
 We believe that the issues in interpretability of the conclusions we present 
 are most clearly captured in the simplified directed acyclic graph of potential 
-confounding provided in the diagram that follows. \\[10pt]
+confounding provided in the diagram that follows. \\[5pt]
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[>=stealth',shorten >=1pt,node distance=4cm,on grid,initial/.style    ={}]
+\begin{tikzpicture}[>=stealth',shorten >=1pt,node distance=3.5cm,on grid,initial/.style    ={}]
   \node[state]          (Connectivity)                        {$Connectivity$};
   \node[state]          (Lifestyle) [above right =of Connectivity]    {$Lifestyle$};
   \node[state]          (Schizophrenia) [above right =of Lifestyle]    {$Schizophrenia$};
@@ -352,6 +352,8 @@ confounding provided in the diagram that follows. \\[10pt]
       (Physiology)	edge [mystyle]	 (Connectivity);
 \tikzset{mystyle/.style={<->,double=orange}}   
 \path (Lifestyle)     edge [mystyle]    (Physiology);
+\tikzset{mystyle/.style={->,relative=false,in=100,out=500,double=orange}}
+\path (Schizophrenia)     edge [mystyle]   (Connectivity); 
 \tikzset{mystyle/.style={<->,relative=false,in=0,out=60,double=orange}}
 \path (Physiology)     edge [mystyle]   (Schizophrenia); 
 \end{tikzpicture}
@@ -448,7 +450,7 @@ patterns of the time courses between regions.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
-\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back.}
+\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back. Note that the clustering across different slices appears to match the underlying neurobiology rather well -- for example, the yellow cluster of voxels includes both frontal and occipital regions, both being regions activated in the visual working memory tasks considered in this analysis.}
 \end{figure} 
 
 \section{APPENDIX III - Linear Model Noise Regressors}
