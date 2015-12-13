@@ -18,7 +18,7 @@ _**Topic:**_ [Working Memory in Healthy and Schizophrenic Individuals] (https://
 6. make report - compiles the (final) full report describing our findings
 
 #### Alternative Steps
-_**Please read Data Section if you plan to use alternative steps**_
+_**Please read the section Data (below) if you plan to use these (alternative) steps**_
 
 1. make test - runs all of the tests for scripts used in this analytic project
 2. make coverage - runs coverage tests and generates the Travis coverage report
