@@ -36,7 +36,9 @@
 on the manner in which brain network connectivity is related to schizophrenia
 \cite{repovs2011,repovs2012}. A host of exploratory techniques, as well as
 linear modeling and brain network connectivity analyses across 20 subjects, were 
-used in order to gain further insights into the fMRI data examined.}
+used in order to gain further insights into the fMRI data examined. In this report,
+we show that differences between schizophrenics and controls can be isolated in
+terms of neural connectivity.}
 
 \section{Introduction}
 
@@ -192,11 +194,11 @@ are independent and identically distributed (i.i.d), and (2) residuals for the m
 are normally distributed. The Shapiro-Wilk test is performed on the residuals of
 each voxel time course in the linear model. 37703 out of 207766 voxels fail this
 test; however, when performing a large number of statistical tests, some may have
-p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), were performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task003\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
+p-values less than 0.05 purely by chance (that is, it now becomes necessary to control the false discovery rate). To test the normality of several models together, three multiple comparison tests (namely, Bonferroni, Hochberg, and Benjamini-Hochberg), were performed, and results are shown below \footnote{The results were generated from our analysis scripts, and can be found in the results folder at \textit{sub011\_task001\_linear\_model\_normality\_test\_failure\_rates.csv}}. \\
 
-\textit{Bonferroni}: normality assumption is violated in 6 voxels. \\
+\textit{Bonferroni}: normality assumption is violated in 260 voxels. \\
 
-\textit{Hochberg}: normality assumption is violated in 262 voxels. \\
+\textit{Hochberg}: normality assumption is violated in 261 voxels. \\
 
 \textit{Benjamini-Hochberg}: all of voxels pass the normality test. \\
 
@@ -257,9 +259,9 @@ $$ \Delta r^i =  r_{con}^i - r_{scz}^i $$
 
 \item  Create a pool of data using two vectors of correlations from two different groups ($r_{con}^i, r_{scz}^i$). Permutations on the data pool are applied. k is the index of permutations. A subset of the data is sampled from the data pool as $ r_{con, k}^i$, and the data remaining in the data pool is $r_{scz, k}^i$. Take the difference between $ r_{con, k}^i$ and  $r_{scz, k}^i$ and store the value as $\Delta r_{k}^i$. Repeat previous step for 10,000 times, creating a permutation vector consisting of mean differences.
 
-$$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{ i is different pairs of networks.}
+$$ pool_{i} = (r_{con}^i, r_{scz}^i) $$ where \textit{i is different pairs of networks.}
 $$ \Delta r_{k}^i = r_{con,k}^i - r_{scz,k}^i $$ 
-$$ \Delta r^i = (\Delta r_{1}^i, \Delta r_{2}^i, \dots, \Delta r_{n}^i $$
+$$ \Delta r^i = (\Delta r_{1}^i, \Delta r_{2}^i, \dots, \Delta r_{n}^i) $$
 
 \item Calulate the proportion of data less than $\Delta r_{i}$ in the vector $p$, reject $H_0$ if p is less than $\alpha = 0.05$
 
@@ -375,7 +377,8 @@ confounding provided in the diagram that follows. \\[5pt]
 
 \subsection{Data Fetching and Preprocessing}
 
-Except for Extended RMS analysis, the standard preprocessed BOLD images were used. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This further justified the need for temporary smoothing. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions.
+Except for Extended RMS analysis, the standard preprocessed BOLD images were used for EDA. They were already preprocessed with (1) motion correction (co-registration in time to partially correct for movement during the run and between runs); (2) temporary high-pass filtering to remove low frequency drifts and/or noise; and (3) registration to a standard anatomical template (the MNI template). In EDA, we detected several extended root-mean-square (RMS) outliers for the BOLD datasets. This justified the need for temporary smoothing to produce the standard images. For our preprocessing steps, first five images of each run were removed to allow measurements to achieve steady state. Each image was passed through a gaussian filter of $\sigma=2$. This spatial smoothing approach assumes that fMRI data inherently show spatial correlations due to functional similarities of adjacent brain regions.
+
 \subsection{Extended Root Mean Square (RMS) Difference Outliers}
 
 BOLD images were known to contain a sudden widespread shift in signals caused by hardware issues. We
@@ -389,8 +392,7 @@ wanted to confirm the hypothesis by finding RMS difference outliers using the in
 
 \subsection{Correlations with Baseline Functions}
 
-For this analysis, the images were smoothed and the first two Principal Componenets were
-removed. This set of methods aimed to produce images identifying the regions which showed
+This set of methods aimed to produce images identifying the regions which showed
 significant signal change in response to the task. The analysis was done by calculating 
 correlation coefficients (r) between the bold signal along the time course and a reference
 waveform, for each voxel. The reference waveform was extracted from one condition file.
@@ -400,7 +402,7 @@ was thought to be sufficient to elicit functional differences of the brain durin
 A high value of the correlation coefficient indicated that fluctuation of the signal in 
 the locale of the brain was task-dependent, hence activated by the task. 
 
-For a bold signal X, and a reference waveform Y, the correlation coefficient is
+For a BOLD time series X, and a reference waveform Y, the correlation coefficient is
 calculated as below.
 
 \begin{equation}
@@ -411,7 +413,7 @@ r = \frac{\Sigma_{i=1}^{n}  ( X-\bar{X}) ( Y-\bar{Y})}{\sqrt{ \Sigma_{i=1}^{n} (
 The two methods were differentiated by two types of reference
 waveforms: (1) square wave using on-off neural prediction from condition file
 (SW method), and (2) a convolved function on neural predictions with a gamma
-haemodynamic response function (HRF) (CF method).
+haemodynamic response function (CF method).
 
 Here, the two types of analysis were compared. By comparing
 the activated regions under square wave time course (left) and convolved time
@@ -428,12 +430,9 @@ more reasonable and detailed results.
 
 K-means clustering is an unsupervised technique which aims to partition n
 observations into k clusters based on a feature set of n features. Each
-observation is classified into the cluster with the nearest mean. In our case,k was
-chosen to be 6. Input to k-means clustering followed the same treatment as discussed
-in the Linear Model section of the paper. Standard fMRI data was and the first two 
-Principal Components were removed following the analysis in the Linear Model section 
-of the paper. After that, it was spatially smoothed with gaussian kernel
-of $sigma=2$. The rationale of removing the first two Principal Components was to
+observation is classified into the cluster with the nearest mean. In our case, k was
+chosen to be 6. Input to k-means clustering was described in the Preprocessing steps
+above. The rationale of removing the first two Principal Components was to
 remove differences caused by anatomical or other noise features as much as possible, in
 the hope that k-means can cluster the brain to functional regions.
 
@@ -445,7 +444,7 @@ patterns of the time courses between regions.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{../results/sub011_kmeans_6_groups_smoothed.png}
-\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back. Note that the clustering across different slices appears to match the underlying neurobiology rather well -- for example, the yellow cluster of voxels includes both frontal and occipital regions, both being regions activated in the visual working memory tasks considered in this analysis.}
+\caption{K-means result for $k=6$ on smoothed standard fMRI data after removal of first two Principal Components, sub011, 0-back. Note that the clustering across different slices appears to match the underlying neurobiology rather well -- for example, both frontal and occipital regions appear clustered, as would be expected since both are regions activated in the visual working memory tasks considered in this analysis.}
 \end{figure} 
 
 \section{APPENDIX III - Linear Model Noise Regressors}
