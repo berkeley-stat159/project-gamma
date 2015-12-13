@@ -18,10 +18,11 @@ _**Topic:**_ [Working Memory in Healthy and Schizophrenic Individuals] (https://
 6. make paper - compiles the (final) full paper describing our findings
 
 #### Alternative Steps
-** Please read Data Section if you plan to use alternative steps
+_**Please read the section Data (below) if you plan to use these (alternative) steps**_
+
 1. make test - runs all of the tests for scripts used in this analytic project
 2. make coverage - runs coverage tests and generates the Travis coverage report
-3. make conditionfiles - downloads the condition files necessary for analysis (__take up to 8 hours__)
+3. make conditionfiles - downloads the condition files necessary for analysis (__takes up to 8 hours__)
 4. make data - downloads the rest of the data for analysis (__around 2 hours on a 25MBps internet due to size__)
 5. make validate - validate checksums of the data to ensure integrity
 6. make analysis - generates results and figures referenced in the report
