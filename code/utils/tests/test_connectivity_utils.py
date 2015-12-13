@@ -58,7 +58,7 @@ def test_permute():
   # workaround is to subclass and implement our own random module, but
   # this is not done for the project.
   if sys.version_info[0] < 3:
-    expected = 0.496
+    expected = 0.5103999999999
   else:
-    expected = 0.502
+    expected = 0.49590
   assert_almost_equal(actual,expected)
