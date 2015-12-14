@@ -1,4 +1,4 @@
-.PHONY: all clean coverage test data analysis paper conditionfiles
+.PHONY: all clean coverage test data analysis paper conditionfiles requirements
 
 all: clean
 
@@ -10,6 +10,10 @@ coverage:
 
 test:
 	nosetests code/utils data
+
+requirements:
+	pip install -r requirements.txt
+	pip install ggplot==0.6.8
 
 paper:
 	make clean -C paper
