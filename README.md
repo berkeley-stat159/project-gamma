@@ -71,5 +71,5 @@ Luyun Zhao [lynnzhao] (https://github.com/lynnzhao)
 
 Xinyue Zhou [z357412526] (https://github.com/z357412526)
 
-Very special thanks to [Jarrod Millman] (https://github.com/jarrodmillman), [Matthew Brett] (https://github.com/matthew-brett), [Ross Barnowski] (https://github.com/rossbar), and [J-B Poline] (https://github.com/jbpoline), for your teaching and your invaluable advice over the course of the semester --- this project would not have been possible without your help!
+Very special thanks to [Jarrod Millman] (https://github.com/jarrodmillman), [Matthew Brett] (https://github.com/matthew-brett), [Ross Barnowski] (https://github.com/rossbar), and [J-B Poline] (https://github.com/jbpoline), for your teaching and your invaluable advice over the course of the semester —— this project would not have been possible without your help!
 
