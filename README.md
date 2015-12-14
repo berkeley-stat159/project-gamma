@@ -61,3 +61,16 @@ The reason that downloading the condition files has been made into a separate co
 
 'make paper' produces the full report describing this research project.
 
+
+### Contributers
+
+Nima Hejazi [nhejazi] (https://github.com/nhejazi)
+
+Feng Lin [LiamFengLin] (https://github.com/LiamFengLin)
+
+Luyun Zhao [lynnzhao] (https://github.com/lynnzhao)
+
+Xinyue Zhou [z357412526] (https://github.com/z357412526)
+
+Special thanks to [Jarrod Millman] (https://github.com/jarrodmillman), [Matthew Brett] (https://github.com/matthew-brett), [Ross Barnowski] (https://github.com/rossbar), and [J-B Poline] (https://github.com/jbpoline), for both your teaching and advice over the course of the semester.
+
