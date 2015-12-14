@@ -20,8 +20,6 @@ from ggplot import *
 import pandas as pd
 import random
 
-import pdb
-
 def create_f (task, dic, namelist, find_nw):
     con_group = "con"
     scz_group = 'scz'

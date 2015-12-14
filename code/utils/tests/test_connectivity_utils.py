@@ -9,6 +9,7 @@ import numpy as np
 import sys
 import random
 import os
+import pandas as pd
 from .. import connectivity_utils
 
 from numpy.testing import assert_array_equal, assert_almost_equal
@@ -62,3 +63,8 @@ def test_permute():
   else:
     expected = 0.49590
   assert_almost_equal(actual,expected)
+
+def test_pandas():
+  permute_results = {"bDMN-CER": 0, "bCO-CER": 0, "bDMN-CO": 0, "bFP-CER": 0, "bDMN-FP": 0, "bFP-CO": 0}
+  permute_pd = pd.DataFrame(permute_results, index=["Permution Test P Values"])
+  assert_almost_equal(permute_pd, np.array([[0,0,0,0,0,0]]))
