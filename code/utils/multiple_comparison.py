@@ -18,7 +18,6 @@ Benjamini-Hochberg procedure:
 
 from scipy import stats
 import numpy as np
-import pdb
 
 def multiple_comp (residuals): 
   """

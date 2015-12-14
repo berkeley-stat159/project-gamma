@@ -22,7 +22,6 @@ from conv import conv_main
 from pca_utils import first_pcs_removed
 from os.path import join
 from matplotlib import colors
-import pdb
 
 TR = project_config.TR
 
